@@ -9,6 +9,16 @@ import {
   upsertPatient,
 } from "@/lib/store";
 
+function requestOrigin(req: NextRequest) {
+  const host = req.headers.get("x-forwarded-host") || req.headers.get("host");
+  if (!host) return req.nextUrl.origin;
+  const proto =
+    req.headers.get("x-forwarded-proto") ||
+    (req.nextUrl.protocol || "http:").replace(/:$/, "") ||
+    "http";
+  return `${proto}://${host}`;
+}
+
 async function readFields(req: NextRequest) {
   const ct = req.headers.get("content-type") || "";
   if (ct.includes("application/json")) {
@@ -37,7 +47,7 @@ async function readFields(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const fields = await readFields(req);
-  const origin = req.nextUrl.origin;
+  const origin = requestOrigin(req);
   if (!fields) {
     return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   }
