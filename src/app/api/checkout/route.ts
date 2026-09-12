@@ -12,9 +12,8 @@ import {
 } from "@/lib/store";
 
 function failForm(origin: string, msg: string) {
-  const url = new URL("/", origin);
+  const url = new URL("/enroll", origin);
   url.searchParams.set("enrollError", msg);
-  url.hash = "enroll";
   return NextResponse.redirect(url, 303);
 }
 
@@ -22,7 +21,7 @@ export async function POST(req: NextRequest) {
   const origin = requestOrigin(req);
   const session = await getSession();
   if (!session) {
-    const next = encodeURIComponent("/#enroll");
+    const next = encodeURIComponent("/enroll");
     return NextResponse.redirect(new URL(`/signin?next=${next}`, origin), 303);
   }
 

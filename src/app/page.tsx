@@ -100,7 +100,7 @@ export default async function Home({
               will not be steered by a hospital&apos;s contract.
             </p>
             <div className="hero-actions">
-              <a className="btn-solid" href="#enroll">
+              <a className="btn-solid" href="/enroll">
                 Begin orientation · $5
               </a>
               <a className="btn-ghost" href="#independence">
@@ -217,7 +217,7 @@ export default async function Home({
                 ))}
               </ul>
               <p className="pkg-note">{p.note}</p>
-              <a className="text-link" href={`/?sku=${p.sku}#enroll`}>
+              <a className="text-link" href={`/enroll?sku=${p.sku}`}>
                 Choose {p.name}
               </a>
             </article>

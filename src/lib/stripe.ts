@@ -32,7 +32,7 @@ export async function createCheckout(opts: {
     customer_email: opts.email,
     client_reference_id: opts.orderId,
     success_url: `${opts.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${opts.origin}/#enroll`,
+    cancel_url: `${opts.origin}/enroll`,
     line_items: [
       {
         quantity: 1,

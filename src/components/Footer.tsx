@@ -23,7 +23,7 @@ export default function Footer() {
           <p className="foot-label">File</p>
           <Link href="/signin">Sign in with Google</Link>
           <Link href="/account">Your file</Link>
-          <Link href="/#enroll">Orientation · $5</Link>
+          <Link href="/enroll">Orientation · $5</Link>
           <a href={`https://${SITE.domain}`}>{SITE.domain}</a>
         </div>
         <div>

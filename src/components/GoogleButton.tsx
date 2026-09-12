@@ -22,7 +22,7 @@ export function GoogleMark() {
 }
 
 export default function GoogleButton({
-  next = "/#enroll",
+  next = "/enroll",
   label = "Continue with Google",
 }: {
   next?: string;

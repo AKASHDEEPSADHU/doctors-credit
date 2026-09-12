@@ -11,9 +11,9 @@ export function requestOrigin(req: NextRequest) {
 }
 
 export function safeNext(raw: string | null | undefined) {
-  if (!raw) return "/#enroll";
+  if (!raw) return "/enroll";
   if (!raw.startsWith("/") || raw.startsWith("//") || raw.includes("://")) {
-    return "/#enroll";
+    return "/enroll";
   }
   return raw;
 }

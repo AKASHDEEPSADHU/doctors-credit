@@ -33,7 +33,7 @@ export default function EnrollForm({
         </p>
         <a
           className="btn-google"
-          href={`/signin?next=${encodeURIComponent(sku ? `/?sku=${sku}#enroll` : "/#enroll")}`}
+          href={`/signin?next=${encodeURIComponent(sku ? `/enroll?sku=${sku}` : "/enroll")}`}
         >
           <GoogleMark />
           Continue with Google

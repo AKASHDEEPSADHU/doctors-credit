@@ -78,7 +78,7 @@ export default function AccountClient() {
         </p>
         <GoogleButton next="/account" label="Continue with Google" />
         <p className="fine">
-          No file yet? <Link href="/#enroll">Begin Orientation — $5</Link>
+          No file yet? <Link href="/enroll">Begin Orientation — $5</Link>
         </p>
       </div>
     );
@@ -111,7 +111,7 @@ export default function AccountClient() {
 
       {unpaid ? (
         <p className="fine">
-          Signed in, not yet begun. <Link href="/#enroll">Continue to Orientation — $5</Link>
+          Signed in, not yet begun. <Link href="/enroll">Continue to Orientation — $5</Link>
         </p>
       ) : null}
 

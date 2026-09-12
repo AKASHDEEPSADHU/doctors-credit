@@ -21,7 +21,7 @@ export default async function SuccessPage({
 
   const checkout = await stripe.checkout.sessions.retrieve(sessionId);
   if (checkout.payment_status !== "paid" && checkout.status !== "complete") {
-    redirect("/#enroll");
+    redirect("/enroll");
   }
 
   const meta = checkout.metadata || {};

@@ -721,6 +721,11 @@ blockquote {
   align-items: start;
 }
 
+.enroll-page {
+  min-height: calc(100svh - 4rem);
+  padding-top: 5.5rem;
+}
+
 .enroll,
 .gate {
   background: var(--ivory);

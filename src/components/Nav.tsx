@@ -8,7 +8,7 @@ const links = [
   ["/#services", "Support"],
   ["/#packages", "Beginnings"],
   ["/#story", "The people"],
-  ["/#enroll", "Orientation"],
+  ["/enroll", "Orientation"],
 ];
 
 export default function Nav({ signedIn }: { signedIn: boolean }) {
