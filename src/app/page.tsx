@@ -3,6 +3,7 @@ import Founders from "@/components/Founders";
 import HeroArt from "@/components/HeroArt";
 import Reveal from "@/components/Reveal";
 import ServicesRail from "@/components/ServicesRail";
+import WhyDoctorsCredit from "@/components/WhyDoctorsCredit";
 import { PACKAGES } from "@/lib/packages";
 import { SITE } from "@/lib/contact";
 import { getSession } from "@/lib/session";
@@ -253,6 +254,8 @@ export default async function Home({
           <Founders />
         </div>
       </section>
+
+      <WhyDoctorsCredit />
 
       <section id="faq" className="band-paper">
         <div className="shell faq-grid">

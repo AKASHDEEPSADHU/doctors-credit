@@ -1037,6 +1037,252 @@ input {
   transform: none;
 }
 
+.why-dc {
+  --why-num-col: 3.4rem;
+  padding-top: clamp(4.6rem, 10vw, 9.5rem);
+  padding-bottom: clamp(4.6rem, 10vw, 9.5rem);
+}
+
+.why-dc-shell {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.42fr) minmax(0, 1fr);
+  gap: clamp(2.5rem, 6vw, 6.5rem);
+  align-items: start;
+}
+
+.why-dc-header {
+  position: sticky;
+  top: 6.25rem;
+}
+
+.why-dc-header h2 {
+  max-width: 12ch;
+  font-size: clamp(2rem, 4.4vw, 3.85rem);
+}
+
+.why-dc-lede {
+  margin: 0;
+  max-width: 24rem;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.why-dc-main {
+  min-width: 0;
+  width: 100%;
+}
+
+.why-dc-list {
+  border-top: 1px solid var(--line);
+}
+
+.why-dc-item {
+  border-bottom: 1px solid var(--line);
+}
+
+.why-dc-heading {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  font-family: inherit;
+  max-width: none;
+  letter-spacing: inherit;
+}
+
+.why-dc-trigger {
+  display: grid;
+  grid-template-columns: var(--why-num-col) minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.35rem 1rem;
+  width: 100%;
+  min-height: 5.5rem;
+  margin: 0;
+  padding: 1.85rem 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.why-dc-num {
+  padding-top: 0.55rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: color-mix(in srgb, var(--gold) 72%, var(--walnut));
+  font-variant-numeric: tabular-nums;
+  transition:
+    color 240ms ease,
+    font-weight 240ms ease;
+}
+
+.why-dc-q {
+  font-family: var(--font-cormorant), "Palatino Linotype", Georgia, serif;
+  font-size: clamp(1.2rem, 2.1vw, 1.85rem);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--walnut);
+  overflow-wrap: break-word;
+  transition:
+    color 240ms ease,
+    font-weight 240ms ease;
+}
+
+.why-dc-chevron {
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: 0.45rem;
+  color: var(--gold);
+  transition: transform 250ms ease;
+}
+
+.why-dc-chevron svg {
+  width: 1rem;
+  height: 1rem;
+  display: block;
+  transition: transform 300ms ease;
+}
+
+.why-dc-trigger:hover .why-dc-q {
+  color: var(--maroon);
+}
+
+.why-dc-trigger:hover .why-dc-chevron {
+  transform: translateX(3px);
+}
+
+.why-dc-item.is-open .why-dc-num {
+  color: var(--gold);
+}
+
+.why-dc-item.is-open .why-dc-q {
+  font-weight: 600;
+  color: var(--maroon);
+}
+
+.why-dc-item.is-open .why-dc-chevron svg {
+  transform: rotate(180deg);
+}
+
+.why-dc-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 300ms ease-in-out;
+}
+
+.why-dc-panel.is-open {
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.why-dc-panel-clip {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.why-dc-panel-inner {
+  display: grid;
+  grid-template-columns: var(--why-num-col) minmax(0, 1fr);
+  gap: 0 1rem;
+  padding: 0.35rem 0 3.1rem;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity 300ms ease-in-out,
+    transform 300ms ease-in-out;
+}
+
+.why-dc-panel.is-open .why-dc-panel-inner {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.why-dc-item.is-closing .why-dc-panel-inner {
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 300ms ease-in-out,
+    transform 300ms ease-in-out;
+}
+
+.why-dc-panel-inner p {
+  grid-column: 2;
+  margin: 0 0 0.95rem;
+  max-width: 40rem;
+  font-size: 1.08rem;
+  font-weight: 400;
+  line-height: 1.72;
+  color: var(--ink-soft);
+}
+
+.why-dc-panel-inner p:last-child {
+  margin-bottom: 0;
+}
+
+.why-dc-cta {
+  margin-top: 3.5rem;
+  padding-top: 2.4rem;
+  border-top: 1px solid var(--line);
+  max-width: 28rem;
+}
+
+.why-dc-cta-kicker {
+  margin: 0 0 0.65rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.why-dc-cta-title {
+  margin: 0 0 1.4rem;
+  font-family: var(--font-cormorant), "Palatino Linotype", Georgia, serif;
+  font-size: clamp(1.65rem, 2.4vw, 2.15rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--maroon);
+}
+
+.why-dc-cta-btn {
+  width: auto;
+}
+
+.why-dc-cta-note {
+  margin: 1.15rem 0 0;
+  max-width: 22rem;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .why-dc-panel,
+  .why-dc-panel.is-open,
+  .why-dc-panel-inner,
+  .why-dc-panel.is-open .why-dc-panel-inner,
+  .why-dc-item.is-closing .why-dc-panel-inner,
+  .why-dc-q,
+  .why-dc-num,
+  .why-dc-chevron,
+  .why-dc-chevron svg {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .why-dc-panel-inner,
+  .why-dc-item.is-closing .why-dc-panel-inner {
+    transform: none !important;
+  }
+}
+
 @media (max-width: 980px) {
   .nav-desktop {
     display: none;
@@ -1059,8 +1305,21 @@ input {
   .enroll-layout,
   .services-rail,
   .foot-grid,
-  .enroll-grid {
+  .enroll-grid,
+  .why-dc-shell {
     grid-template-columns: 1fr;
+  }
+  .why-dc-header {
+    position: static;
+  }
+  .why-dc-header h2 {
+    max-width: 14ch;
+  }
+  .why-dc-lede {
+    max-width: 36rem;
+  }
+  .why-dc-q {
+    font-size: clamp(1.2rem, 3.2vw, 1.55rem);
   }
   .hero {
     min-height: auto;
@@ -1095,5 +1354,49 @@ input {
   .btn-solid,
   .btn-ghost {
     width: 100%;
+  }
+  .why-dc {
+    --why-num-col: 0;
+    padding-top: 5rem;
+    padding-bottom: 5.25rem;
+  }
+  .why-dc-trigger {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "num chevron"
+      "question chevron";
+    column-gap: 0.85rem;
+    min-height: 4.25rem;
+    padding: 1.25rem 0;
+  }
+  .why-dc-num {
+    grid-area: num;
+    padding-top: 0;
+    margin-bottom: 0.35rem;
+  }
+  .why-dc-q {
+    grid-area: question;
+    font-size: 1.2rem;
+    padding-right: 0.25rem;
+  }
+  .why-dc-chevron {
+    grid-area: chevron;
+    align-self: start;
+    margin-top: 0.15rem;
+  }
+  .why-dc-panel-inner {
+    display: block;
+    padding: 1.15rem 0 2.15rem;
+  }
+  .why-dc-panel-inner p {
+    font-size: 0.98rem;
+    line-height: 1.7;
+  }
+  .why-dc-cta {
+    margin-top: 2.6rem;
+    padding-top: 1.85rem;
+  }
+  .why-dc .why-dc-cta-btn {
+    width: auto;
   }
 }
