@@ -900,13 +900,14 @@ input {
   align-items: center;
   gap: 0.55rem;
   padding: 0.7rem 0.95rem 0.7rem 0.7rem;
-  background: var(--maroon);
-  color: var(--ivory);
-  box-shadow: 0 16px 40px rgba(92, 31, 46, 0.22);
+  background: var(--ivory);
+  color: var(--maroon);
+  border: 1px solid var(--maroon);
 }
 
 .wa-fab:hover {
-  background: var(--maroon-deep);
+  background: var(--maroon);
+  color: var(--ivory);
 }
 
 .wa-fab-icon {
