@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import EnrollForm from "@/components/EnrollForm";
 import Founders from "@/components/Founders";
 import { PACKAGES } from "@/lib/packages";
@@ -69,7 +68,16 @@ const steps = [
   ["You choose the clinician", "We do not book you into a contracted theatre. You walk in with your eyes open."],
 ];
 
-export default function Home() {
+function first(v: string | string[] | undefined) {
+  return Array.isArray(v) ? v[0] : v;
+}
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams?: Promise<{ enrollError?: string | string[]; sku?: string | string[] }>;
+}) {
+  const q = (await searchParams) || {};
   return (
     <main>
       <section className="hero">
@@ -214,9 +222,7 @@ export default function Home() {
           done together. If India is not the honest path, we will say so and
           still mean the five dollars.
         </p>
-        <Suspense fallback={<p className="fine">Preparing enrollment…</p>}>
-          <EnrollForm />
-        </Suspense>
+          <EnrollForm error={first(q.enrollError)} sku={first(q.sku)} />
       </section>
     </main>
   );

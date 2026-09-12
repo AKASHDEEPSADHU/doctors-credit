@@ -11,9 +11,9 @@ const links = [
 export default function Nav() {
   return (
     <header className="nav">
-      <Link href="/" className="wordmark">
+      <a href="#top" className="wordmark">
         Doctor&apos;s Credit
-      </Link>
+      </a>
       <nav>
         {links.map(([href, label]) => (
           <a key={href} href={href}>

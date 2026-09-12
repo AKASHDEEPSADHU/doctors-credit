@@ -31,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${sans.variable} ${serif.variable}`}>
+      <body id="top" className={`${sans.variable} ${serif.variable}`}>
         <Nav />
         {children}
         <Footer />

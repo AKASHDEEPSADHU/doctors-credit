@@ -33,6 +33,15 @@ body {
   letter-spacing: -0.01em;
 }
 
+section {
+  padding: 6.5rem 6vw;
+  scroll-margin-top: 5.5rem;
+}
+
+#enroll {
+  padding-top: 8rem;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -81,10 +90,6 @@ a {
 
 main {
   overflow-x: hidden;
-}
-
-section {
-  padding: 6.5rem 6vw;
 }
 
 .hero {
@@ -341,7 +346,22 @@ blockquote {
   max-width: 44rem;
 }
 
-.enroll-skus button {
+.enroll-skus {
+  border: 0;
+  padding: 0;
+  margin: 0 0 0.4rem;
+}
+
+.enroll-skus legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.enroll-skus label {
+  position: relative;
   flex: 1;
   min-width: 8rem;
   text-align: left;
@@ -349,11 +369,20 @@ blockquote {
   border: 1px solid var(--line);
   background: transparent;
   cursor: pointer;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
-.enroll-skus button.on {
+.enroll-skus label:has(input:checked) {
   border-color: var(--ink);
   background: var(--paper);
+}
+
+.enroll-skus input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
 }
 
 .enroll-sku-name {
