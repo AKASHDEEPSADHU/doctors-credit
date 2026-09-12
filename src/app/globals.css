@@ -52,7 +52,7 @@ body {
 .skip {
   position: absolute;
   left: 1rem;
-  top: -4rem;
+  top: -8rem;
   background: var(--navy);
   color: #fff;
   padding: 0.5rem 0.8rem;
@@ -60,7 +60,7 @@ body {
 }
 
 .skip:focus {
-  top: 1rem;
+  top: 0.75rem;
 }
 
 .sr-only {
@@ -111,6 +111,7 @@ section {
   background: color-mix(in srgb, var(--paper) 86%, transparent);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid transparent;
+  overflow: hidden;
   transition:
     background 400ms ease,
     border-color 400ms ease,
