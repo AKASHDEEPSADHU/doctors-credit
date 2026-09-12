@@ -1,9 +1,9 @@
 type Variant = "nav" | "footer" | "mark";
 
 const SRC: Record<Variant, string> = {
-  nav: "/brand/nav.png",
-  footer: "/brand/lockup.png",
-  mark: "/brand/icon-light.png",
+  nav: "/brand/nav-transparent.png",
+  footer: "/brand/lockup-transparent.png",
+  mark: "/brand/mark-transparent.png",
 };
 
 export default function BrandLockup({
@@ -14,7 +14,7 @@ export default function BrandLockup({
   variant?: Variant;
 }) {
   const img = (
-    // Official lockups from the brand package — do not substitute type or redraw the mark.
+    // Official artwork with the plate knocked out so the page color shows through.
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={SRC[variant]}
@@ -22,7 +22,7 @@ export default function BrandLockup({
       className={`brand-img brand-img-${variant}`}
     />
   );
-  if (!href) return img;
+  if (!href) return <span className={`brand-lockup brand-lockup-${variant}`}>{img}</span>;
   return (
     <a href={href} className={`brand-lockup brand-lockup-${variant}`}>
       {img}

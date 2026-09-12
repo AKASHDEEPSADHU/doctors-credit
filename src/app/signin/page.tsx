@@ -27,9 +27,9 @@ export default async function SignInPage({
       <p className="eyebrow">Your file</p>
       <h1>Sign in before any money moves.</h1>
       <p className="lede">
-        Google holds the door. We receive your name and email, then you choose
-        Orientation, Direction, or Journey. The hospital is never in this
-        ledger.
+        Google opens the file. Then you choose a $5 assessment, an India care
+        evaluation, or complete coordination. The hospital bill never passes
+        through this ledger.
       </p>
       {message ? <p className="enroll-error">{message}</p> : null}
       {live ? (
@@ -39,9 +39,7 @@ export default async function SignInPage({
           <input type="hidden" name="next" value={next} />
           <p>
             This preview has no Google Cloud client yet. Continue as a labelled
-            demo Google account — not a real Google login. Add{" "}
-            <code>GOOGLE_CLIENT_ID</code> and <code>GOOGLE_CLIENT_SECRET</code>{" "}
-            to replace this.
+            demo Google account — not a real Google login.
           </p>
           <button className="btn-solid" type="submit">
             Continue with demo Google

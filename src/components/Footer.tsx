@@ -1,6 +1,6 @@
 import Link from "next/link";
 import BrandLockup from "@/components/BrandLockup";
-import { SITE } from "@/lib/contact";
+import { DISCLAIMER, SITE } from "@/lib/contact";
 
 export default function Footer() {
   return (
@@ -9,38 +9,50 @@ export default function Footer() {
         <div className="foot-brand">
           <BrandLockup href="/" variant="footer" />
           <p>
-            Independent Hyderabad direction for patients who have to hold a
-            diagnosis, a budget, a city, and a calendar in the same hand.
+            A US-focused medical care coordination platform. We help you
+            understand whether planned treatment in India makes sense — and we
+            will say so when it does not.
           </p>
         </div>
         <div>
-          <p className="foot-label">Visit</p>
-          <a href="/#path">The path</a>
-          <a href="/#services">Support</a>
-          <a href="/#packages">Beginnings</a>
-          <a href="/#story">The people</a>
+          <p className="foot-label">Explore</p>
+          <Link href="/how-it-works">How it works</Link>
+          <Link href="/treatments">Treatments</Link>
+          <Link href="/hospitals">Hospitals</Link>
+          <Link href="/doctors">Doctors</Link>
+          <Link href="/cost-calculator">Cost calculator</Link>
+          <Link href="/reality-check">Reality check</Link>
         </div>
         <div>
-          <p className="foot-label">File</p>
-          <Link href="/signin">Sign in with Google</Link>
-          <Link href="/account">Your file</Link>
-          <Link href="/enroll">Orientation · $5</Link>
-          <a href={`https://${SITE.domain}`}>{SITE.domain}</a>
+          <p className="foot-label">Learn</p>
+          <Link href="/research">Research</Link>
+          <Link href="/guide">Medical travel guide</Link>
+          <Link href="/stories">Patient stories</Link>
+          <Link href="/faq">FAQ</Link>
+          <Link href="/about">About</Link>
+          <Link href="/contact">Contact</Link>
         </div>
         <div>
           <p className="foot-label">Legal</p>
           <Link href="/privacy">Privacy</Link>
           <Link href="/terms">Terms</Link>
+          <Link href="/disclaimer">Medical disclaimer</Link>
+          <Link href="/refund">Refund policy</Link>
+          <Link href="/cookies">Cookies</Link>
+          <Link href="/partners">Partner disclosure</Link>
+          <Link href="/accessibility">Accessibility</Link>
+          <Link href="/emergency">Emergency information</Link>
         </div>
       </div>
       <div className="shell foot-end">
         <p className="closing">
-          We are not the palace. We are the people who have studied which rooms
-          are built for which work.
+          Sometimes the best decision is India. Sometimes it isn’t. Either way,
+          you deserve to know.
         </p>
+        <p className="fine">{DISCLAIMER}</p>
         <p className="fine">
-          Not a hospital. Not a medical practice. Not insurance. Not a lender.
-          We do not diagnose, prescribe, or take commissions from hospitals.
+          {SITE.domain} · Not a hospital · Not a physician · Not insurance · Not
+          an emergency service
         </p>
       </div>
     </footer>

@@ -4,34 +4,24 @@ export default function TermsPage() {
       <p className="eyebrow">Terms</p>
       <h1>What this service is — and is not.</h1>
       <p>
-        Doctor&apos;s Credit provides independent direction and practical
-        coordination for people considering planned care in Hyderabad, India.
-        We are not a hospital, clinic, laboratory, insurer, bank, or lender. We
-        do not diagnose, prescribe, operate, or guarantee an outcome.
-      </p>
-      <h2>Independence</h2>
-      <p>
-        We do not have tie-ups, referral contracts, or commissions with
-        hospitals. Direction toward a centre is an informed opinion about
-        fitness of facility to case, not an admission, not a medical second
-        opinion, and not a promise that a given surgeon will accept you.
+        Doctor&apos;s Credit / DCredit provides information and coordination for
+        people considering planned care in India. We are not a hospital, clinic,
+        insurer, bank or emergency service. We do not diagnose, prescribe,
+        operate or guarantee an outcome or savings figure.
       </p>
       <h2>Money</h2>
       <p>
-        Orientation is $5, after Google sign-in. Direction and Journey fees are coordination fees.
-        Hospital, pharmacy, device, travel, and visa charges are paid to those
-        vendors. Refunds for coordination are considered when we have not yet
-        begun the work of that package; clinical events are outside our ledger.
+        The $5 assessment follows Google sign-in. Evaluation and journey fees are
+        coordination fees. Hospital, pharmacy, travel and visa charges are paid
+        to those vendors.
       </p>
-      <h2>WhatsApp</h2>
+      <h2>Partnerships</h2>
       <p>
-        Messaging is a convenience, not a clinical hotline, and not for
-        emergencies. If you are in danger, use local emergency services.
+        Some providers may compensate DCredit for coordination or referral
+        services. Where applicable, that will be disclosed.
       </p>
-      <p className="fine">
-        Governing details and a formal agreement will be issued with Journey
-        work. Until then, this page is the honest frame.
-      </p>
+      <h2>Emergencies</h2>
+      <p>If you are in danger, use local emergency services. In the US, call 911.</p>
     </main>
   );
 }

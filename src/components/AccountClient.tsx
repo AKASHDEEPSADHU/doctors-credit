@@ -12,6 +12,8 @@ type Ledger = {
     phone: string;
     country: string;
     createdAt: string;
+    publicId?: string;
+    verifyCode?: string;
   };
   orders: {
     id: string;
@@ -78,7 +80,7 @@ export default function AccountClient() {
         </p>
         <GoogleButton next="/account" label="Continue with Google" />
         <p className="fine">
-          No file yet? <Link href="/enroll">Begin Orientation — $5</Link>
+          No file yet? <Link href="/enroll">Start a $5 assessment</Link>
         </p>
       </div>
     );
@@ -90,8 +92,9 @@ export default function AccountClient() {
     <div className="account">
       {params.get("welcome") ? (
         <p className="welcome">
-          You are in. This is your Doctor&apos;s Credit file — quiet, private,
-          and only about the path you asked us to walk.
+          You are in. This is your DCredit file. Use your verification code only
+          to confirm a message is genuinely from us — never to share passwords or
+          bank codes.
         </p>
       ) : null}
       <header className="account-head">
@@ -103,6 +106,18 @@ export default function AccountClient() {
             {data.patient.phone ? ` · ${data.patient.phone}` : ""}
             {data.patient.country ? ` · ${data.patient.country}` : ""}
           </p>
+          {data.patient.publicId ? (
+            <div className="codes">
+              <div>
+                <span className="tag">Patient ID</span>
+                <strong>{data.patient.publicId}</strong>
+              </div>
+              <div>
+                <span className="tag">Verification code</span>
+                <strong>{data.patient.verifyCode}</strong>
+              </div>
+            </div>
+          ) : null}
         </div>
         <button className="btn-ghost" type="button" onClick={logout}>
           Sign out
@@ -111,7 +126,7 @@ export default function AccountClient() {
 
       {unpaid ? (
         <p className="fine">
-          Signed in, not yet begun. <Link href="/enroll">Continue to Orientation — $5</Link>
+          Signed in, not yet begun. <Link href="/enroll">Continue to the $5 assessment</Link>
         </p>
       ) : null}
 

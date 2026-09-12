@@ -5,11 +5,12 @@ import Link from "next/link";
 import BrandLockup from "@/components/BrandLockup";
 
 const links = [
-  ["/#path", "The path"],
-  ["/#services", "Support"],
-  ["/#packages", "Beginnings"],
-  ["/#story", "The people"],
-  ["/enroll", "Orientation"],
+  ["/how-it-works", "How it works"],
+  ["/treatments", "Treatments"],
+  ["/hospitals", "Hospitals"],
+  ["/cost-calculator", "Cost calculator"],
+  ["/research", "Research"],
+  ["/about", "About"],
 ];
 
 export default function Nav({ signedIn }: { signedIn: boolean }) {
@@ -18,7 +19,7 @@ export default function Nav({ signedIn }: { signedIn: boolean }) {
   const panelId = useId();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 16);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -41,15 +42,15 @@ export default function Nav({ signedIn }: { signedIn: boolean }) {
       <a className="skip" href="#main">
         Skip to content
       </a>
-      <BrandLockup href="/#top" variant="nav" />
+      <BrandLockup href="/" variant="nav" />
       <nav className="nav-desktop" aria-label="Primary">
         {links.map(([href, label]) => (
-          <a key={href} href={href}>
+          <Link key={href} href={href}>
             {label}
-          </a>
+          </Link>
         ))}
-        <Link className="nav-cta" href={signedIn ? "/account" : "/signin?next=%2Faccount"}>
-          {signedIn ? "Your file" : "Sign in"}
+        <Link className="nav-cta" href="/enroll">
+          Start my $5 assessment
         </Link>
       </nav>
       <button
@@ -63,25 +64,18 @@ export default function Nav({ signedIn }: { signedIn: boolean }) {
         <span className={open ? "nav-toggle-bars is-open" : "nav-toggle-bars"} />
       </button>
       {open ? (
-        <div
-          id={panelId}
-          className="nav-overlay"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Menu"
-        >
+        <div id={panelId} className="nav-overlay" role="dialog" aria-modal="true" aria-label="Menu">
           <div className="nav-overlay-inner">
             {links.map(([href, label]) => (
-              <a key={href} href={href} onClick={() => setOpen(false)}>
+              <Link key={href} href={href} onClick={() => setOpen(false)}>
                 {label}
-              </a>
+              </Link>
             ))}
-            <Link
-              className="btn-solid"
-              href={signedIn ? "/account" : "/signin?next=%2Faccount"}
-              onClick={() => setOpen(false)}
-            >
-              {signedIn ? "Your file" : "Sign in with Google"}
+            <Link className="btn-solid" href="/enroll" onClick={() => setOpen(false)}>
+              Start my $5 assessment
+            </Link>
+            <Link href={signedIn ? "/account" : "/signin?next=%2Faccount"} onClick={() => setOpen(false)}>
+              {signedIn ? "Your file" : "Sign in"}
             </Link>
           </div>
         </div>

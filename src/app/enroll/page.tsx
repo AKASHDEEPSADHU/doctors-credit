@@ -15,15 +15,16 @@ export default async function EnrollPage({
   const session = await getSession();
   const patient = session ? getPatientById(session.patientId) : null;
   return (
-    <main id="main" className="band-close enroll-page">
+    <main id="main" className="enroll-page">
       <div className="shell enroll-layout">
         <div>
-          <p className="eyebrow gold">Orientation</p>
-          <h2>Five dollars so the first conversation is real.</h2>
-          <p className="section-lede on-dark">
-            Sign in with Google. Then pay. You receive a file: payments, orders,
-            the history of what we have done together. If India is not the honest
-            path, we will say so and still mean the five dollars.
+          <p className="eyebrow">$5 initial care assessment</p>
+          <h2>For $5, understand whether India even belongs in the conversation.</h2>
+          <p className="section-lede">
+            Sign in with Google. Then pay. You receive a patient file, a unique
+            DCredit ID, and a verification code for genuine communication. We
+            will never ask for passwords, banking credentials or one-time
+            authentication codes.
           </p>
         </div>
         <EnrollForm

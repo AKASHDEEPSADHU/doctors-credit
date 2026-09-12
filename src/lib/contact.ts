@@ -14,16 +14,19 @@ export const WHATSAPP_E164 =
 export function whatsappHref(prefill?: string) {
   const text = encodeURIComponent(
     prefill ||
-      "Hello — I would like an independent orientation for treatment in Hyderabad."
+      "Hello — I would like a $5 DCredit care assessment to understand whether planned treatment in India may make sense for me."
   );
   return `https://wa.me/${WHATSAPP_E164}?text=${text}`;
 }
 
 export const SITE = {
   name: "Doctor's Credit",
+  short: "DCredit",
   domain: "dcredit.in",
   city: "Hyderabad",
-  tagline: "Independent direction. Hyderabad care.",
+  tagline: "Know your options before you decide.",
+  promise: "We help you understand whether treatment in India makes sense for YOU.",
+  email: "care@dcredit.in",
   founders: {
     him: {
       name: "Akashdeep Sadhu",
@@ -40,3 +43,6 @@ export const SITE = {
     },
   },
 } as const;
+
+export const DISCLAIMER =
+  "DCredit is a healthcare coordination and information platform. We are not a hospital, physician, insurer or emergency medical service. Information provided through this website is for educational and coordination purposes and does not constitute medical advice, diagnosis or treatment. Treatment decisions must be made between you and qualified healthcare professionals. Costs, availability, treatment plans, outcomes and travel requirements vary by patient and provider. No medical outcome or savings are guaranteed. Always consult your US healthcare provider and insurance company before making decisions about international medical treatment.";

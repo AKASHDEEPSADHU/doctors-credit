@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { createHash, randomUUID } from "crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
 
@@ -12,6 +12,14 @@ export type Patient = {
   googleSub?: string;
   stripeCustomerId?: string;
 };
+
+export function patientCodes(patientId: string) {
+  const digest = createHash("sha256").update(patientId).digest("hex").toUpperCase();
+  return {
+    publicId: `DC-${digest.slice(0, 6)}`,
+    verifyCode: digest.slice(6, 11),
+  };
+}
 
 export type Order = {
   id: string;

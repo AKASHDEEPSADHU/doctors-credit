@@ -1,272 +1,330 @@
-import EnrollForm from "@/components/EnrollForm";
-import Founders from "@/components/Founders";
-import HeroArt from "@/components/HeroArt";
+import Link from "next/link";
+import CostCalculator from "@/components/CostCalculator";
+import RealityCheck from "@/components/RealityCheck";
 import Reveal from "@/components/Reveal";
-import ServicesRail from "@/components/ServicesRail";
-import WhyDoctorsCredit from "@/components/WhyDoctorsCredit";
 import { PACKAGES } from "@/lib/packages";
-import { SITE } from "@/lib/contact";
-import { getSession } from "@/lib/session";
-import { getPatientById } from "@/lib/store";
+import { FAQS } from "@/lib/faq";
+import { JOURNEY, PROTECT, TRUST_PILLARS } from "@/lib/journey";
+import { INDIA_STATS, SOURCES } from "@/lib/sources";
+import { TREATMENTS } from "@/lib/treatments";
 
-const tensions = [
-  {
-    k: "01",
-    t: "The condition",
-    d: "A new diagnosis arrives in language that is not yours. You need it in human words before you can choose anything else.",
-  },
-  {
-    k: "02",
-    t: "The money",
-    d: "Sticker prices at home are not what you actually pay. Sticker prices abroad are not the journey. We count both.",
-  },
-  {
-    k: "03",
-    t: "The place",
-    d: "Hyderabad has many excellent rooms. They are not interchangeable. The right theatre for a knee is not the right theatre for a valve.",
-  },
-  {
-    k: "04",
-    t: "The time",
-    d: "Some things can wait. Some cannot. Flying too soon and waiting too long are both a kind of harm.",
-  },
-];
+const featured = TREATMENTS.filter((t) =>
+  ["knee-replacement", "ivf", "dental-implants", "cabg", "cataract", "hip-replacement"].includes(
+    t.slug
+  )
+);
 
-const steps = [
-  [
-    "Sign in",
-    "Google opens the file. Nothing is charged until you choose a beginning.",
-  ],
-  [
-    "We listen to the case",
-    "Not to sell a package. To see whether direction here is honest.",
-  ],
-  [
-    "A map, then a door",
-    "Which kind of hospital, what to ask, what it costs, when to fly.",
-  ],
-  [
-    "You choose the clinician",
-    "We do not book you into a contracted theatre. You walk in with your eyes open.",
-  ],
-];
-
-const faqs = [
-  [
-    "Are you a hospital?",
-    "No. We are an independent direction service. You pay the hospital yourself. We are not on their payroll.",
-  ],
-  [
-    "Why Google, and why five dollars?",
-    "Google signs the file to you before money moves. Five dollars is Orientation: a first conversation, and a written reading of where you stand. If India is the wrong answer, we say so.",
-  ],
-  [
-    "Who is this for?",
-    "Families in the United States, Canada, Europe, New Zealand, and Australia. We are not a neighbourhood clinic for Hyderabad.",
-  ],
-  [
-    "Do you take a commission on surgery?",
-    "No. No tie-ups, no steered list, no markup on clinical care. Direction is an opinion about fitness of facility to case.",
-  ],
-];
-
-function first(v: string | string[] | undefined) {
-  return Array.isArray(v) ? v[0] : v;
-}
-
-export default async function Home({
-  searchParams,
-}: {
-  searchParams?: Promise<{ sku?: string | string[]; enrollError?: string | string[] }>;
-}) {
-  const q = (await searchParams) || {};
-  const session = await getSession();
-  const patient = session ? getPatientById(session.patientId) : null;
-
+export default function Home() {
   return (
     <main id="main">
       <section className="hero">
         <div className="shell hero-grid">
           <div className="hero-copy">
-            <p className="eyebrow hero-kicker">Hyderabad · Independent · Far from home</p>
-            <h1>
-              When the diagnosis is new,
-              <br />
-              everything else arrives at once.
-            </h1>
+            <p className="eyebrow">US patients · Planned care · India options</p>
+            <h1>Could India be the smarter choice for your planned treatment?</h1>
             <p className="lede">
-              Money. The right treatment. The right room in {SITE.city}. The right
-              week to go. {SITE.name} is a direction service for families in the
-              United States, Canada, Europe, New Zealand, and Australia — who
-              will not be steered by a hospital&apos;s contract.
+              DCredit helps US patients compare the real cost, medical options,
+              timeline and logistics of receiving planned treatment in India —
+              before making a decision.
             </p>
             <div className="hero-actions">
-              <a className="btn-solid" href="/enroll">
-                Begin orientation · $5
-              </a>
-              <a className="btn-ghost" href="#independence">
-                How we stay independent
+              <Link className="btn-solid" href="/enroll">
+                Start my $5 consultation
+              </Link>
+              <a className="btn-ghost" href="#how">
+                See how it works
               </a>
             </div>
+            <p className="trust-mini">
+              Independent decision support. Transparent costs. Coordinated care.
+            </p>
           </div>
           <div className="hero-visual">
-            <HeroArt />
+            <p className="eyebrow">The journey we actually map</p>
+            <ul className="path-rail">
+              <li>USA</li>
+              <li>Clinical review</li>
+              <li>India specialist</li>
+              <li>Treatment</li>
+              <li>Recovery</li>
+              <li>USA</li>
+            </ul>
+            <p className="section-lede" style={{ marginTop: "1.4rem" }}>
+              We do not begin by selling an Indian hospital. We begin by
+              understanding your situation — and we will not recommend India
+              simply because treatment is cheaper.
+            </p>
           </div>
         </div>
       </section>
 
       <p className="trust-line">
-        <span>No hospital tie-ups</span>
-        <span>No commissions</span>
-        <span>Google sign-in before payment</span>
-        <span>Hyderabad, known — not sold</span>
+        <span>Not a hospital</span>
+        <span>Not a diagnosis</span>
+        <span>No guaranteed savings</span>
+        <span>No emergency care</span>
       </p>
 
-      <section id="path">
+      <section>
         <div className="shell split">
           <Reveal>
-            <p className="eyebrow">The four weights</p>
-            <h2>Care is not only clinical.</h2>
+            <p className="eyebrow">The problem</p>
+            <h2>Healthcare shouldn’t be a financial mystery.</h2>
           </Reveal>
-          <p className="section-lede">
-            A person who has never met this illness before is asked, in the same
-            fortnight, to become a student of medicine, a treasurer, a travel
-            agent, and a judge of hospitals. That is not a character test. It is
-            a design failure. We exist for that fortnight.
-          </p>
-        </div>
-        <div className="shell weights">
-          {tensions.map((x) => (
-            <article key={x.k}>
-              <span>{x.k}</span>
-              <h3>{x.t}</h3>
-              <p>{x.d}</p>
-            </article>
-          ))}
+          <Reveal>
+            <p className="section-lede">
+              A US hospital price is not what you pay. An India hospital quote is
+              not the journey. We compare estimated US patient responsibility
+              against the complete India journey — flights, visa, stay,
+              companion costs and follow-up — then tell you if the trip is even
+              worth discussing.
+            </p>
+          </Reveal>
         </div>
       </section>
 
-      <section id="independence" className="band-maroon">
-        <div className="shell">
-          <p className="eyebrow gold">Independence</p>
-          <h2>We do not have a tie-up with any hospital.</h2>
-          <p className="section-lede on-dark">
-            That sentence is the product. A tied desk will walk you toward a
-            contract. We keep a working understanding of which Hyderabad centres
-            are strong for which work — cardiac, oncology, orthopaedics,
-            fertility, transplants, complex medicine — and we point you toward
-            the facility that fits the case. You pay the hospital yourself.
-          </p>
-          <blockquote>
-            We are not the best hospital in Hyderabad. We are the people who have
-            studied which rooms are built for which work, so you do not have to
-            learn that from a brochure at 2 a.m.
-          </blockquote>
-        </div>
-      </section>
-
-      <section id="services">
+      <section className="band-soft" id="calculator">
         <div className="shell split">
           <div>
-            <p className="eyebrow">Coordinated support</p>
-            <h2>What we actually do.</h2>
+            <p className="eyebrow">Don’t compare hospital bills</p>
+            <h2>Compare your real cost.</h2>
+            <p className="section-lede">
+              If your US exposure is $5,500 and the India journey is $7,500,
+              India may not save you money. That’s exactly why DCredit exists.
+            </p>
           </div>
-          <p className="section-lede">
-            Not a tour. Not a package holiday with a surgeon attached. Six
-            capacities, used only as the case requires.
-          </p>
-        </div>
-        <div className="shell">
-          <ServicesRail />
+          <CostCalculator />
         </div>
       </section>
 
-      <section id="method" className="band-walnut">
-        <div className="shell">
-          <p className="eyebrow">Sequence</p>
-          <h2>A quiet order.</h2>
-          <ol className="steps">
-            {steps.map(([t, d], i) => (
-              <li key={t}>
-                <span>0{i + 1}</span>
+      <section id="how">
+        <div className="shell split">
+          <div>
+            <p className="eyebrow">How DCredit works</p>
+            <h2>A structured decision. Not a sales pitch.</h2>
+            <p className="section-lede">
+              For $5, speak with a care coordinator who will understand your
+              treatment need, insurance situation, timeline and goals.
+            </p>
+            <Link className="btn-solid" href="/how-it-works">
+              Full 7-step journey
+            </Link>
+          </div>
+          <div className="steps">
+            {JOURNEY.map((s) => (
+              <article className="step" key={s.n}>
+                <span>{s.n}</span>
                 <div>
-                  <h3>{t}</h3>
-                  <p>{d}</p>
+                  <strong>{s.title}</strong>
+                  <p className="muted">{s.body}</p>
                 </div>
-              </li>
+              </article>
             ))}
-          </ol>
+          </div>
         </div>
       </section>
 
-      <section id="packages">
-        <div className="shell">
-          <p className="eyebrow">Beginnings</p>
-          <h2>Three ways in. Hospital care is never inside the price.</h2>
-        </div>
-        <div className="shell packages">
-          {PACKAGES.map((p) => (
-            <article key={p.sku} className={p.featured ? "featured" : undefined}>
-              <header>
-                <p className="pkg-name">{p.name}</p>
-                <p className="pkg-price">{p.priceLabel}</p>
-              </header>
-              <p>{p.blurb}</p>
-              <ul>
-                {p.includes.map((i) => (
-                  <li key={i}>{i}</li>
-                ))}
-              </ul>
-              <p className="pkg-note">{p.note}</p>
-              <a className="text-link" href={`/enroll?sku=${p.sku}`}>
-                Choose {p.name}
-              </a>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section id="story">
+      <section className="band-soft">
         <div className="shell split">
           <div>
-            <p className="eyebrow">The people</p>
-            <h2>A couple, a city, a refusal to sell you a theatre.</h2>
+            <p className="eyebrow">Why patients look abroad</p>
+            <h2>Why patients consider India.</h2>
           </div>
           <div>
             <p className="section-lede">
-              We are {SITE.founders.him.name} and his wife — co-founders of{" "}
-              {SITE.name}. We have sat with families who were intelligent,
-              devout, and one PDF away from the wrong door. The fear is not only
-              the illness. It is choosing, while you are still learning the
-              words, among money you may not have, a treatment you do not yet
-              understand, a hospital you cannot walk through, and a date that
-              will not wait.
+              High deductibles. Limited dental or fertility coverage. Cash prices
+              that do not match billed charges. Sometimes access and scheduling
+              matter as much as money. Appointment availability varies by
+              hospital, doctor, procedure and condition — we do not claim zero
+              waiting time.
             </p>
             <p className="section-lede">
-              Hyderabad is our ground. Not because it is fashionable, but
-              because we know its campuses well enough to tell you who is built
-              for what — without owing any of them your case. Portraits will sit
-              here when we send them.
+              We will not recommend India simply because treatment is cheaper.
             </p>
           </div>
         </div>
-        <div className="shell">
-          <Founders />
+      </section>
+
+      <section className="band-navy">
+        <div className="shell split">
+          <div>
+            <p className="eyebrow">Honesty</p>
+            <h2>But India isn’t always the answer.</h2>
+          </div>
+          <div>
+            <p>
+              Stay in the US when the real math, the medicine, or the travel risk
+              says so. Emergencies, unstable cardiac conditions, urgent stroke,
+              acute trauma, and cases where long-distance travel is unsafe are
+              not DCredit pathways.
+            </p>
+            <p>Sometimes the right answer is India. Sometimes it isn’t. We’ll tell you which.</p>
+          </div>
         </div>
       </section>
 
-      <WhyDoctorsCredit />
+      <section>
+        <div className="shell split">
+          <div>
+            <p className="eyebrow">Quality</p>
+            <h2>Lower cost does not have to mean lower standards.</h2>
+            <p className="section-lede">
+              India has major tertiary-care hospitals with internationally
+              recognized accreditation systems and highly specialized clinicians.
+              DCredit evaluates healthcare providers individually. We never claim
+              that all Indian hospitals are world-class.
+            </p>
+          </div>
+          <div>
+            <p>
+              <strong>NABH</strong> is an independent accreditation framework
+              focused on healthcare quality and patient safety, covering patient
+              rights, infection control, medication management and quality
+              improvement. Source: {SOURCES.nabh.publisher}. Accreditation is not
+              a guarantee of outcome.
+            </p>
+            <p className="muted">
+              Where JCI, bed counts, ICU capability or procedure volume are
+              published, they are labeled by source. We do not invent
+              accreditation.
+            </p>
+            <Link href="/hospitals">How we verify hospitals →</Link>
+          </div>
+        </div>
+      </section>
 
-      <section id="faq" className="band-paper">
-        <div className="shell faq-grid">
+      <section className="band-soft">
+        <div className="shell">
+          <p className="eyebrow">Treatments</p>
+          <h2>Where India may make the most sense.</h2>
+          <div className="treat-grid">
+            {featured.map((t) => (
+              <Link className="treat-card" href={`/treatments/${t.slug}`} key={t.slug}>
+                <small>{t.category}</small>
+                <h3>{t.name}</h3>
+                <p className="muted">{t.why}</p>
+                <span
+                  className={
+                    t.suitability === "YES"
+                      ? "flag flag-yes"
+                      : t.suitability === "POSSIBLY"
+                        ? "flag flag-maybe"
+                        : "flag flag-no"
+                  }
+                >
+                  Medical travel: {t.suitability}
+                </span>
+              </Link>
+            ))}
+          </div>
+          <p style={{ marginTop: "1.5rem" }}>
+            <Link href="/treatments">All treatments →</Link>
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <div className="shell split">
+          <div>
+            <p className="eyebrow">Hospitals</p>
+            <h2>We verify before we publish.</h2>
+          </div>
+          <div>
+            <p className="section-lede">
+              Profiles appear only after accreditation and key facts are checked
+              against official sources. Until then, we will not populate a
+              directory with invented names, logos or outcomes.
+            </p>
+            <Link href="/hospitals">Hospital verification →</Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="band-soft">
+        <div className="shell split">
+          <div>
+            <p className="eyebrow">Return-home plan</p>
+            <h2>Your journey doesn’t end when you leave India.</h2>
+          </div>
+          <div>
+            <p className="section-lede">
+              Discharge summary, operative notes, medications, imaging, labs,
+              follow-up schedule, warning signs and recommended US review —
+              packed so a US clinician can continue care. DCredit does not itself
+              provide US medical treatment.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="reality">
+        <div className="shell split">
+          <div>
+            <p className="eyebrow">DCredit Reality Check</p>
+            <h2>Green, yellow, or red — not a diagnosis.</h2>
+            <ul className="protect">
+              {PROTECT.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+          <RealityCheck />
+        </div>
+      </section>
+
+      <section className="band-soft">
+        <div className="shell">
+          <p className="eyebrow">Medical travel intelligence</p>
+          <h2>Data, with sources.</h2>
+          <div className="stat-row">
+            <div>
+              <strong>{INDIA_STATS.medicalPurpose2025}</strong>
+              <p>Foreign medical-purpose arrivals to India in 2025. Not a US-patient count.</p>
+            </div>
+            <div>
+              <strong>{INDIA_STATS.fta2025}</strong>
+              <p>Total foreign tourist arrivals. Medical-purpose share {INDIA_STATS.medicalShare}.</p>
+            </div>
+            <div>
+              <strong>CDC</strong>
+              <p>
+                US residents do travel abroad for medical care — with real risks
+                DCredit exists to help coordinate, not to erase.
+              </p>
+            </div>
+          </div>
+          <p className="source">
+            India figures: {SOURCES.indiaMedicalArrivals2025.publisher}. Last
+            verified {SOURCES.indiaMedicalArrivals2025.verified}.{" "}
+            <Link href="/research">Research notes →</Link>
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <div className="shell split">
+          <div>
+            <p className="eyebrow">Patient stories</p>
+            <h2>DCredit stories coming soon.</h2>
+          </div>
+          <p className="section-lede">
+            We do not publish fictional patients or fabricated testimonials.
+            Verified stories, with permission, will appear here.
+          </p>
+        </div>
+      </section>
+
+      <section className="band-soft" id="faq">
+        <div className="shell split">
           <div>
             <p className="eyebrow">Questions</p>
-            <h2>Said plainly.</h2>
+            <h2>Asked plainly.</h2>
+            <Link href="/faq">All questions →</Link>
           </div>
           <div className="faq">
-            {faqs.map(([qst, a]) => (
-              <details key={qst}>
-                <summary>{qst}</summary>
+            {FAQS.slice(0, 8).map(([q, a]) => (
+              <details key={q}>
+                <summary>{q}</summary>
                 <p>{a}</p>
               </details>
             ))}
@@ -274,22 +332,47 @@ export default async function Home({
         </div>
       </section>
 
-      <section id="enroll" className="band-close">
-        <div className="shell enroll-layout">
+      <section>
+        <div className="shell split">
           <div>
-            <p className="eyebrow gold">Orientation</p>
-            <h2>Five dollars so the first conversation is real.</h2>
-            <p className="section-lede on-dark">
-              Sign in with Google. Then pay. You receive a file: payments,
-              orders, the history of what we have done together. If India is not
-              the honest path, we will say so and still mean the five dollars.
+            <p className="eyebrow">Begin</p>
+            <h2>Your health. Your money. Your decision.</h2>
+            <p className="section-lede">
+              DCredit gives you the information, medical coordination and support
+              to make that decision with confidence.
             </p>
+            <div className="hero-actions">
+              <Link className="btn-solid" href="/enroll">
+                Start my $5 assessment
+              </Link>
+              <Link className="btn-ghost" href="/reality-check">
+                See if India makes sense for me
+              </Link>
+            </div>
           </div>
-          <EnrollForm
-            patient={patient}
-            sku={first(q.sku)}
-            error={first(q.enrollError)}
-          />
+          <div className="treat-grid" style={{ gridTemplateColumns: "1fr" }}>
+            {PACKAGES.map((p) => (
+              <article className="treat-card" key={p.sku}>
+                <small>{p.priceLabel}</small>
+                <h3>{p.name}</h3>
+                <p className="muted">{p.blurb}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div className="shell">
+          <p className="eyebrow">Why trust DCredit?</p>
+          <div className="pillars">
+            {TRUST_PILLARS.map((p) => (
+              <article key={p.t}>
+                <h3>{p.t}</h3>
+                <p>{p.d}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
     </main>

@@ -4,39 +4,26 @@ export default function PrivacyPage() {
       <p className="eyebrow">Privacy</p>
       <h1>How we hold what you tell us.</h1>
       <p>
-        Doctor&apos;s Credit is a care-direction service, not a hospital and not
-        a consumer finance app. We collect only what a first conversation
-        needs: name, email, phone, country, and the notes you choose to send
-        about a condition.
+        DCredit is a care-coordination platform, not a hospital. We collect what
+        an assessment needs: name, email, optional phone and country, and the
+        records you choose to send.
       </p>
       <h2>What we collect</h2>
       <p>
-        Enrollment details, Google sign-in (name and email), Orientation and later
-        package payments (processed by Stripe), order history in your file, and
-        messages you send on WhatsApp or email. We do not connect your bank. We
-        do not run ads against your file.
+        Google sign-in (name and email), package payments processed by Stripe,
+        order history, and messages you send. We do not put medical records in
+        URLs. We do not log medical details unnecessarily.
       </p>
-      <h2>What we do not do</h2>
+      <h2>HIPAA</h2>
       <p>
-        We do not sell data. We do not have hospital tie-ups, so we do not
-        pass your case to a contracted theatre for a fee. If a specialist must
-        see records, that is your choice, named, and as little as the case
-        requires.
-      </p>
-      <h2>Google</h2>
-      <p>
-        You sign in with Google before any package is paid. We store the Google
-        subject identifier, your name, and your email so the file stays attached
-        to you. We do not post to your Google account or read your mail.
+        This website does not claim HIPAA compliance unless and until that
+        program is fully implemented and maintained for the relevant workflows.
       </p>
       <h2>Your file</h2>
       <p>
-        After the $5 Orientation you may see payments and orders at /account.
-        Ask us to close the file and we will stop using it for coordination.
-      </p>
-      <p className="fine">
-        This is a product notice, not formal legal advice. A fuller notice will
-        follow as the service takes on clinical documents.
+        After the $5 assessment you may see payments, a patient ID and a
+        verification code at /account. Ask us to close the file and we will stop
+        using it for coordination.
       </p>
     </main>
   );

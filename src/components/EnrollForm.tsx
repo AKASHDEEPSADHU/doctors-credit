@@ -28,9 +28,9 @@ export default function EnrollForm({
       <div className="gate">
         {error ? <p className="enroll-error">{error}</p> : null}
         <p className="gate-copy">
-          Sign in with Google before any money moves. The account is yours; the
-          hospital bill never passes through it.
-        </p>
+        Sign in with Google before any money moves. The account is yours; the
+        hospital bill never passes through it.
+      </p>
         <a
           className="btn-google"
           href={`/signin?next=${encodeURIComponent(sku ? `/enroll?sku=${sku}` : "/enroll")}`}

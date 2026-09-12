@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
-import { getPatientById, patientLedger } from "@/lib/store";
+import { getPatientById, patientCodes, patientLedger } from "@/lib/store";
 
 export async function GET() {
   const session = await getSession();
@@ -12,9 +12,12 @@ export async function GET() {
     return NextResponse.json({ patient: null }, { status: 401 });
   }
   const ledger = patientLedger(patient.id);
+  const codes = patientCodes(patient.id);
   return NextResponse.json({
     patient: {
       id: patient.id,
+      publicId: codes.publicId,
+      verifyCode: codes.verifyCode,
       name: patient.name,
       email: patient.email,
       phone: patient.phone,
