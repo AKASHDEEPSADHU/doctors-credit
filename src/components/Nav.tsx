@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useState } from "react";
 import Link from "next/link";
+import BrandLockup from "@/components/BrandLockup";
 
 const links = [
   ["/#path", "The path"],
@@ -40,9 +41,7 @@ export default function Nav({ signedIn }: { signedIn: boolean }) {
       <a className="skip" href="#main">
         Skip to content
       </a>
-      <a href="/#top" className="wordmark">
-        Doctor&apos;s Credit
-      </a>
+      <BrandLockup href="/#top" variant="nav" />
       <nav className="nav-desktop" aria-label="Primary">
         {links.map(([href, label]) => (
           <a key={href} href={href}>

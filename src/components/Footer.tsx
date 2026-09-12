@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BrandLockup from "@/components/BrandLockup";
 import { SITE } from "@/lib/contact";
 
 export default function Footer() {
@@ -6,7 +7,7 @@ export default function Footer() {
     <footer className="site-foot">
       <div className="shell foot-grid">
         <div className="foot-brand">
-          <p className="wordmark">Doctor&apos;s Credit</p>
+          <BrandLockup href="/" variant="footer" />
           <p>
             Independent Hyderabad direction for patients who have to hold a
             diagnosis, a budget, a city, and a calendar in the same hand.
