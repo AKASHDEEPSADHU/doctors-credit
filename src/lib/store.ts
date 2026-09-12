@@ -9,6 +9,7 @@ export type Patient = {
   phone: string;
   country: string;
   createdAt: string;
+  googleSub?: string;
   stripeCustomerId?: string;
 };
 
@@ -60,28 +61,34 @@ function save(db: DB) {
 export function upsertPatient(input: {
   email: string;
   name: string;
-  phone: string;
-  country: string;
+  phone?: string;
+  country?: string;
+  googleSub?: string;
   stripeCustomerId?: string;
 }): Patient {
   const db = load();
   const email = input.email.trim().toLowerCase();
-  let patient = db.patients.find((p) => p.email === email);
+  let patient = db.patients.find(
+    (p) => p.email === email || (input.googleSub && p.googleSub === input.googleSub)
+  );
   if (!patient) {
     patient = {
       id: randomUUID(),
       email,
       name: input.name.trim(),
-      phone: input.phone.trim(),
-      country: input.country.trim(),
+      phone: (input.phone || "").trim(),
+      country: (input.country || "").trim(),
       createdAt: new Date().toISOString(),
+      googleSub: input.googleSub,
       stripeCustomerId: input.stripeCustomerId,
     };
     db.patients.push(patient);
   } else {
+    patient.email = email || patient.email;
     patient.name = input.name.trim() || patient.name;
-    patient.phone = input.phone.trim() || patient.phone;
-    patient.country = input.country.trim() || patient.country;
+    if (input.phone) patient.phone = input.phone.trim();
+    if (input.country) patient.country = input.country.trim();
+    if (input.googleSub) patient.googleSub = input.googleSub;
     if (input.stripeCustomerId) patient.stripeCustomerId = input.stripeCustomerId;
   }
   save(db);

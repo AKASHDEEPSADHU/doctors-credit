@@ -1,6 +1,6 @@
 export default function TermsPage() {
   return (
-    <main className="legal">
+    <main id="main" className="legal">
       <p className="eyebrow">Terms</p>
       <h1>What this service is — and is not.</h1>
       <p>
@@ -18,7 +18,7 @@ export default function TermsPage() {
       </p>
       <h2>Money</h2>
       <p>
-        Orientation is $5. Direction and Journey fees are coordination fees.
+        Orientation is $5, after Google sign-in. Direction and Journey fees are coordination fees.
         Hospital, pharmacy, device, travel, and visa charges are paid to those
         vendors. Refunds for coordination are considered when we have not yet
         begun the work of that package; clinical events are outside our ledger.

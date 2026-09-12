@@ -1,6 +1,6 @@
 export default function PrivacyPage() {
   return (
-    <main className="legal">
+    <main id="main" className="legal">
       <p className="eyebrow">Privacy</p>
       <h1>How we hold what you tell us.</h1>
       <p>
@@ -11,10 +11,10 @@ export default function PrivacyPage() {
       </p>
       <h2>What we collect</h2>
       <p>
-        Enrollment details, Orientation and later package payments (processed
-        by Stripe), order history in your file, and messages you send on
-        WhatsApp or email. We do not connect your bank. We do not run ads
-        against your file.
+        Enrollment details, Google sign-in (name and email), Orientation and later
+        package payments (processed by Stripe), order history in your file, and
+        messages you send on WhatsApp or email. We do not connect your bank. We
+        do not run ads against your file.
       </p>
       <h2>What we do not do</h2>
       <p>
@@ -22,6 +22,12 @@ export default function PrivacyPage() {
         pass your case to a contracted theatre for a fee. If a specialist must
         see records, that is your choice, named, and as little as the case
         requires.
+      </p>
+      <h2>Google</h2>
+      <p>
+        You sign in with Google before any package is paid. We store the Google
+        subject identifier, your name, and your email so the file stays attached
+        to you. We do not post to your Google account or read your mail.
       </p>
       <h2>Your file</h2>
       <p>

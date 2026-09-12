@@ -1,29 +1,92 @@
+"use client";
+
+import { useEffect, useId, useState } from "react";
 import Link from "next/link";
 
 const links = [
-  ["#path", "The path"],
-  ["#services", "Support"],
-  ["#packages", "Beginnings"],
-  ["#story", "Our story"],
-  ["#enroll", "Orientation"],
+  ["/#path", "The path"],
+  ["/#services", "Support"],
+  ["/#packages", "Beginnings"],
+  ["/#story", "The people"],
+  ["/#enroll", "Orientation"],
 ];
 
-export default function Nav() {
+export default function Nav({ signedIn }: { signedIn: boolean }) {
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  const panelId = useId();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
   return (
-    <header className="nav">
-      <a href="#top" className="wordmark">
+    <header className={scrolled ? "nav is-scrolled" : "nav"}>
+      <a className="skip" href="#main">
+        Skip to content
+      </a>
+      <a href="/#top" className="wordmark">
         Doctor&apos;s Credit
       </a>
-      <nav>
+      <nav className="nav-desktop" aria-label="Primary">
         {links.map(([href, label]) => (
           <a key={href} href={href}>
             {label}
           </a>
         ))}
-        <Link href="/account" className="nav-file">
-          Your file
+        <Link className="nav-cta" href={signedIn ? "/account" : "/signin?next=%2Faccount"}>
+          {signedIn ? "Your file" : "Sign in"}
         </Link>
       </nav>
+      <button
+        className="nav-toggle"
+        type="button"
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
+        <span className={open ? "nav-toggle-bars is-open" : "nav-toggle-bars"} />
+      </button>
+      {open ? (
+        <div
+          id={panelId}
+          className="nav-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu"
+        >
+          <div className="nav-overlay-inner">
+            {links.map(([href, label]) => (
+              <a key={href} href={href} onClick={() => setOpen(false)}>
+                {label}
+              </a>
+            ))}
+            <Link
+              className="btn-solid"
+              href={signedIn ? "/account" : "/signin?next=%2Faccount"}
+              onClick={() => setOpen(false)}
+            >
+              {signedIn ? "Your file" : "Sign in with Google"}
+            </Link>
+          </div>
+        </div>
+      ) : null}
     </header>
   );
 }

@@ -1,20 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getPatientByEmail } from "@/lib/store";
-import { setSession } from "@/lib/session";
+import { NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
-  const body = await req.json().catch(() => null);
-  const email = String(body?.email || "").trim().toLowerCase();
-  if (!email) {
-    return NextResponse.json({ error: "Email is required." }, { status: 400 });
-  }
-  const patient = getPatientByEmail(email);
-  if (!patient) {
-    return NextResponse.json(
-      { error: "No account for that email yet. Begin with Orientation." },
-      { status: 404 }
-    );
-  }
-  await setSession({ patientId: patient.id, email: patient.email });
-  return NextResponse.json({ ok: true });
+export async function POST() {
+  return NextResponse.json(
+    { error: "Sign in with Google to open your file." },
+    { status: 410 }
+  );
 }

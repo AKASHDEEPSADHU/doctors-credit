@@ -1,77 +1,74 @@
 import { NextRequest, NextResponse } from "next/server";
 import { packageBySku } from "@/lib/packages";
-import { setSession } from "@/lib/session";
+import { requestOrigin, safeNext } from "@/lib/origin";
+import { getSession } from "@/lib/session";
 import { createCheckout, demoPayments } from "@/lib/stripe";
 import {
   attachStripeSession,
   createOrder,
+  getPatientById,
   markOrderPaid,
   upsertPatient,
 } from "@/lib/store";
 
-function requestOrigin(req: NextRequest) {
-  const host = req.headers.get("x-forwarded-host") || req.headers.get("host");
-  if (!host) return req.nextUrl.origin;
-  const proto =
-    req.headers.get("x-forwarded-proto") ||
-    (req.nextUrl.protocol || "http:").replace(/:$/, "") ||
-    "http";
-  return `${proto}://${host}`;
-}
-
-async function readFields(req: NextRequest) {
-  const ct = req.headers.get("content-type") || "";
-  if (ct.includes("application/json")) {
-    const body = await req.json().catch(() => null);
-    if (!body || typeof body !== "object") return null;
-    return {
-      form: false,
-      name: String(body.name || "").trim(),
-      email: String(body.email || "").trim(),
-      phone: String(body.phone || "").trim(),
-      country: String(body.country || "").trim(),
-      sku: String(body.sku || "orientation"),
-    };
-  }
-  const fd = await req.formData().catch(() => null);
-  if (!fd) return null;
-  return {
-    form: true,
-    name: String(fd.get("name") || "").trim(),
-    email: String(fd.get("email") || "").trim(),
-    phone: String(fd.get("phone") || "").trim(),
-    country: String(fd.get("country") || "").trim(),
-    sku: String(fd.get("sku") || "orientation"),
-  };
+function failForm(origin: string, msg: string) {
+  const url = new URL("/", origin);
+  url.searchParams.set("enrollError", msg);
+  url.hash = "enroll";
+  return NextResponse.redirect(url, 303);
 }
 
 export async function POST(req: NextRequest) {
-  const fields = await readFields(req);
   const origin = requestOrigin(req);
-  if (!fields) {
-    return NextResponse.json({ error: "Invalid request." }, { status: 400 });
-  }
-  const pkg = packageBySku(fields.sku);
-  if (!fields.name || !fields.email || !pkg) {
-    if (fields.form) {
-      const url = new URL("/", origin);
-      url.searchParams.set("enrollError", "Name, email, and a package are required.");
-      return NextResponse.redirect(url, 303);
-    }
-    return NextResponse.json(
-      { error: "Name, email, and a package are required." },
-      { status: 400 }
-    );
+  const session = await getSession();
+  if (!session) {
+    const next = encodeURIComponent("/#enroll");
+    return NextResponse.redirect(new URL(`/signin?next=${next}`, origin), 303);
   }
 
-  const patient = upsertPatient({
-    email: fields.email,
-    name: fields.name,
-    phone: fields.phone,
-    country: fields.country,
+  const patient = getPatientById(session.patientId);
+  if (!patient) {
+    return NextResponse.redirect(new URL("/signin?error=session", origin), 303);
+  }
+
+  const ct = req.headers.get("content-type") || "";
+  let sku = "orientation";
+  let phone = "";
+  let country = "";
+  let asForm = true;
+  if (ct.includes("application/json")) {
+    const body = await req.json().catch(() => null);
+    if (!body || typeof body !== "object") {
+      return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+    }
+    asForm = false;
+    sku = String(body.sku || "orientation");
+    phone = String(body.phone || "").trim();
+    country = String(body.country || "").trim();
+  } else {
+    const fd = await req.formData().catch(() => null);
+    if (!fd) return failForm(origin, "Invalid request.");
+    sku = String(fd.get("sku") || "orientation");
+    phone = String(fd.get("phone") || "").trim();
+    country = String(fd.get("country") || "").trim();
+  }
+
+  const pkg = packageBySku(sku);
+  if (!pkg) {
+    if (asForm) return failForm(origin, "Choose a package.");
+    return NextResponse.json({ error: "Choose a package." }, { status: 400 });
+  }
+
+  const fresh = upsertPatient({
+    email: patient.email,
+    name: patient.name,
+    phone,
+    country,
+    googleSub: patient.googleSub,
   });
+
   const order = createOrder({
-    patientId: patient.id,
+    patientId: fresh.id,
     sku: pkg.sku,
     title: pkg.name,
     amountCents: pkg.amountCents,
@@ -81,39 +78,28 @@ export async function POST(req: NextRequest) {
 
   if (demoPayments()) {
     markOrderPaid(order.id);
-    if (fields.form) {
-      const res = NextResponse.redirect(new URL("/account?welcome=1", origin), 303);
-      await setSession({ patientId: patient.id, email: patient.email }, res);
-      return res;
+    const dest = safeNext("/account?welcome=1");
+    if (asForm) {
+      return NextResponse.redirect(new URL(dest, origin), 303);
     }
-    await setSession({ patientId: patient.id, email: patient.email });
-    return NextResponse.json({ url: "/account?welcome=1" });
+    return NextResponse.json({ url: dest });
   }
 
-  const session = await createCheckout({
+  const checkout = await createCheckout({
     origin,
-    email: patient.email,
-    name: patient.name,
+    email: fresh.email,
+    name: fresh.name,
     sku: pkg.sku,
     title: pkg.name,
     amountCents: pkg.amountCents,
     orderId: order.id,
-    patientId: patient.id,
+    patientId: fresh.id,
   });
-  if (!session?.url || !session.id) {
-    if (fields.form) {
-      const url = new URL("/", origin);
-      url.searchParams.set("enrollError", "Checkout could not be started.");
-      return NextResponse.redirect(url, 303);
-    }
-    return NextResponse.json(
-      { error: "Checkout could not be started." },
-      { status: 502 }
-    );
+  if (!checkout?.url || !checkout.id) {
+    if (asForm) return failForm(origin, "Checkout could not be started.");
+    return NextResponse.json({ error: "Checkout could not be started." }, { status: 502 });
   }
-  attachStripeSession(order.id, session.id);
-  if (fields.form) {
-    return NextResponse.redirect(session.url, 303);
-  }
-  return NextResponse.json({ url: session.url });
+  attachStripeSession(order.id, checkout.id);
+  if (asForm) return NextResponse.redirect(checkout.url, 303);
+  return NextResponse.json({ url: checkout.url });
 }

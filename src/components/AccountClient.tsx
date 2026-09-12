@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import GoogleButton from "@/components/GoogleButton";
 
 type Ledger = {
   patient: {
@@ -41,8 +42,6 @@ export default function AccountClient() {
   const params = useSearchParams();
   const [data, setData] = useState<Ledger | null>(null);
   const [missing, setMissing] = useState(false);
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
 
   async function load() {
     const res = await fetch("/api/me");
@@ -58,22 +57,6 @@ export default function AccountClient() {
     load();
   }, []);
 
-  async function login(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-    const body = await res.json();
-    if (!res.ok) {
-      setError(body.error || "Could not open that account.");
-      return;
-    }
-    await load();
-  }
-
   async function logout() {
     await fetch("/api/logout", { method: "POST" });
     setData(null);
@@ -87,32 +70,21 @@ export default function AccountClient() {
   if (missing || !data) {
     return (
       <div className="account-gate">
-        <h1>Your file</h1>
-        <p>
-          After Orientation, this is where payments and orders live. Enter the
-          email you enrolled with.
+        <p className="eyebrow">Your file</p>
+        <h1>Sign in with Google to open it.</h1>
+        <p className="lede">
+          After Orientation, this is where payments and orders live. The same
+          Google account you used before any money moved.
         </p>
-        <form onSubmit={login} className="enroll-grid" style={{ maxWidth: 420 }}>
-          <label>
-            Email
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </label>
-          <button className="btn-gold" type="submit">
-            Open account
-          </button>
-        </form>
-        {error ? <p className="enroll-error">{error}</p> : null}
+        <GoogleButton next="/account" label="Continue with Google" />
         <p className="fine">
           No file yet? <Link href="/#enroll">Begin Orientation — $5</Link>
         </p>
       </div>
     );
   }
+
+  const unpaid = data.orders.filter((o) => o.status === "paid").length === 0;
 
   return (
     <div className="account">
@@ -136,6 +108,12 @@ export default function AccountClient() {
           Sign out
         </button>
       </header>
+
+      {unpaid ? (
+        <p className="fine">
+          Signed in, not yet begun. <Link href="/#enroll">Continue to Orientation — $5</Link>
+        </p>
+      ) : null}
 
       <section>
         <h2>Orders</h2>
