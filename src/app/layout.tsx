@@ -14,9 +14,9 @@ const sans = Inter({
 });
 
 export const metadata: Metadata = {
-  title: `${SITE.name} | Know your options before you decide`,
+  title: `${SITE.name} | Explore Medical Care in India`,
   description:
-    "DCredit is an international planned-care decision and coordination platform helping people understand whether planned treatment in India may be worth investigating. The $5 Initial Assessment is a conversation with DCredit, not a hospital, diagnosis or emergency service. No guaranteed savings or outcomes.",
+    "Explore whether medical care in India may make sense for you. Learn about India's healthcare expertise, advanced technology, hospitals, treatment options, total journey costs and practical considerations.",
   metadataBase: new URL("https://dcredit.in"),
 };
 

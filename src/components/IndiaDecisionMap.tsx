@@ -38,7 +38,7 @@ const FACTORS = [
   },
   {
     id: "continuity",
-    label: "Continuity & practical fit",
+    label: "Continuity of care",
     layer: "Continuity",
     href: "/guide",
     text: "Visas, recovery, companion needs and return-home planning decide whether a journey is workable, not festive.",
@@ -52,9 +52,7 @@ export function IndiaDecisionMap() {
         <p className="eyebrow">Decision map</p>
         <h2 id="decision-map-title">Why India enters the conversation</h2>
         <p className="section-lede">
-          People consider India for different reasons. Cost may be one of them.
-          It may also be expertise, technology, access, availability, or the
-          ability to find a particular treatment capability.
+          India enters the conversation for more than one reason.
         </p>
 
         <ol className="decision-layers" aria-label="How the decision is framed">
