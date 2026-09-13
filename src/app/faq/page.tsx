@@ -1,6 +1,6 @@
 import { FAQS } from "@/lib/faq";
 
-export const metadata = { title: "FAQ — Doctor's Credit" };
+export const metadata = { title: "FAQ | Doctor's Credit" };
 
 export default function FaqPage() {
   return (

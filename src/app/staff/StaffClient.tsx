@@ -136,7 +136,7 @@ export default function StaffClient({ signedIn, error }: { signedIn: boolean; er
           </button>
           {callId ? (
             <p>
-              Give the patient: <strong>{callId}</strong> — they can confirm it at /verify. It expires
+              Give the patient: <strong>{callId}</strong>. They can confirm it at /verify. It expires
               in two hours and reveals no medical information.
             </p>
           ) : null}
@@ -148,7 +148,7 @@ export default function StaffClient({ signedIn, error }: { signedIn: boolean; er
           {QUEUES.map((q) => (
             <li key={q}>
               <strong>{q}</strong>
-              <span>Architecture ready — cases appear here as status changes.</span>
+              <span>Architecture ready. Cases appear here as status changes.</span>
             </li>
           ))}
         </ul>

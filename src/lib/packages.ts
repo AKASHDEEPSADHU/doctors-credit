@@ -27,14 +27,14 @@ export const PACKAGES: CarePackage[] = [
     available: true,
     featured: true,
     blurb:
-      "For $5, speak with a DCredit care coordinator about your planned treatment, insurance situation, timeline and goals. We’ll explain how DCredit works and help you understand whether exploring care in India may make sense.",
+      "For $5, speak with a DCredit care coordinator about the care you are considering, your healthcare coverage or funding situation, your timeline and your goals. The conversation helps you understand how DCredit works and whether exploring care in India may be worth investigating further.",
     includes: [
       "A conversation with a DCredit care coordinator",
-      "Discussion of your planned treatment need",
-      "Discussion of your general insurance situation — not a benefits verification",
+      "Discussion of the care you are considering",
+      "Discussion of your healthcare coverage or funding situation, not a benefits verification",
       "Discussion of your timeline and goals",
       "An explanation of how DCredit works",
-      "Help deciding whether exploring India further may make sense",
+      "Help deciding whether exploring India may be worth investigating further",
       "A list of information you may later need to gather",
       "An explanation of possible next steps",
     ],
@@ -46,7 +46,7 @@ export const PACKAGES: CarePackage[] = [
       "Hospital or travel booking",
       "A guarantee of savings or outcomes",
     ],
-    note: "If India is not a sensible option for you, we will say so. The five dollars still stand. There is no obligation to continue.",
+    note: "If India does not appear worth investigating for you, we will say so. The five dollars still stand. There is no obligation to continue.",
   },
   {
     sku: "direction",
@@ -56,13 +56,13 @@ export const PACKAGES: CarePackage[] = [
     cadence: "once",
     available: false,
     blurb:
-      "A later-phase service for a structured comparison of your likely US financial exposure against a complete India journey estimate — plus specialist and hospital options where appropriate.",
+      "A later-phase service for a structured comparison of expected costs at home against a complete India journey estimate, plus specialist and hospital options where appropriate.",
     includes: [
       "Planned: medical-record review by a qualified professional, when a secure process is available",
       "Planned: specialist opinion coordination",
       "Planned: individually evaluated hospital options",
       "Planned: treatment and timeline estimates",
-      "Planned: US vs India cost comparison",
+      "Planned: home-country versus India total-journey comparison",
     ],
     excludes: [],
     note: "Coming in a later phase. Not available for purchase in V1.",
@@ -75,7 +75,7 @@ export const PACKAGES: CarePackage[] = [
     cadence: "coordination",
     available: false,
     blurb:
-      "A later-phase service for end-to-end coordination before travel, during an India stay, and after return home — without pressure to proceed.",
+      "A later-phase service for end-to-end coordination before travel, during an India stay, and after return home, without pressure to proceed.",
     includes: [
       "Planned: specialist and hospital coordination",
       "Planned: treatment scheduling and visa guidance",

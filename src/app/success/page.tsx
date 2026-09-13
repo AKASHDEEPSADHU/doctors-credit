@@ -22,7 +22,7 @@ export default async function SuccessPage() {
   return (
     <main id="main" className="legal confirm-page">
       <p className="eyebrow">Assessment confirmed</p>
-      <h1>Thank you — your $5 Initial Assessment is confirmed.</h1>
+      <h1>Thank you. Your $5 Initial Assessment is confirmed.</h1>
       {appointment ? (
         <div className="appointment-block">
           <p>Your conversation is scheduled for:</p>

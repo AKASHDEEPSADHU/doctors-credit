@@ -1,4 +1,4 @@
-export const metadata = { title: "Doctors — Doctor's Credit" };
+export const metadata = { title: "Doctors | Doctor's Credit" };
 
 export default function DoctorsPage() {
   return (

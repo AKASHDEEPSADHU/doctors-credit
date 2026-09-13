@@ -38,13 +38,13 @@ export default function EnrollForm({
         {error ? <p className="enroll-error">{error}</p> : null}
         <p className="gate-copy">
           Sign in with Google before any money moves. The $5 Initial Assessment
-          is a conversation with DCredit — not a clinical evaluation. The
+          is a conversation with DCredit, not a clinical evaluation. The
           hospital bill never passes through this account.
         </p>
         <GoogleButton next="/enroll" label="Continue with Google" />
         <p className="fine">
           We receive your name and email from Google. The form then collects
-          only what a coordinator needs to open the conversation — not a full
+          only what a coordinator needs to open the conversation, not a full
           medical history. Please do not send medical records, imaging,
           prescriptions or diagnoses.
         </p>
@@ -137,7 +137,7 @@ export default function EnrollForm({
           />
         </label>
         <label>
-          Insurance status
+          Healthcare coverage or funding
           <select name="insuranceStatus" required defaultValue="">
             <option value="" disabled>
               Select
@@ -150,7 +150,7 @@ export default function EnrollForm({
           </select>
         </label>
         <label>
-          Estimated US out-of-pocket
+          Estimated cost you may pay at home
           <input name="estimatedUsOop" required placeholder="e.g. $8,000 or unknown" />
         </label>
         <label>

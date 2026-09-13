@@ -18,7 +18,7 @@
     {
       "binding": "DB",
       "database_name": "dcredit",
-      "database_id": "00000000-0000-0000-0000-000000000000", // replace before deploy — placeholder, not a live database
+      "database_id": "00000000-0000-0000-0000-000000000000", // replace before deploy; placeholder, not a live database
       "migrations_dir": "migrations"
     }
   ],

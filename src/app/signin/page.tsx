@@ -58,7 +58,7 @@ export default async function SignInPage({
       <h1>Sign in before any money moves.</h1>
       <p className="lede">
         Google opens your file. The current paid service is the $5 Initial
-        Assessment — a conversation with DCredit, not a clinical evaluation.
+        Assessment: a conversation with DCredit, not a clinical evaluation.
         The hospital bill never passes through this ledger.
       </p>
       {message ? <p className="enroll-error">{message}</p> : null}
@@ -69,7 +69,7 @@ export default async function SignInPage({
           <input type="hidden" name="next" value={next} />
           <p>
             This preview has no Google Cloud client yet. Continue as a labelled
-            demo Google account — not a real Google login.
+            demo Google account, not a real Google login.
           </p>
           <TurnstileField />
           <button className="btn-solid" type="submit">

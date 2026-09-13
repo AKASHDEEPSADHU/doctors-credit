@@ -20,7 +20,7 @@ export function whatsappHref(prefill?: string) {
   if (!whatsappEnabled()) return "";
   const text = encodeURIComponent(
     prefill ||
-      "Hello — I would like to start a $5 Initial Assessment to understand whether exploring planned treatment in India may make sense for me. I will not send medical records or other sensitive clinical documents through WhatsApp."
+      "Hello. I would like to start a $5 Initial Assessment to understand whether exploring planned treatment in India may make sense for me. I will not send medical records or other sensitive clinical documents through WhatsApp."
   );
   return `https://wa.me/${WHATSAPP_E164}?text=${text}`;
 }
@@ -32,7 +32,7 @@ export const SITE = {
   city: "Hyderabad",
   tagline: "Know your options before you decide.",
   promise:
-    "We help US patients understand whether planned treatment in India may make financial, medical, logistical and practical sense.",
+    "We help international patients understand whether planned treatment in India may be worth investigating for their particular situation.",
   email: "care@dcredit.in",
   founders: {
     him: {
@@ -52,4 +52,4 @@ export const SITE = {
 } as const;
 
 export const DISCLAIMER =
-  "DCredit is a US-focused planned-care decision and coordination platform. We are not a hospital, physician, insurer, emergency medical service or diagnostic service. Information on this website is educational and for coordination. It is not medical advice, diagnosis, treatment or medical clearance. The current $5 Initial Assessment is a conversation with DCredit, not a clinical assessment, specialist opinion, insurance verification or medical-record review. DCredit does not currently operate a medical-record vault or claim HIPAA compliance. Treatment decisions must be made between you and qualified healthcare professionals. Costs, availability, treatment plans, outcomes and travel requirements vary. No medical outcome or savings are guaranteed. Always consult your US healthcare provider and insurance company before making decisions about international medical treatment.";
+  "DCredit is an international planned-care decision and coordination platform. We are not a hospital, physician, insurer, emergency medical service or diagnostic service. Information on this website is educational and for coordination. It is not medical advice, diagnosis, treatment or medical clearance. The current $5 Initial Assessment is a conversation with DCredit, not a clinical assessment, specialist opinion, insurance verification or medical-record review. DCredit does not currently operate a medical-record vault. Treatment decisions must be made between you and qualified healthcare professionals. Costs, availability, treatment plans, outcomes and travel requirements vary. No medical outcome or savings are guaranteed. Always consult your own healthcare professionals and, where relevant, your insurer or funding body before making decisions about cross-border care. For example, in the United States, this website does not claim HIPAA compliance.";

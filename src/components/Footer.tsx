@@ -9,9 +9,9 @@ export default function Footer() {
         <div className="foot-brand">
           <BrandLockup href="/" variant="footer" />
           <p>
-            A US-focused planned-care decision and coordination platform. We
-            help you understand whether planned treatment in India may make
-            sense — and we will say so when it does not.
+            An international planned-care decision and coordination platform.
+            We help you understand whether planned treatment in India may be
+            worth investigating, and we will say so when it does not.
           </p>
         </div>
         <div>
@@ -26,6 +26,7 @@ export default function Footer() {
         <div>
           <p className="foot-label">Learn</p>
           <Link href="/research">Research</Link>
+          <Link href="/india-medical-achievements">India&apos;s Medical Achievements</Link>
           <Link href="/guide">Medical travel guide</Link>
           <Link href="/stories">Patient stories</Link>
           <Link href="/faq">FAQ</Link>
@@ -47,7 +48,7 @@ export default function Footer() {
       </div>
       <div className="shell foot-end">
         <p className="closing">
-          Sometimes the best decision is India. Sometimes it isn’t. Either way,
+          Sometimes India may make sense. Sometimes it may not. Either way,
           you deserve to know.
         </p>
         <p className="fine">{DISCLAIMER}</p>

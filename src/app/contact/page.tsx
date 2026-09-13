@@ -1,7 +1,7 @@
 import { SITE, whatsappEnabled, whatsappHref } from "@/lib/contact";
 import ContactForm from "@/components/ContactForm";
 
-export const metadata = { title: "Contact — Doctor's Credit" };
+export const metadata = { title: "Contact | Doctor's Credit" };
 
 export default function ContactPage() {
   return (
@@ -21,9 +21,9 @@ export default function ContactPage() {
         not requested, or WhatsApp.
       </p>
       <p>
-        US business hours and a toll-free number will be published when the line
-        is staffed. Until then, the $5 Initial Assessment is the reliable way to
-        open a file.
+        Business hours and a public phone number will be published when the
+        line is staffed. Until then, the $5 Initial Assessment is the reliable
+        way to open a file.
       </p>
       <ContactForm />
       {whatsappEnabled() ? (
@@ -41,7 +41,8 @@ export default function ContactPage() {
       ) : null}
       <p>
         DCredit is not an emergency medical service. If you are experiencing an
-        emergency, call 911 or seek immediate local emergency care.
+        emergency and you are in the United States, call 911. Otherwise seek
+        immediate local emergency care.
       </p>
     </main>
   );

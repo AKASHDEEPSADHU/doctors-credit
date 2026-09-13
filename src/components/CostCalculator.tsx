@@ -52,9 +52,10 @@ export default function CostCalculator() {
   return (
     <form className="calc" onSubmit={(e) => e.preventDefault()}>
       <p className="tag">Estimate only</p>
-      <h3>What’s your real cost in the US — and in India?</h3>
+      <h3>Compare the total cost of the journey</h3>
       <p className="muted">
-        Your actual responsibility depends on your insurance plan and provider.
+        Compare expected costs at home with a complete India journey. The
+        deductible and out-of-pocket fields are a United States plan example.
         India figures are journey estimates, not quotes.
       </p>
       <div className="calc-grid">
@@ -75,18 +76,18 @@ export default function CostCalculator() {
           </select>
         </label>
         <label>
-          Insurance status
+          Coverage or funding
           <select value={insured} onChange={(e) => setInsured(e.target.value)}>
-            <option value="insured">Insured (illustrative plan)</option>
-            <option value="uninsured">Uninsured / cash</option>
+            <option value="insured">Has coverage (United States plan example)</option>
+            <option value="uninsured">Paying yourself / cash</option>
           </select>
         </label>
         <label>
-          Estimated US procedure price
+          Estimated procedure price at home
           <input type="number" min={0} value={billed} onChange={(e) => setBilled(+e.target.value)} />
         </label>
         <label>
-          Remaining deductible
+          Remaining deductible (US plan example)
           <input
             type="number"
             min={0}
@@ -95,7 +96,7 @@ export default function CostCalculator() {
           />
         </label>
         <label>
-          Coinsurance %
+          Coinsurance % (US plan example)
           <input
             type="number"
             min={0}
@@ -105,7 +106,7 @@ export default function CostCalculator() {
           />
         </label>
         <label>
-          Out-of-pocket maximum
+          Out-of-pocket maximum (US plan example)
           <input type="number" min={0} value={oopMax} onChange={(e) => setOopMax(+e.target.value)} />
         </label>
         <label>
@@ -153,7 +154,7 @@ export default function CostCalculator() {
       <div className="result">
         <dl>
           <div>
-            <dt>Estimated US out-of-pocket exposure</dt>
+            <dt>Estimated cost at home</dt>
             <dd>{money(usExposure)}</dd>
           </div>
           <div>
@@ -163,13 +164,13 @@ export default function CostCalculator() {
           <div>
             <dt>Potential estimated difference</dt>
             <dd>
-              {delta >= 0 ? `${money(delta)} lower in India` : `${money(-delta)} lower in the US`}
+              {delta >= 0 ? `${money(delta)} lower in India` : `${money(-delta)} lower at home`}
             </dd>
           </div>
         </dl>
         <p className="source">
           Estimate only. Not a quote, not a guarantee, and not medical advice. We
-          compare your likely patient responsibility — not US hospital sticker
+          compare what you may need to pay yourself, not hospital sticker
           prices alone.
         </p>
       </div>

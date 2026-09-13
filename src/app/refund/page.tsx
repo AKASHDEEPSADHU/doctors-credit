@@ -1,4 +1,4 @@
-export const metadata = { title: "Refund policy — Doctor's Credit" };
+export const metadata = { title: "Refund policy | Doctor's Credit" };
 
 export default function RefundPage() {
   return (

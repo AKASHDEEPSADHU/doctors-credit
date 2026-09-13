@@ -1,6 +1,6 @@
 import { INDIA_STATS, SOURCES } from "@/lib/sources";
 
-export const metadata = { title: "Research — Doctor's Credit" };
+export const metadata = { title: "Research | Doctor's Credit" };
 
 export default function ResearchPage() {
   return (
@@ -22,13 +22,14 @@ export default function ResearchPage() {
         {SOURCES.indiaMedicalArrivals2025.verified}. Label: VERIFIED.
       </p>
 
-      <h2>Americans already travel abroad for medical care</h2>
+      <h2>People already travel abroad for medical care</h2>
       <p>
-        CDC background material on medical tourism describes US residents
-        traveling internationally for care — including lower cost, procedures not
-        available at home, dental, fertility, cancer and cosmetic care — and
-        also describes infection, continuity-of-care, post-return complications,
-        insurance and legal-difference risks.
+        For example, in the United States, CDC background material on medical
+        tourism describes residents traveling internationally for care, including
+        lower cost, procedures not available at home, dental, fertility, cancer
+        and cosmetic care. It also describes infection, continuity-of-care,
+        post-return complications, insurance and legal-difference risks. Those
+        motivations are not unique to one country.
       </p>
       <p className="source">
         Source: {SOURCES.cdcMedicalTourism.publisher}. {SOURCES.cdcMedicalTourism.url}.
@@ -36,12 +37,17 @@ export default function ResearchPage() {
         (agency background, not a DCredit patient count).
       </p>
 
-      <h2>Your US insurance changes the math</h2>
+      <h2>Coverage at home changes the math</h2>
       <p>
-        A $50,000 US hospital bill does not necessarily mean you pay $50,000.
-        Deductible, coinsurance, copay, out-of-pocket maximum, network status,
-        coverage and prior authorization decide exposure. DCredit compares likely
-        patient responsibility, not sticker prices.
+        A large hospital bill at home does not necessarily mean you pay that
+        amount. Healthcare coverage or funding, remaining deductible where that
+        applies, coinsurance, copay, out-of-pocket maximum, approved-provider
+        rules and prior authorization decide what you may need to pay yourself.
+        DCredit compares likely patient responsibility, not sticker prices.
+      </p>
+      <p>
+        The on-site calculator includes a United States plan-math example. That
+        example is labeled as such. It does not apply to every visitor.
       </p>
       <p className="source">
         Methodology: illustrative plan-math in the on-site calculator. Label:

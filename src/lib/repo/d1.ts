@@ -402,7 +402,7 @@ export function createD1Repository(db: D1Like, onPersist?: (app: Application) =>
       if (!app) return null;
       if (app.paymentStatus !== "PAID") {
         app.paymentStatus = "PAID";
-        app.applicationStatus = "PAID — CONSULTATION PENDING";
+        app.applicationStatus = "PAID: CONSULTATION PENDING";
         app.paymentReference = input.paymentReference || app.paymentReference || app.applicationId;
         app.paymentProvider = input.paymentProvider || app.paymentProvider || "dodo";
         if (input.providerCheckoutId) app.providerCheckoutId = input.providerCheckoutId;

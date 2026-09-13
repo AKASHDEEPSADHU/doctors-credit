@@ -1,18 +1,19 @@
 import Link from "next/link";
 import { CATEGORIES, SUITABILITY_LABEL, TREATMENTS } from "@/lib/treatments";
 
-export const metadata = { title: "Treatments — Doctor's Credit" };
+export const metadata = { title: "Treatments | Doctor's Credit" };
 
 export default function TreatmentsPage() {
   return (
     <main id="main" className="legal" style={{ maxWidth: "52rem" }}>
-      <p className="eyebrow">Treatment directory</p>
+      <p className="eyebrow">What should you investigate?</p>
       <h1>Is this procedure often discussed for planned care abroad?</h1>
       <p>
         These notes are editorial and informational. They do not determine
         whether an individual patient should travel, and they are not a DCredit
-        clinical review. Speak with your US healthcare professional before
+        clinical review. Speak with your own healthcare professionals before
         making a treatment decision. Emergencies are never a DCredit pathway.
+        India is a destination to investigate, not a conclusion.
       </p>
       {CATEGORIES.map((cat) => (
         <section key={cat}>
@@ -29,8 +30,8 @@ export default function TreatmentsPage() {
         </section>
       ))}
       <p className="source">
-        Labels: YES — {SUITABILITY_LABEL.YES}. POSSIBLY — {SUITABILITY_LABEL.POSSIBLY}.
-        NOT GENERALLY — {SUITABILITY_LABEL["NOT GENERALLY"]}.
+        Labels: YES, {SUITABILITY_LABEL.YES}. POSSIBLY, {SUITABILITY_LABEL.POSSIBLY}.
+        NOT GENERALLY, {SUITABILITY_LABEL["NOT GENERALLY"]}.
       </p>
     </main>
   );

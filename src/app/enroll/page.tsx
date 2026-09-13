@@ -8,7 +8,7 @@ function first(v: string | string[] | undefined) {
   return Array.isArray(v) ? v[0] : v;
 }
 
-export const metadata = { title: "$5 Initial Assessment — Doctor's Credit" };
+export const metadata = { title: "$5 Initial Assessment | Doctor's Credit" };
 
 export default async function EnrollPage({
   searchParams,
@@ -25,10 +25,10 @@ export default async function EnrollPage({
       <div className="shell enroll-layout">
         <div>
           <p className="eyebrow">$5 Initial Assessment</p>
-          <h2>For $5, understand whether exploring India even belongs in the conversation.</h2>
+          <h2>For $5, understand whether exploring India is worth investigating.</h2>
           <p className="section-lede">
             Sign in with Google. Choose a published conversation window. Then pay
-            $5 for an initial conversation with a DCredit care coordinator — not
+            $5 for an initial conversation with a DCredit care coordinator, not
             a clinical assessment, diagnosis or medical-record review. After
             payment is confirmed you receive an Application ID, a Conversation
             Verification ID, and your Zoom join details when they are ready.

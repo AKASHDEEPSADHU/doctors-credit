@@ -6,20 +6,20 @@ const services = [
   {
     n: "01",
     t: "A clear first conversation",
-    d: "The $5 Initial Assessment is a conversation with DCredit about your planned treatment, insurance situation, timeline and goals — not a diagnosis.",
+    d: "The $5 Initial Assessment is a conversation with DCredit about the care you are considering, your healthcare coverage or funding, timeline and goals, not a diagnosis.",
     o: "You leave knowing whether exploring India may make sense.",
   },
   {
     n: "02",
     t: "Questions that matter",
     d: "We help organize what you may later need to gather. V1 does not include a medical-record vault or document upload.",
-    o: "You know what to ask next — not what to upload today.",
+    o: "You know what to ask next, not what to upload today.",
   },
   {
     n: "03",
     t: "Real economics",
-    d: "Likely US patient responsibility versus a broader India journey, when enough information is available. Savings are never guaranteed.",
-    o: "You compare exposure, not sticker prices.",
+    d: "Expected costs at home versus a broader India journey, when enough information is available. Savings are never guaranteed.",
+    o: "You compare the total journey, not sticker prices.",
   },
   {
     n: "04",

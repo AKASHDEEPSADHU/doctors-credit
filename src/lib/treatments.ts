@@ -17,9 +17,9 @@ export const TREATMENTS: Treatment[] = [
     category: "Orthopedics",
     name: "Knee replacement",
     suitability: "YES",
-    why: "Typically elective, with a defined recovery window that many patients can plan around — if they are medically fit to travel.",
+    why: "Typically elective, with a defined recovery window that many patients can plan around if they are medically fit to travel.",
     summary: "Replacement of a damaged knee joint with an implant. Often considered when pain and function no longer respond to conservative care.",
-    usNotes: "US patient responsibility depends on deductible, coinsurance, network status and plan exclusions — not the hospital sticker price.",
+    usNotes: "What you may need to pay yourself depends on your healthcare coverage or funding, not the hospital sticker price.",
     indiaNotes: "Indicative hospital ranges vary widely by implant, city and length of stay. The relevant number is the complete journey cost.",
   },
   {
@@ -29,7 +29,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "YES",
     why: "Usually planned. Travel is only appropriate after a clinician confirms fitness to fly before and after surgery.",
     summary: "Replacement of a damaged hip joint. Recovery and dislocation precautions matter for the return flight.",
-    usNotes: "Out-of-pocket exposure can still be high even when insurance pays a large share of billed charges.",
+    usNotes: "What you pay yourself can still be high even when coverage pays a large share of billed charges.",
     indiaNotes: "Stay length in India is often driven by physiotherapy and surgeon clearance to fly, not only the hospital invoice.",
   },
   {
@@ -39,7 +39,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "POSSIBLY",
     why: "Some elective spine procedures may be planned internationally; others require urgent local care or intensive follow-up.",
     summary: "A wide family of procedures. Suitability depends on diagnosis, neurology, and the ability to travel safely.",
-    usNotes: "Authorization and specialist wait times vary. Sticker prices are a poor proxy for patient cost.",
+    usNotes: "Authorization and specialist wait times vary. Sticker prices are a poor proxy for what you may need to pay yourself.",
     indiaNotes: "Requires individual clinical review before any travel discussion.",
   },
   {
@@ -49,8 +49,8 @@ export const TREATMENTS: Treatment[] = [
     suitability: "POSSIBLY",
     why: "Often elective, but rehabilitation and companion support affect whether travel is practical.",
     summary: "Joint replacement for selected shoulder conditions after conservative care has been considered.",
-    usNotes: "Coverage and patient responsibility vary by plan.",
-    indiaNotes: "Journey cost must include stay, companion, and follow-up — not only the implant invoice.",
+    usNotes: "Coverage and what you may need to pay yourself vary by healthcare system and plan.",
+    indiaNotes: "Journey cost must include stay, companion, and follow-up, not only the implant invoice.",
   },
   {
     slug: "cabg",
@@ -59,7 +59,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "POSSIBLY",
     why: "Only after careful clinical review. Unstable cardiac disease is not a medical-travel case.",
     summary: "Coronary artery bypass grafting is major surgery. Fitness to travel and postoperative monitoring are decisive.",
-    usNotes: "US billed charges can be very large; insured patients may still face substantial deductibles or out-of-network exposure.",
+    usNotes: "Billed charges can be very large. People with coverage may still face substantial deductibles or out-of-network costs. For example, in the United States, plan design often decides the real number.",
     indiaNotes: "DCredit will not recommend travel simply because a quote is lower. Clinical safety comes first.",
   },
   {
@@ -69,8 +69,8 @@ export const TREATMENTS: Treatment[] = [
     suitability: "POSSIBLY",
     why: "May be planned in selected stable patients. Emergency valve presentations are not coordinated internationally.",
     summary: "Surgical or transcatheter valve procedures require specialist evaluation of anatomy, risk and follow-up.",
-    usNotes: "Prior authorization and center-of-excellence networks change the math.",
-    indiaNotes: "Individual hospital capability, ICU and emergency backup must be evaluated — not assumed.",
+    usNotes: "Prior authorization and specialist-network rules can change both access and cost.",
+    indiaNotes: "Individual hospital capability, ICU and emergency backup must be evaluated, not assumed.",
   },
   {
     slug: "angioplasty",
@@ -79,7 +79,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "NOT GENERALLY",
     why: "Often time-sensitive. Acute coronary syndromes require immediate local emergency care.",
     summary: "Catheter-based treatment of coronary artery disease. Emergencies are not DCredit cases.",
-    usNotes: "If you have chest pain or a suspected heart attack, call 911.",
+    usNotes: "If you have chest pain or a suspected heart attack, seek local emergency care. In the United States, call 911.",
     indiaNotes: "Elective, stable cases still require individual review by a qualified clinician before any travel discussion.",
   },
   {
@@ -89,7 +89,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "POSSIBLY",
     why: "Highly case-specific. Not marketed as a default medical-travel product.",
     summary: "Includes selected valve and structural interventions after imaging and heart-team review.",
-    usNotes: "US pricing and coverage are procedure- and plan-specific.",
+    usNotes: "Pricing and coverage are procedure- and plan-specific.",
     indiaNotes: "Provider evaluation is individual. Accreditation is not an outcome guarantee.",
   },
   {
@@ -97,9 +97,9 @@ export const TREATMENTS: Treatment[] = [
     category: "Oncology",
     name: "Cancer surgery",
     suitability: "POSSIBLY",
-    why: "Some planned oncology pathways may be coordinated; others must stay with the current US team.",
+    why: "Some planned oncology pathways may be coordinated; others must stay with the current care team at home.",
     summary: "Surgical oncology is not a single product. Staging, adjuvant therapy and follow-up determine travel sense.",
-    usNotes: "Continuity with a US oncologist after return is part of the decision, not an afterthought.",
+    usNotes: "Continuity with an oncologist at home after return is part of the decision, not an afterthought.",
     indiaNotes: "DCredit does not independently diagnose or prescribe oncology treatment.",
   },
   {
@@ -109,7 +109,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "POSSIBLY",
     why: "Fractionated schedules can require a long stay. Not automatically cheaper or better.",
     summary: "Radiation therapy plans are protocol-specific and must be reviewed by qualified clinicians.",
-    usNotes: "US patient responsibility depends on plan design and in-network status.",
+    usNotes: "What you may need to pay yourself depends on coverage design and in-network or approved-provider rules.",
     indiaNotes: "Total journey cost includes lodging for the full treatment course.",
   },
   {
@@ -119,7 +119,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "POSSIBLY",
     why: "Cycles, supportive care and lab monitoring may make international travel impractical.",
     summary: "Systemic cancer therapy is coordinated only when clinically and logistically appropriate.",
-    usNotes: "Drug coverage and site-of-care rules often dominate US out-of-pocket cost.",
+    usNotes: "Drug coverage and site-of-care rules often dominate what you pay yourself.",
     indiaNotes: "Return-home follow-up must be planned before travel is considered.",
   },
   {
@@ -129,7 +129,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "POSSIBLY",
     why: "Indication, monitoring and cost structure vary. Not a default travel pathway.",
     summary: "Requires individual review of protocol, toxicity monitoring and continuity of care by a qualified clinician.",
-    usNotes: "US prices and coverage are highly plan-specific.",
+    usNotes: "Prices and coverage are highly plan-specific.",
     indiaNotes: "Estimates are labeled as estimates until a named provider issues a plan.",
   },
   {
@@ -137,9 +137,9 @@ export const TREATMENTS: Treatment[] = [
     category: "Oncology",
     name: "Targeted therapy",
     suitability: "POSSIBLY",
-    why: "Depends on molecular indication, drug access and monitoring — not on a brochure price.",
+    why: "Depends on molecular indication, drug access and monitoring, not on a brochure price.",
     summary: "Precision oncology decisions belong with qualified clinicians, not a website.",
-    usNotes: "Prior authorization often determines US patient cost.",
+    usNotes: "Prior authorization often determines what you may need to pay yourself.",
     indiaNotes: "Drug availability and follow-up labs must be confirmed, not assumed.",
   },
   {
@@ -149,7 +149,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "YES",
     why: "Typically planned. Many patients compare cycle costs, stay length and clinic protocols.",
     summary: "In vitro fertilization. Success rates are not guaranteed in any country.",
-    usNotes: "US coverage for IVF is uneven. Patient responsibility is often close to cash price.",
+    usNotes: "Coverage for IVF is uneven in many countries. Patient responsibility is often close to the cash price.",
     indiaNotes: "Compare complete cycle plus stay, not a single advertised package line.",
   },
   {
@@ -159,7 +159,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "YES",
     why: "Usually planned with IVF. Suitability is clinical, not geographic.",
     summary: "Intracytoplasmic sperm injection as part of an assisted-reproduction pathway.",
-    usNotes: "Add-on fees in the US can change the real patient cost.",
+    usNotes: "Add-on fees at home can change the real patient cost.",
     indiaNotes: "Ask what is included, excluded, and how many cycles the estimate covers.",
   },
   {
@@ -167,19 +167,19 @@ export const TREATMENTS: Treatment[] = [
     category: "Fertility",
     name: "Fertility evaluation",
     suitability: "YES",
-    why: "Diagnostic work-ups can sometimes be planned internationally, or used to inform a US decision.",
+    why: "Diagnostic work-ups can sometimes be planned internationally, or used to inform a decision at home.",
     summary: "Testing and consultation to understand fertility options. Not a diagnosis from DCredit.",
-    usNotes: "US work-up costs vary by clinic and insurance.",
-    indiaNotes: "Records should travel both ways so a US clinician can continue care.",
+    usNotes: "Work-up costs vary by clinic and healthcare coverage or funding.",
+    indiaNotes: "Records should travel both ways so a clinician at home can continue care.",
   },
   {
     slug: "dental-implants",
     category: "Dentistry",
     name: "Dental implants",
     suitability: "YES",
-    why: "Common planned dental-travel case when US cash prices are high and staging can be scheduled.",
+    why: "Common planned dental-travel case when cash prices at home are high and staging can be scheduled.",
     summary: "Implant placement and restoration. May require more than one visit.",
-    usNotes: "Dental benefits in the US are often limited; patient cash exposure can be large.",
+    usNotes: "Dental benefits are often limited. Patient cash exposure can be large.",
     indiaNotes: "Count flights for possible second-stage visits, not only the first invoice.",
   },
   {
@@ -187,9 +187,9 @@ export const TREATMENTS: Treatment[] = [
     category: "Dentistry",
     name: "Full-mouth rehabilitation",
     suitability: "POSSIBLY",
-    why: "Complex, staged, and dependent on how long you can stay — and on quality of follow-up at home.",
+    why: "Complex, staged, and dependent on how long you can stay and on quality of follow-up at home.",
     summary: "Comprehensive restorative dentistry. Not a single appointment.",
-    usNotes: "US quotes vary widely; insurance may cover little.",
+    usNotes: "Quotes vary widely. Coverage may pay little.",
     indiaNotes: "A complete journey estimate must include staging, stay and revisions.",
   },
   {
@@ -199,7 +199,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "YES",
     why: "Often elective and schedulable, if the clinical plan is clear.",
     summary: "Restorative dentistry. Quality and laboratory work matter as much as price.",
-    usNotes: "Annual dental maximums often leave patients paying cash.",
+    usNotes: "Annual dental maximums, where they exist, often leave patients paying cash.",
     indiaNotes: "Ask about materials, laboratory, and what happens if a restoration fails after you return.",
   },
   {
@@ -209,7 +209,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "YES",
     why: "Typically planned. Postoperative drop regimens and follow-up must be workable after return.",
     summary: "Lens replacement for cataract. Not an emergency pathway.",
-    usNotes: "Medicare and commercial coverage change US patient cost substantially.",
+    usNotes: "For example, in the United States, Medicare and commercial coverage can change what you pay substantially.",
     indiaNotes: "India may not be cheaper after insurance. That is a reason to compare real exposure.",
   },
   {
@@ -217,9 +217,9 @@ export const TREATMENTS: Treatment[] = [
     category: "Eye care",
     name: "Refractive procedures",
     suitability: "YES",
-    why: "Usually elective and self-pay in the US, so a full-journey comparison can be informative.",
+    why: "Usually elective and self-pay in many countries, so a full-journey comparison can be informative.",
     summary: "Vision-correction procedures. Outcomes are not guaranteed.",
-    usNotes: "Often paid cash in the US.",
+    usNotes: "Often paid cash at home.",
     indiaNotes: "Enhancement policy and follow-up after return should be written down before travel.",
   },
   {
@@ -229,7 +229,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "POSSIBLY",
     why: "Some are planned; others are time-sensitive. Individual clinical review is required.",
     summary: "Retinal care ranges from injections to surgery. Emergencies belong in local care.",
-    usNotes: "US coverage and copays vary by injection versus surgery.",
+    usNotes: "Coverage and copays vary by injection versus surgery.",
     indiaNotes: "Travel is inappropriate when delay risks vision.",
   },
   {
@@ -249,7 +249,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "POSSIBLY",
     why: "Selected planned evaluations or procedures may be appropriate; others are not.",
     summary: "Requires specialist assessment of diagnosis, device follow-up and travel risk.",
-    usNotes: "US networks and authorization shape access and cost.",
+    usNotes: "Networks and authorization rules shape access and cost.",
     indiaNotes: "Programming and follow-up after return must be realistic.",
   },
   {
@@ -269,7 +269,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "POSSIBLY",
     why: "Some planned procedures can be compared; cancer pathways need oncology-style review.",
     summary: "Ranges from benign obstruction procedures to cancer surgery. Not one product.",
-    usNotes: "US patient cost depends on setting and insurance design.",
+    usNotes: "What you may need to pay yourself depends on setting and coverage design.",
     indiaNotes: "Pathology, staging and follow-up must be part of any plan.",
   },
   {
@@ -279,7 +279,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "NOT GENERALLY",
     why: "Transplant involves organ-allocation, legal, ethical and long-term immunosuppression issues that are not a simple price comparison.",
     summary: "DCredit does not market transplant as a packaged medical-tourism product.",
-    usNotes: "US transplant is highly regulated. Travel for transplant requires specialist legal and clinical advice.",
+    usNotes: "Transplant is highly regulated in many countries, including the United States. Travel for transplant requires specialist legal and clinical advice.",
     indiaNotes: "Organ transplantation is subject to Indian law. We will not imply that travel is automatically appropriate.",
   },
   {
@@ -300,10 +300,10 @@ export function treatmentBySlug(slug: string) {
 
 export const CATEGORIES = [...new Set(TREATMENTS.map((t) => t.category))];
 
-/** Editorial labels — not a clinical determination for any individual patient. */
+/** Editorial labels, not a clinical determination for any individual patient. */
 export const SUITABILITY_LABEL: Record<Suitability, string> = {
   YES: "Often considered in international planned-care discussions",
-  POSSIBLY: "May be worth exploring — requires individual clinical review",
+  POSSIBLY: "May be worth exploring. Requires individual clinical review",
   "NOT GENERALLY": "Not appropriate for emergency situations or as a default travel pathway",
 };
 

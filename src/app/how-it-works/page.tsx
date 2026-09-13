@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { JOURNEY } from "@/lib/journey";
 
-export const metadata = { title: "How it works — Doctor's Credit" };
+export const metadata = { title: "How it works | Doctor's Credit" };
 
 export default function HowItWorksPage() {
   return (
@@ -9,15 +9,16 @@ export default function HowItWorksPage() {
       <p className="eyebrow">The DCredit 7-step journey</p>
       <h1>Know your options before you decide.</h1>
       <p>
-        We are building DCredit in stages, starting with the decision itself.
-        The current paid service is the $5 Initial Assessment — a conversation
-        with DCredit, not a clinical assessment or medical evaluation. Later
-        steps describe how we think about the path, including future services.
+        This journey is about informed decision-making. You have not already
+        chosen India by starting it. We are building DCredit in stages,
+        starting with the decision itself. The current paid service is the $5
+        Initial Assessment: a conversation with DCredit, not a clinical
+        assessment or medical evaluation.
       </p>
       {JOURNEY.map((s) => (
         <section key={s.n}>
           <h2>
-            {s.n} — {s.title}
+            {s.n}. {s.title}
           </h2>
           <p>{s.body}</p>
         </section>

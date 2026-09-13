@@ -1,4 +1,4 @@
-export const metadata = { title: "Cookies — Doctor's Credit" };
+export const metadata = { title: "Cookies | Doctor's Credit" };
 
 export default function CookiesPage() {
   return (

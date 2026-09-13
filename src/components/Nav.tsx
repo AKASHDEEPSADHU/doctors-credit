@@ -10,6 +10,7 @@ const links = [
   ["/hospitals", "Hospitals"],
   ["/cost-calculator", "Cost calculator"],
   ["/research", "Research"],
+  ["/india-medical-achievements", "Medical Achievements"],
   ["/about", "About"],
 ];
 

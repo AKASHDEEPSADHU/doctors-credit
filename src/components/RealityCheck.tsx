@@ -31,7 +31,7 @@ export default function RealityCheck() {
 
   return (
     <form className="assess" onSubmit={run}>
-      <p className="tag">Reality Check — informational only</p>
+      <p className="tag">Reality Check: informational only</p>
       <h3>Is exploring planned care in India worth discussing?</h3>
       <p className="source">
         This tool is an informational screening aid, not a medical assessment,
@@ -69,7 +69,7 @@ export default function RealityCheck() {
           </select>
         </label>
         <label>
-          Estimated US out-of-pocket ($)
+          Estimated cost you may pay at home ($)
           <input type="number" min={0} value={oop} onChange={(e) => setOop(+e.target.value)} />
         </label>
       </fieldset>
@@ -78,9 +78,9 @@ export default function RealityCheck() {
       </button>
       {tone === "GREEN" ? (
         <p className="verdict">
-          India may be worth exploring — based on the information provided, this
-          pathway may deserve further evaluation. Speak with your US healthcare
-          professional before making a treatment decision.
+          India may be worth exploring. Based on the information provided, this
+          pathway may deserve further evaluation. Speak with your own
+          healthcare professionals before making a treatment decision.
         </p>
       ) : null}
       {tone === "YELLOW" ? (
@@ -93,8 +93,8 @@ export default function RealityCheck() {
       {tone === "RED" ? (
         <p className="verdict">
           {urgency === "emergency"
-            ? "DCredit does not handle emergencies. If you are in the US, call 911 or seek immediate local care."
-            : "Based on the information provided, this pathway may not be the better option to explore right now. Speak with your US healthcare professional before making a treatment decision."}
+            ? "DCredit does not handle emergencies. If you are in the United States, call 911. Otherwise seek immediate local care."
+            : "Based on the information provided, this pathway may not be the better option to explore right now. Speak with your own healthcare professionals before making a treatment decision."}
         </p>
       ) : null}
       <p className="source">

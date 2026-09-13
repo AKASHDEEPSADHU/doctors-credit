@@ -38,8 +38,8 @@ export const INDIA_STATS = {
   fta2025: "9.15 million",
   medicalPurpose2025: "507,244",
   medicalShare: "approximately 5.5%",
-  topSource: "Bangladesh — 325,127 medical-purpose arrivals",
+  topSource: "Bangladesh: 325,127 medical-purpose arrivals",
   otherSources: ["Iraq", "Uzbekistan", "Somalia", "Turkmenistan", "Oman", "Kenya"],
   caveat:
-    "These figures are foreign medical-purpose arrivals, not a count of US elective-surgery patients. They are not a measure of clinical outcomes.",
+    "These figures are foreign medical-purpose arrivals, not a count of patients from any one country and not a measure of clinical outcomes.",
 };

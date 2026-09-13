@@ -35,7 +35,7 @@ async function provisionMeeting(
   if ((await otherPaidCountForSlot(repo, app)) >= 1) {
     const updated = await repo.saveApplicationFulfillment(app.id, {
       meetingStatus: "slot_unavailable",
-      applicationStatus: "PAID — CONSULTATION PENDING",
+      applicationStatus: "PAID: CONSULTATION PENDING",
     });
     if (updated) {
       await repo.appendAudit("meeting_failed", "slot_unavailable", {
@@ -83,7 +83,7 @@ async function provisionMeeting(
     const detail = err instanceof ZoomUnconfiguredError ? "unconfigured" : "provider";
     const updated = await repo.saveApplicationFulfillment(app.id, {
       meetingStatus: "failed",
-      applicationStatus: "PAID — CONSULTATION PENDING",
+      applicationStatus: "PAID: CONSULTATION PENDING",
     });
     if (updated) {
       await repo.appendAudit("meeting_failed", detail, {

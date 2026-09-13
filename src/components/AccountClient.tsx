@@ -6,6 +6,35 @@ import { useSearchParams } from "next/navigation";
 import GoogleButton from "@/components/GoogleButton";
 import type { AccountView } from "@/lib/account-view";
 
+function StatusValue({ children }: { children: string }) {
+  return <p className="account-status-value">{children}</p>;
+}
+
+function ConversationBlock({
+  appointment,
+}: {
+  appointment: NonNullable<NonNullable<AccountView["assessment"]>["appointment"]> | null;
+}) {
+  if (!appointment) {
+    return (
+      <div className="account-field">
+        <p className="account-label">Conversation</p>
+        <p>No conversation time selected yet</p>
+      </div>
+    );
+  }
+  return (
+    <div className="account-field">
+      <p className="account-label">Conversation</p>
+      <div className="account-appt">
+        <p>{appointment.dateLabel}</p>
+        <p>{appointment.timeLabel}</p>
+        <p>{appointment.timezoneLabel}</p>
+      </div>
+    </div>
+  );
+}
+
 export default function AccountClient() {
   const params = useSearchParams();
   const [data, setData] = useState<AccountView | null>(null);
@@ -53,89 +82,117 @@ export default function AccountClient() {
 
   const assessment = data.assessment;
   const paid = assessment?.paymentStatus === "PAID";
+  const zoomUrl = paid ? assessment?.meeting?.joinUrl : undefined;
+  const statusLabel = !assessment
+    ? "Assessment not yet started"
+    : assessment.paymentLabel;
 
   return (
     <div className="account">
       {params.get("signedIn") || params.get("welcome") ? (
-        <p className="welcome">You are signed in. This account is for your DCredit assessment, not a medical record.</p>
+        <p className="welcome">
+          You are signed in. This account is for your DCredit assessment, not a
+          medical record.
+        </p>
       ) : null}
+
       <header className="account-head">
         <div>
           <p className="eyebrow">My Account</p>
           <h1>{data.patient.name}</h1>
-          <p className="account-muted">{data.patient.email}</p>
+          <p className="account-email">{data.patient.email}</p>
         </div>
         <form action="/api/logout" method="post">
-          <button className="btn-ghost" type="submit">
+          <button className="account-logout" type="submit">
             Log out
           </button>
         </form>
       </header>
 
-      <section className="assessment-panel">
-        <h2>Your assessment</h2>
-        {!assessment ? (
-          <>
-            <p>Status: Assessment not yet started</p>
-            <p>
-              <Link className="btn-solid" href="/enroll">
-                Continue to $5 Assessment
-              </Link>
+      <section className="account-card account-card-primary" aria-labelledby="assessment-heading">
+        <h2 id="assessment-heading" className="account-card-title">
+          Your assessment
+        </h2>
+
+        <div className="account-field">
+          <p className="account-label">Status</p>
+          <StatusValue>{statusLabel}</StatusValue>
+        </div>
+
+        <ConversationBlock appointment={assessment?.appointment ?? null} />
+
+        {paid && zoomUrl ? (
+          <div className="account-field">
+            <p className="account-label">Your Zoom conversation</p>
+            <a className="btn-solid account-join" href={zoomUrl}>
+              Join Zoom
+            </a>
+            <p className="account-hint">
+              Please join a few minutes before your scheduled time.
             </p>
-          </>
-        ) : (
-          <>
-            <p>
-              <span className="tag">Status</span>
-              <strong>{assessment.paymentLabel}</strong>
-            </p>
-            {assessment.appointment ? (
-              <div className="appointment-block">
-                <p className="tag">Conversation</p>
-                <p>
-                  {assessment.appointment.dateLabel}
-                  <br />
-                  {assessment.appointment.timeLabel} {assessment.appointment.timezoneLabel}
-                </p>
-              </div>
-            ) : (
-              <p className="account-muted">No conversation time selected yet.</p>
-            )}
-            {paid && assessment.meeting?.joinUrl ? (
-              <p>
-                <span className="tag">Zoom</span>
-                <a href={assessment.meeting.joinUrl}>Join conversation</a>
-              </p>
-            ) : paid ? (
-              <p>Payment received. We&apos;re finalizing your conversation details. Your appointment information will appear here once confirmed.</p>
-            ) : null}
-            {paid && assessment.applicationId ? (
-              <div className="codes">
-                <div>
-                  <span className="tag">Application ID</span>
-                  <strong>{assessment.applicationId}</strong>
-                </div>
-                <div>
-                  <span className="tag">Conversation Verification ID</span>
-                  <strong>{assessment.conversationVerificationId}</strong>
-                </div>
-              </div>
-            ) : (
-              <p>
-                <Link className="btn-solid" href="/enroll">
-                  Continue to $5 Assessment
-                </Link>
-              </p>
-            )}
-          </>
-        )}
+          </div>
+        ) : null}
+
+        {paid && !zoomUrl ? (
+          <p className="account-pending">
+            Payment received. We&apos;re finalizing your conversation details.
+            Your appointment information will appear here once confirmed.
+          </p>
+        ) : null}
+
+        {!paid ? (
+          <Link className="btn-solid account-cta" href="/enroll">
+            Continue to $5 Assessment
+          </Link>
+        ) : null}
       </section>
 
-      <p className="fine">
-        This conversation is with a DCredit care coordinator. It is not a medical
-        diagnosis or clinical evaluation. Clinical invoices from hospitals never
-        appear here.
-      </p>
+      {paid && assessment?.applicationId ? (
+        <section className="account-card" aria-labelledby="ids-heading">
+          <h2 id="ids-heading" className="account-card-title">
+            Application information
+          </h2>
+          <dl className="account-meta">
+            <div>
+              <dt>Application ID</dt>
+              <dd>{assessment.applicationId}</dd>
+            </div>
+            {assessment.conversationVerificationId ? (
+              <div>
+                <dt>Conversation Verification ID</dt>
+                <dd>{assessment.conversationVerificationId}</dd>
+              </div>
+            ) : null}
+          </dl>
+        </section>
+      ) : null}
+
+      <section className="account-card" aria-labelledby="details-heading">
+        <h2 id="details-heading" className="account-card-title">
+          Account details
+        </h2>
+        <dl className="account-meta">
+          <div>
+            <dt>Name</dt>
+            <dd>{data.patient.name}</dd>
+          </div>
+          <div>
+            <dt>Email</dt>
+            <dd>{data.patient.email}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <aside className="account-note" aria-labelledby="account-note-heading">
+        <p id="account-note-heading" className="account-label">
+          Important
+        </p>
+        <p>
+          This conversation is with a DCredit care coordinator. It is not a
+          medical diagnosis or clinical evaluation.
+        </p>
+        <p>Clinical invoices from hospitals never appear here.</p>
+      </aside>
     </div>
   );
 }

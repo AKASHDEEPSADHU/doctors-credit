@@ -69,7 +69,7 @@ npx wrangler secret put RESEND_API_KEY --env production
 
    Public Turnstile site key and WhatsApp number are Wrangler `vars` / `.dev.vars`, not secrets.
 
-5. Google Sheet **DCredit — Patient Applications**: private, not published, not embedded. Import `crm/patient-applications.headers.csv`. Share only with coordinators and the service account. Columns match the CRM replica; they are operational, not a healthcare database.
+5. Google Sheet **DCredit Patient Applications**: private, not published, not embedded. Import `crm/patient-applications.headers.csv`. Share only with coordinators and the service account. Columns match the CRM replica; they are operational, not a healthcare database.
 
 6. Dodo webhook URL: `https://dcredit.in/api/webhook/dodo`. Subscribe to `payment.succeeded`. Success in the browser is never enough to mark PAID.
 

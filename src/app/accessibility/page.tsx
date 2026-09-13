@@ -1,4 +1,4 @@
-export const metadata = { title: "Accessibility — Doctor's Credit" };
+export const metadata = { title: "Accessibility | Doctor's Credit" };
 
 export default function AccessibilityPage() {
   return (

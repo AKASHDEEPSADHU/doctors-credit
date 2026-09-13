@@ -40,7 +40,7 @@ describe("ApplicationRepository (local durable store)", () => {
 
     const paid = await repo.confirmPayment({ id: app.id, paymentReference: "dodo_test" });
     assert.equal(paid?.paymentStatus, "PAID");
-    assert.equal(paid?.applicationStatus, "PAID — CONSULTATION PENDING");
+    assert.equal(paid?.applicationStatus, "PAID: CONSULTATION PENDING");
   });
 
   it("verifies call IDs without returning case data", async () => {

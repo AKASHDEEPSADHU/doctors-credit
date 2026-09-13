@@ -1,6 +1,6 @@
 import VerifyForm from "@/app/verify/VerifyForm";
 
-export const metadata = { title: "Verify a DCredit communication — Doctor's Credit" };
+export const metadata = { title: "Verify a DCredit communication | Doctor's Credit" };
 
 export default function VerifyPage() {
   return (
@@ -10,7 +10,7 @@ export default function VerifyPage() {
       <p>
         A coordinator may give you a temporary Call Verification ID such as
         CALL-48291. Enter it here. The page will only say whether that ID is
-        valid — it will not display any application details.
+        valid. It will not display any application details.
       </p>
       <VerifyForm />
       <h2>If DCredit calls you</h2>

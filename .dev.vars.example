@@ -5,7 +5,7 @@ SESSION_SECRET=dev-doctors-credit-preview
 # Leave unset to hide WhatsApp. Do not use a fake production number.
 # NEXT_PUBLIC_WHATSAPP_E164=
 
-# Dodo Payments (placeholders only — never commit live keys)
+# Dodo Payments (placeholders only; never commit live keys)
 # DODO_PAYMENTS_API_KEY=
 # DODO_PAYMENTS_WEBHOOK_KEY=
 # DODO_PAYMENTS_ENVIRONMENT=test_mode
@@ -16,7 +16,7 @@ SESSION_SECRET=dev-doctors-credit-preview
 # DCREDIT_SCHEDULE_TIMEZONE=America/New_York
 # DCREDIT_SCHEDULE_TIMEZONE_LABEL=Eastern Time
 
-# Zoom (placeholders only — never commit live keys)
+# Zoom (placeholders only; never commit live keys)
 # ZOOM_ACCOUNT_ID=
 # ZOOM_CLIENT_ID=
 # ZOOM_CLIENT_SECRET=

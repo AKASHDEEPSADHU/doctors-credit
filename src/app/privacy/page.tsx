@@ -1,4 +1,4 @@
-export const metadata = { title: "Privacy — Doctor's Credit" };
+export const metadata = { title: "Privacy | Doctor's Credit" };
 
 export default function PrivacyPage() {
   return (
@@ -6,11 +6,11 @@ export default function PrivacyPage() {
       <p className="eyebrow">Privacy</p>
       <h1>How we hold what you tell us.</h1>
       <p>
-        DCredit is a US-focused planned-care decision and coordination platform,
-        not a hospital or diagnostic service. The $5 Initial Assessment collects
-        operational details a coordinator needs: name, email, phone, location,
-        procedure category, insurance status and timeline. It is not a
-        medical-record intake.
+        DCredit is an international planned-care decision and coordination
+        platform, not a hospital or diagnostic service. The $5 Initial
+        Assessment collects operational details a coordinator needs: name,
+        email, phone, location, procedure category, healthcare coverage or
+        funding status and timeline. It is not a medical-record intake.
       </p>
       <h2>What we collect</h2>
       <p>
@@ -29,10 +29,11 @@ export default function PrivacyPage() {
         send MRI scans, CT scans, prescriptions, diagnoses or other sensitive
         clinical documents through this website, the contact form or WhatsApp.
       </p>
-      <h2>HIPAA</h2>
+      <h2>Healthcare privacy laws</h2>
       <p>
-        This website does not claim HIPAA compliance. We do not claim a
-        medical-record security program that is not in place.
+        For example, in the United States, this website does not claim HIPAA
+        compliance. We do not claim a medical-record security program that is
+        not in place.
       </p>
       <h2>Your file</h2>
       <p>

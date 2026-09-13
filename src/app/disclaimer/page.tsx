@@ -1,6 +1,6 @@
 import { DISCLAIMER } from "@/lib/contact";
 
-export const metadata = { title: "Medical disclaimer — Doctor's Credit" };
+export const metadata = { title: "Medical disclaimer | Doctor's Credit" };
 
 export default function DisclaimerPage() {
   return (

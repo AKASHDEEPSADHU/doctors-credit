@@ -2,7 +2,7 @@ import StaffClient from "@/app/staff/StaffClient";
 import { staffAuthenticated, staffConfigured } from "@/lib/staff-session";
 
 export const metadata = {
-  title: "Coordinator desk — DCredit",
+  title: "Coordinator desk | DCredit",
   robots: { index: false, follow: false },
 };
 

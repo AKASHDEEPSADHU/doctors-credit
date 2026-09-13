@@ -1,4 +1,4 @@
-export const metadata = { title: "Partner disclosure — Doctor's Credit" };
+export const metadata = { title: "Partner disclosure | Doctor's Credit" };
 
 export default function PartnersPage() {
   return (
@@ -14,7 +14,8 @@ export default function PartnersPage() {
       </p>
       <p>
         Any hospital referral fee or revenue-sharing model is reviewed against
-        applicable US and Indian law and professional rules before use.
+        applicable law in the relevant countries and professional rules before
+        use.
       </p>
     </main>
   );
