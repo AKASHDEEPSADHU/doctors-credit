@@ -11,3 +11,12 @@ SESSION_SECRET=dev-doctors-credit-preview
 # DODO_PAYMENTS_ENVIRONMENT=test_mode
 # DODO_PAYMENTS_RETURN_URL=http://127.0.0.1:3100/success
 # DODO_PRODUCT_ID_ORIENTATION=
+
+# V1 published conversation timezone (placeholders only)
+# DCREDIT_SCHEDULE_TIMEZONE=America/New_York
+# DCREDIT_SCHEDULE_TIMEZONE_LABEL=Eastern Time
+
+# Zoom (placeholders only — never commit live keys)
+# ZOOM_ACCOUNT_ID=
+# ZOOM_CLIENT_ID=
+# ZOOM_CLIENT_SECRET=

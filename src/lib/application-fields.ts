@@ -1,3 +1,4 @@
+import { parseSelectedSlot, type OccupiedSlot } from "@/lib/appointment-slots";
 import { CATEGORIES } from "@/lib/treatments";
 import { US_STATES } from "@/lib/us-states";
 
@@ -35,6 +36,7 @@ export type ApplicationInput = {
   estimatedUsOop: string;
   preferredTimeline: string;
   preferredConsultationDate: string;
+  appointmentTime: string;
   sku: string;
   source?: string;
 };
@@ -48,7 +50,11 @@ function clean(value: unknown, max = 200) {
     .slice(0, max);
 }
 
-export function parseApplicationInput(raw: Record<string, unknown>): {
+export function parseApplicationInput(
+  raw: Record<string, unknown>,
+  occupied: OccupiedSlot[] = [],
+  now = new Date()
+): {
   value: ApplicationInput;
   errors: FieldErrors;
 } {
@@ -64,6 +70,7 @@ export function parseApplicationInput(raw: Record<string, unknown>): {
     estimatedUsOop: clean(raw.estimatedUsOop, 40),
     preferredTimeline: clean(raw.preferredTimeline, 80),
     preferredConsultationDate: clean(raw.preferredConsultationDate, 20),
+    appointmentTime: clean(raw.appointmentTime, 8),
     sku: clean(raw.sku, 40) || "orientation",
     source: clean(raw.source, 80) || "dcredit.in",
   };
@@ -87,9 +94,10 @@ export function parseApplicationInput(raw: Record<string, unknown>): {
   if (!TIMELINES.includes(value.preferredTimeline as (typeof TIMELINES)[number])) {
     errors.preferredTimeline = "Select a preferred timeline.";
   }
-  if (value.preferredConsultationDate) {
-    const day = Date.parse(`${value.preferredConsultationDate}T00:00:00Z`);
-    if (Number.isNaN(day)) errors.preferredConsultationDate = "Enter a valid date.";
+  const slot = parseSelectedSlot(value.preferredConsultationDate, value.appointmentTime, occupied, now);
+  if (!slot.ok) {
+    errors.preferredConsultationDate = slot.reason;
+    errors.appointmentTime = slot.reason;
   }
 
   return { value, errors };

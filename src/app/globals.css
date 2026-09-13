@@ -186,6 +186,13 @@ section {
   transform: scaleX(1);
 }
 
+.nav-account {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--navy);
+}
+
 .nav-cta,
 .btn-solid,
 .btn-ghost,
@@ -856,6 +863,131 @@ h2 {
 
 .enroll-span {
   grid-column: 1 / -1;
+}
+
+.signed-as {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.75rem;
+  align-items: center;
+  margin: 0 0 1rem;
+}
+
+.signed-as-actions {
+  display: inline-flex;
+  gap: 0.8rem;
+  align-items: center;
+  margin-left: auto;
+}
+
+.text-logout,
+.signed-as-actions a,
+.signed-as-actions button {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--navy);
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+}
+
+.slot-picker {
+  border: 0;
+  padding: 0.2rem 0 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.slot-picker legend {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--navy);
+}
+
+.slot-timezone,
+.slot-hint,
+.slot-label {
+  margin: 0.45rem 0;
+}
+
+.slot-timezone {
+  color: var(--navy);
+  font-weight: 600;
+}
+
+.slot-hint,
+.slot-label {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.slot-dates,
+.slot-times {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.slot-dates {
+  grid-template-columns: repeat(auto-fit, minmax(6.4rem, 1fr));
+}
+
+.slot-times {
+  grid-template-columns: repeat(auto-fit, minmax(7.2rem, 1fr));
+}
+
+.slot-card {
+  display: grid;
+  justify-items: start;
+  gap: 0.15rem;
+  min-height: 3.4rem;
+  padding: 0.75rem 0.8rem;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  cursor: pointer;
+  position: relative;
+}
+
+.slot-card input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.slot-card:has(input:focus-visible) {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
+}
+
+.slot-card.is-selected,
+.slot-card:has(input:checked) {
+  border-color: var(--navy);
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 1px var(--navy);
+}
+
+.slot-card:has(input:disabled) {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: var(--paper-3);
+}
+
+.slot-card-weekday {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.appointment-block {
+  margin: 1rem 0;
+}
+
+.assessment-panel {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
 }
 
 .turnstile {

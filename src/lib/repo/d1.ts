@@ -5,7 +5,7 @@ import {
   newInternalId,
   normalizePublicId,
 } from "@/lib/ids";
-import type { ApplicationRepository } from "@/lib/repo/interface";
+import type { ApplicationFulfillmentPatch, ApplicationRepository } from "@/lib/repo/interface";
 import type {
   Application,
   AuditEvent,
@@ -64,6 +64,15 @@ function applicationFrom(row: Record<string, unknown> | null): Application | nul
     estimatedUsOop: String(row.estimated_us_oop || ""),
     preferredTimeline: String(row.preferred_timeline || ""),
     preferredConsultationDate: String(row.preferred_consultation_date || ""),
+    appointmentTime: String(row.appointment_time || ""),
+    appointmentTimezone: String(row.appointment_timezone || ""),
+    meetingProvider: String(row.meeting_provider || ""),
+    meetingId: String(row.meeting_id || ""),
+    meetingJoinUrl: String(row.meeting_join_url || ""),
+    meetingStartsAt: String(row.meeting_starts_at || ""),
+    meetingTimezone: String(row.meeting_timezone || ""),
+    meetingStatus: (row.meeting_status ? String(row.meeting_status) : "") as Application["meetingStatus"],
+    notificationStatus: (row.notification_status ? String(row.notification_status) : "") as Application["notificationStatus"],
     paymentStatus: String(row.payment_status) as Application["paymentStatus"],
     paymentReference: String(row.payment_reference || ""),
     paymentProvider: row.payment_provider ? String(row.payment_provider) : undefined,
@@ -198,6 +207,15 @@ export function createD1Repository(db: D1Like, onPersist?: (app: Application) =>
         estimatedUsOop: input.estimatedUsOop,
         preferredTimeline: input.preferredTimeline,
         preferredConsultationDate: input.preferredConsultationDate,
+        appointmentTime: input.appointmentTime || "",
+        appointmentTimezone: input.appointmentTimezone || "",
+        meetingProvider: "",
+        meetingId: "",
+        meetingJoinUrl: "",
+        meetingStartsAt: "",
+        meetingTimezone: "",
+        meetingStatus: "",
+        notificationStatus: "",
         paymentStatus: "PENDING",
         paymentReference: "",
         sku: input.sku,
@@ -219,10 +237,10 @@ export function createD1Repository(db: D1Like, onPersist?: (app: Application) =>
           `INSERT INTO applications (
             id, identity_id, application_id, conversation_verification_id, first_name, last_name, email, phone,
             us_state, country, procedure_category, procedure, insurance_status, estimated_us_oop, preferred_timeline,
-            preferred_consultation_date, payment_status, payment_reference, sku, amount_cents, currency,
-            application_status, assigned_coordinator, last_contact_date, next_followup_date, source, notes,
-            sheets_sync_status, sheets_sync_error, created_at, updated_at
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+            preferred_consultation_date, appointment_time, appointment_timezone, payment_status, payment_reference,
+            sku, amount_cents, currency, application_status, assigned_coordinator, last_contact_date, next_followup_date,
+            source, notes, sheets_sync_status, sheets_sync_error, created_at, updated_at, meeting_status, notification_status
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
         )
         .bind(
           app.id,
@@ -241,6 +259,8 @@ export function createD1Repository(db: D1Like, onPersist?: (app: Application) =>
           app.estimatedUsOop,
           app.preferredTimeline,
           app.preferredConsultationDate,
+          app.appointmentTime,
+          app.appointmentTimezone,
           app.paymentStatus,
           app.paymentReference,
           app.sku,
@@ -255,7 +275,9 @@ export function createD1Repository(db: D1Like, onPersist?: (app: Application) =>
           app.sheetsSyncStatus,
           app.sheetsSyncError,
           app.createdAt,
-          app.updatedAt
+          app.updatedAt,
+          app.meetingStatus || null,
+          app.notificationStatus || null
         )
         .run();
       await writeAudit("application_created", app.applicationId, {
@@ -432,12 +454,6 @@ export function createD1Repository(db: D1Like, onPersist?: (app: Application) =>
           applicationId: app.applicationId,
           identityId: app.identityId,
         });
-        if (app.preferredConsultationDate) {
-          await writeAudit("consultation_booked", "pending_calendar", {
-            applicationId: app.applicationId,
-            identityId: app.identityId,
-          });
-        }
       }
       return project(app);
     },
@@ -483,6 +499,66 @@ export function createD1Repository(db: D1Like, onPersist?: (app: Application) =>
         identityId: app.identityId,
       });
       return project(app);
+    },
+
+    async saveApplicationFulfillment(id, patch: ApplicationFulfillmentPatch) {
+      const app = applicationFrom(await db.prepare("SELECT * FROM applications WHERE id = ?").bind(id).first());
+      if (!app) return null;
+      if (patch.appointmentTime !== undefined) app.appointmentTime = patch.appointmentTime;
+      if (patch.appointmentTimezone !== undefined) app.appointmentTimezone = patch.appointmentTimezone;
+      if (patch.meetingProvider !== undefined) app.meetingProvider = patch.meetingProvider;
+      if (patch.meetingId !== undefined) app.meetingId = patch.meetingId;
+      if (patch.meetingJoinUrl !== undefined) app.meetingJoinUrl = patch.meetingJoinUrl;
+      if (patch.meetingStartsAt !== undefined) app.meetingStartsAt = patch.meetingStartsAt;
+      if (patch.meetingTimezone !== undefined) app.meetingTimezone = patch.meetingTimezone;
+      if (patch.meetingStatus !== undefined) app.meetingStatus = patch.meetingStatus;
+      if (patch.notificationStatus !== undefined) app.notificationStatus = patch.notificationStatus;
+      if (patch.applicationStatus !== undefined) app.applicationStatus = patch.applicationStatus;
+      app.updatedAt = now();
+      await db
+        .prepare(
+          `UPDATE applications SET appointment_time = ?, appointment_timezone = ?, meeting_provider = ?,
+           meeting_id = ?, meeting_join_url = ?, meeting_starts_at = ?, meeting_timezone = ?, meeting_status = ?,
+           notification_status = ?, application_status = ?, updated_at = ? WHERE id = ?`
+        )
+        .bind(
+          app.appointmentTime || null,
+          app.appointmentTimezone || null,
+          app.meetingProvider || null,
+          app.meetingId || null,
+          app.meetingJoinUrl || null,
+          app.meetingStartsAt || null,
+          app.meetingTimezone || null,
+          app.meetingStatus || null,
+          app.notificationStatus || null,
+          app.applicationStatus,
+          app.updatedAt,
+          app.id
+        )
+        .run();
+      return project(app);
+    },
+
+    async listPaidSlotOccupancy() {
+      try {
+        const { results } = await db
+          .prepare(
+            `SELECT preferred_consultation_date AS date, appointment_time AS time, COUNT(*) AS n
+             FROM applications
+             WHERE payment_status = 'PAID'
+               AND preferred_consultation_date != ''
+               AND IFNULL(appointment_time, '') != ''
+             GROUP BY preferred_consultation_date, appointment_time`
+          )
+          .all<{ date: string; time: string; n: number }>();
+        return results.map((row) => ({
+          date: String(row.date),
+          time: String(row.time),
+          count: Number(row.n),
+        }));
+      } catch {
+        return [];
+      }
     },
 
     async bookConsultation(applicationId, whenIso) {

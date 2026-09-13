@@ -6,9 +6,30 @@ import type {
   ContactMessage,
   CreateApplicationInput,
   Identity,
+  MeetingStatus,
+  NotificationStatus,
   PaymentRecord,
   PipelineStatus,
 } from "@/lib/repo/types";
+
+export type OccupiedSlotCount = {
+  date: string;
+  time: string;
+  count: number;
+};
+
+export type ApplicationFulfillmentPatch = {
+  appointmentTime?: string;
+  appointmentTimezone?: string;
+  meetingProvider?: string;
+  meetingId?: string;
+  meetingJoinUrl?: string;
+  meetingStartsAt?: string;
+  meetingTimezone?: string;
+  meetingStatus?: MeetingStatus;
+  notificationStatus?: NotificationStatus;
+  applicationStatus?: PipelineStatus;
+};
 
 export type ApplicationRepository = {
   upsertIdentity(input: {
@@ -42,6 +63,8 @@ export type ApplicationRepository = {
   updateStatus(applicationId: string, status: PipelineStatus, notes?: string): Promise<Application | null>;
   assignCoordinator(applicationId: string, coordinator: string): Promise<Application | null>;
   bookConsultation(applicationId: string, whenIso: string): Promise<Application | null>;
+  saveApplicationFulfillment(id: string, patch: ApplicationFulfillmentPatch): Promise<Application | null>;
+  listPaidSlotOccupancy(): Promise<OccupiedSlotCount[]>;
 
   listPayments(applicationId: string): Promise<PaymentRecord[]>;
   appendAudit(event: AuditEventName, detail?: string, refs?: { applicationId?: string; identityId?: string }): Promise<AuditEvent>;

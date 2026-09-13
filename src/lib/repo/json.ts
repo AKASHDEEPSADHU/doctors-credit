@@ -8,6 +8,7 @@ import {
   normalizePublicId,
 } from "@/lib/ids";
 import type { ApplicationRepository } from "@/lib/repo/interface";
+import type { ApplicationFulfillmentPatch } from "@/lib/repo/interface";
 import type {
   Application,
   AuditEvent,
@@ -44,6 +45,21 @@ function now() {
   return new Date().toISOString();
 }
 
+function withAppointmentDefaults(app: Application): Application {
+  return {
+    ...app,
+    appointmentTime: app.appointmentTime || "",
+    appointmentTimezone: app.appointmentTimezone || "",
+    meetingProvider: app.meetingProvider || "",
+    meetingId: app.meetingId || "",
+    meetingJoinUrl: app.meetingJoinUrl || "",
+    meetingStartsAt: app.meetingStartsAt || "",
+    meetingTimezone: app.meetingTimezone || "",
+    meetingStatus: app.meetingStatus || "",
+    notificationStatus: app.notificationStatus || "",
+  };
+}
+
 export function createJsonRepository(filePath: string, onPersist?: (app: Application) => Promise<void>): ApplicationRepository {
   const resolved = path.isAbsolute(filePath)
     ? filePath
@@ -51,7 +67,9 @@ export function createJsonRepository(filePath: string, onPersist?: (app: Applica
   function load(): DB {
     try {
       if (!existsSync(resolved)) return { ...EMPTY, identities: [], applications: [], payments: [], audit: [], calls: [], contacts: [] };
-      return { ...EMPTY, ...JSON.parse(readFileSync(resolved, "utf8")) };
+      const parsed = { ...EMPTY, ...JSON.parse(readFileSync(resolved, "utf8")) };
+      parsed.applications = parsed.applications.map(withAppointmentDefaults);
+      return parsed;
     } catch {
       return { ...EMPTY, identities: [], applications: [], payments: [], audit: [], calls: [], contacts: [] };
     }
@@ -134,6 +152,15 @@ export function createJsonRepository(filePath: string, onPersist?: (app: Applica
         estimatedUsOop: input.estimatedUsOop,
         preferredTimeline: input.preferredTimeline,
         preferredConsultationDate: input.preferredConsultationDate,
+        appointmentTime: input.appointmentTime || "",
+        appointmentTimezone: input.appointmentTimezone || "",
+        meetingProvider: "",
+        meetingId: "",
+        meetingJoinUrl: "",
+        meetingStartsAt: "",
+        meetingTimezone: "",
+        meetingStatus: "",
+        notificationStatus: "",
         paymentStatus: "PENDING",
         paymentReference: "",
         sku: input.sku,
@@ -276,16 +303,6 @@ export function createJsonRepository(filePath: string, onPersist?: (app: Applica
           detail: app.paymentReference,
           createdAt: app.updatedAt,
         });
-        if (app.preferredConsultationDate) {
-          db.audit.push({
-            id: newInternalId(),
-            applicationId: app.applicationId,
-            identityId: app.identityId,
-            event: "consultation_booked",
-            detail: "pending_calendar",
-            createdAt: app.updatedAt,
-          });
-        }
       }
       await project(app);
       save(db);
@@ -329,6 +346,42 @@ export function createJsonRepository(filePath: string, onPersist?: (app: Applica
       await project(app);
       save(db);
       return app;
+    },
+
+    async saveApplicationFulfillment(id, patch: ApplicationFulfillmentPatch) {
+      const db = load();
+      const app = db.applications.find((row) => row.id === id);
+      if (!app) return null;
+      if (patch.appointmentTime !== undefined) app.appointmentTime = patch.appointmentTime;
+      if (patch.appointmentTimezone !== undefined) app.appointmentTimezone = patch.appointmentTimezone;
+      if (patch.meetingProvider !== undefined) app.meetingProvider = patch.meetingProvider;
+      if (patch.meetingId !== undefined) app.meetingId = patch.meetingId;
+      if (patch.meetingJoinUrl !== undefined) app.meetingJoinUrl = patch.meetingJoinUrl;
+      if (patch.meetingStartsAt !== undefined) app.meetingStartsAt = patch.meetingStartsAt;
+      if (patch.meetingTimezone !== undefined) app.meetingTimezone = patch.meetingTimezone;
+      if (patch.meetingStatus !== undefined) app.meetingStatus = patch.meetingStatus;
+      if (patch.notificationStatus !== undefined) app.notificationStatus = patch.notificationStatus;
+      if (patch.applicationStatus !== undefined) app.applicationStatus = patch.applicationStatus;
+      app.updatedAt = now();
+      await project(app);
+      save(db);
+      return app;
+    },
+
+    async listPaidSlotOccupancy() {
+      const counts = new Map<string, { date: string; time: string; count: number }>();
+      for (const app of load().applications) {
+        if (app.paymentStatus !== "PAID" || !app.preferredConsultationDate || !app.appointmentTime) continue;
+        const key = `${app.preferredConsultationDate}T${app.appointmentTime}`;
+        const current = counts.get(key) || {
+          date: app.preferredConsultationDate,
+          time: app.appointmentTime,
+          count: 0,
+        };
+        current.count += 1;
+        counts.set(key, current);
+      }
+      return [...counts.values()];
     },
 
     async bookConsultation(applicationId, whenIso) {

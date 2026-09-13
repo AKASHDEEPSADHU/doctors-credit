@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { firstError, parseApplicationInput } from "@/lib/application-fields";
-import { sendApplicationConfirmationOnce } from "@/lib/email";
+import { scheduleTimezone } from "@/lib/appointment-slots";
+import { fulfillPaidApplication } from "@/lib/fulfillment";
 import { secureCookiesEnabled } from "@/lib/env";
 import { requestOrigin, safeNext } from "@/lib/origin";
 import { evaluateCheckoutAccess, resolveCheckoutProduct } from "@/lib/checkout-policy";
@@ -34,6 +35,7 @@ function readFields(source: FormData | Record<string, unknown>) {
     estimatedUsOop: get("estimatedUsOop"),
     preferredTimeline: get("preferredTimeline"),
     preferredConsultationDate: get("preferredConsultationDate"),
+    appointmentTime: get("appointmentTime"),
     sku: get("sku") || "orientation",
     turnstile: get("cf-turnstile-response") || get("turnstileToken"),
   };
@@ -82,7 +84,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Please complete the verification check." }, { status: 400 });
   }
 
-  const parsed = parseApplicationInput(fields);
+  const occupied = await repo.listPaidSlotOccupancy();
+  const parsed = parseApplicationInput(fields, occupied);
   if (Object.keys(parsed.errors).length) {
     if (asForm) return failForm(origin, firstError(parsed.errors));
     return NextResponse.json({ error: firstError(parsed.errors), fields: parsed.errors }, { status: 400 });
@@ -116,6 +119,8 @@ export async function POST(req: NextRequest) {
     estimatedUsOop: parsed.value.estimatedUsOop,
     preferredTimeline: parsed.value.preferredTimeline,
     preferredConsultationDate: parsed.value.preferredConsultationDate,
+    appointmentTime: parsed.value.appointmentTime,
+    appointmentTimezone: scheduleTimezone(),
     sku: pkg.sku,
     amountCents: pkg.amountCents,
     source: "dcredit.in/enroll",
@@ -139,13 +144,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "The application could not be saved." }, { status: 500 });
     }
     try {
-      const mail = await sendApplicationConfirmationOnce(paid, false);
-      await repo.appendAudit(mail.sent ? "email_sent" : "email_failed", mail.sent ? "sent" : mail.reason, {
-        applicationId: paid.applicationId,
-        identityId: paid.identityId,
-      });
+      await fulfillPaidApplication(repo, paid);
     } catch {
-      await repo.appendAudit("email_failed", "provider", {
+      await repo.appendAudit("meeting_failed", "fulfillment", {
         applicationId: paid.applicationId,
         identityId: paid.identityId,
       });

@@ -23,7 +23,10 @@ async function projectToSheets(app: Application) {
 let cached: ApplicationRepository | null = null;
 
 export async function getRepository(): Promise<ApplicationRepository> {
-  if (cached) return cached;
+  if (cached && typeof cached.listPaidSlotOccupancy === "function") {
+    return cached;
+  }
+  cached = null;
   const d1 = await getD1();
   if (d1) {
     const { createD1Repository } = await import("@/lib/repo/d1");

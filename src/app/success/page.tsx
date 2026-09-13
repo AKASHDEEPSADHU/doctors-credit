@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { confirmationAppointment } from "@/lib/confirmation-copy";
 import { getRepository } from "@/lib/repo";
 import { getSession } from "@/lib/session";
 import { loadConfirmedApplication } from "@/lib/success-state";
@@ -12,14 +13,42 @@ export default async function SuccessPage() {
 
   if (!paid || paid.paymentStatus !== "PAID") {
     return (
-      <Pending copy="Payment is still processing. We only show your Application ID after Dodo Payments confirms the charge on our servers. If you just paid, refresh this page in a few seconds. Do not pay again." />
+      <Pending copy="Payment is still processing. We only confirm your assessment after Dodo Payments signs a payment.succeeded webhook. If you just paid, refresh this page in a few seconds. Do not pay again." />
     );
   }
 
+  const appointment = confirmationAppointment(paid);
+
   return (
     <main id="main" className="legal confirm-page">
-      <p className="eyebrow">Application received</p>
-      <h1>Your DCredit application has been received.</h1>
+      <p className="eyebrow">Assessment confirmed</p>
+      <h1>Thank you — your $5 Initial Assessment is confirmed.</h1>
+      {appointment ? (
+        <div className="appointment-block">
+          <p>Your conversation is scheduled for:</p>
+          <p>
+            <strong>{appointment.dateLabel}</strong>
+            <br />
+            <strong>
+              {appointment.timeLabel} {appointment.timezoneLabel}
+            </strong>
+          </p>
+        </div>
+      ) : null}
+      {appointment?.meetingReady ? (
+        <>
+          <p>
+            Join your DCredit conversation:{" "}
+            <a href={appointment.joinUrl}>Join Zoom meeting</a>
+          </p>
+          <p>Please join a few minutes before your scheduled time.</p>
+        </>
+      ) : (
+        <p>
+          Payment received. We&apos;re finalizing your conversation details. Your
+          appointment information will appear here once confirmed.
+        </p>
+      )}
       <div className="codes">
         <div>
           <span className="tag">Application ID</span>
@@ -31,18 +60,15 @@ export default async function SuccessPage() {
         </div>
       </div>
       <p>
-        Keep these details available when communicating with DCredit. We may ask
-        for your Conversation Verification ID to verify your case.
+        This conversation is with a DCredit care coordinator. It is not a medical
+        diagnosis or clinical evaluation.
       </p>
       <p>
         DCredit will never ask for your password, banking PIN, card CVV or
         one-time authentication code.
       </p>
       <p className="fine">
-        Application status: {paid.applicationStatus}. A coordinator will use your
-        preferred conversation date where possible. The $5 Initial Assessment is
-        a conversation with DCredit, not a clinical evaluation. You can also{" "}
-        <a href="/account">open your file</a> or{" "}
+        You can also <a href="/account">open My Account</a> or{" "}
         <a href="/verify">verify a DCredit communication</a>.
       </p>
     </main>

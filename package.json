@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test src/lib/ids.test.ts src/lib/repo/json.test.ts src/lib/env.test.ts src/lib/payments.test.ts src/app/api/webhook/dodo/route.test.ts",
+    "test": "tsx --test src/lib/ids.test.ts src/lib/repo/json.test.ts src/lib/env.test.ts src/lib/payments.test.ts src/lib/appointment-slots.test.ts src/lib/account-view.test.ts src/lib/session.test.ts src/lib/fulfillment.test.ts src/app/api/webhook/dodo/route.test.ts",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "deploy:staging": "opennextjs-cloudflare build && opennextjs-cloudflare deploy -- --env staging",

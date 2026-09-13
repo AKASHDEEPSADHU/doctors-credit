@@ -1,7 +1,7 @@
 import { Webhooks } from "@dodopayments/nextjs";
 import { NextRequest, NextResponse } from "next/server";
-import { sendApplicationConfirmationOnce } from "@/lib/email";
 import { dodoWebhookKey } from "@/lib/dodo";
+import { fulfillPaidApplication, type FulfillmentDeps } from "@/lib/fulfillment";
 import { applyPaymentFailed, applyPaymentSucceeded } from "@/lib/payment-events";
 import { tooLarge } from "@/lib/rate-limit";
 import { getRepository } from "@/lib/repo";
@@ -10,6 +10,8 @@ import type { ApplicationRepository } from "@/lib/repo/interface";
 type WebhookDeps = {
   getRepository: () => Promise<ApplicationRepository>;
   webhookKey: () => string;
+  fulfill?: typeof fulfillPaidApplication;
+  fulfillment?: FulfillmentDeps;
 };
 
 const defaultDeps: WebhookDeps = {
@@ -17,24 +19,18 @@ const defaultDeps: WebhookDeps = {
   webhookKey: dodoWebhookKey,
 };
 
-async function confirmAndNotify(repo: ApplicationRepository, payload: unknown) {
+async function confirmAndFulfill(repo: ApplicationRepository, payload: unknown, deps: WebhookDeps) {
   const result = await applyPaymentSucceeded(repo, payload);
   if (result.status === "not_found" || !result.application) {
     throw new Error("Application not found.");
   }
-  const paid = result.application;
+  const fulfill = deps.fulfill || fulfillPaidApplication;
   try {
-    const mail = await sendApplicationConfirmationOnce(paid, result.status === "already_paid");
-    if (mail.reason !== "already_confirmed") {
-      await repo.appendAudit(mail.sent ? "email_sent" : "email_failed", mail.sent ? "sent" : mail.reason, {
-        applicationId: paid.applicationId,
-        identityId: paid.identityId,
-      });
-    }
+    await fulfill(repo, result.application, deps.fulfillment);
   } catch {
-    await repo.appendAudit("email_failed", "provider", {
-      applicationId: paid.applicationId,
-      identityId: paid.identityId,
+    await repo.appendAudit("meeting_failed", "fulfillment", {
+      applicationId: result.application.applicationId,
+      identityId: result.application.identityId,
     });
   }
   await repo.retryPendingSheetsSync();
@@ -53,7 +49,7 @@ export function createDodoWebhookPost(deps: WebhookDeps = defaultDeps) {
       webhookKey,
       onPaymentSucceeded: async (payload) => {
         const repo = await deps.getRepository();
-        await confirmAndNotify(repo, payload);
+        await confirmAndFulfill(repo, payload, deps);
       },
       onPaymentFailed: async (payload) => {
         const repo = await deps.getRepository();

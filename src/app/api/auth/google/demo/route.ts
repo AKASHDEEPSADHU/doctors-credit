@@ -25,7 +25,9 @@ export async function POST(req: NextRequest) {
     name: "Demo Google",
     googleSub: "demo-google-local",
   });
-  const res = NextResponse.redirect(new URL(next, origin), 303);
+  const dest = new URL(next, origin);
+  dest.searchParams.set("signedIn", "1");
+  const res = NextResponse.redirect(dest, 303);
   await setSession({ patientId: patient.id, email: patient.email }, res);
   return res;
 }

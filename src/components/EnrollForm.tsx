@@ -1,3 +1,4 @@
+import AppointmentSlotPicker from "@/components/AppointmentSlotPicker";
 import GoogleButton from "@/components/GoogleButton";
 import TurnstileField from "@/components/TurnstileField";
 import {
@@ -6,8 +7,10 @@ import {
   TIMELINES,
   splitName,
 } from "@/lib/application-fields";
+import type { SlotCalendar } from "@/lib/appointment-slots";
 import { CURRENT_SKU, currentPackage } from "@/lib/packages";
 import { US_STATES } from "@/lib/us-states";
+import Link from "next/link";
 
 type PatientLite = {
   name: string;
@@ -19,10 +22,14 @@ type PatientLite = {
 export default function EnrollForm({
   patient,
   error,
+  calendar,
+  justSignedIn,
 }: {
   patient: PatientLite | null;
   sku?: string;
   error?: string;
+  calendar: SlotCalendar;
+  justSignedIn?: boolean;
 }) {
   const assessment = currentPackage();
   if (!patient) {
@@ -50,9 +57,20 @@ export default function EnrollForm({
   return (
     <form className="enroll" action="/api/checkout" method="post">
       {error ? <p className="enroll-error">{error}</p> : null}
+      {justSignedIn ? (
+        <p className="welcome">You are signed in. Choose a conversation time, then continue to the $5 Assessment.</p>
+      ) : null}
       <p className="signed-as">
         Signed in as <strong>{patient.name}</strong>
         <span> · {patient.email}</span>
+        <span className="signed-as-actions">
+          <Link href="/account">My Account</Link>
+          <form action="/api/logout" method="post">
+            <button className="text-logout" type="submit">
+              Log out
+            </button>
+          </form>
+        </span>
       </p>
       <input type="hidden" name="sku" value={CURRENT_SKU} />
       <div className="treat-card" style={{ marginBottom: "1.2rem" }}>
@@ -148,10 +166,7 @@ export default function EnrollForm({
             ))}
           </select>
         </label>
-        <label>
-          Preferred conversation date
-          <input name="preferredConsultationDate" type="date" />
-        </label>
+        <AppointmentSlotPicker calendar={calendar} />
       </div>
       <TurnstileField />
       <button className="btn-solid" type="submit">

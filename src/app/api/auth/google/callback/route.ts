@@ -44,7 +44,9 @@ export async function GET(req: NextRequest) {
     googleSub: google.sub,
   });
 
-  const res = NextResponse.redirect(new URL(safeNext(oauth.next), origin), 303);
+  const dest = new URL(safeNext(oauth.next), origin);
+  dest.searchParams.set("signedIn", "1");
+  const res = NextResponse.redirect(dest, 303);
   clearOauthCookie(res);
   await setSession({ patientId: patient.id, email: patient.email }, res);
   return res;

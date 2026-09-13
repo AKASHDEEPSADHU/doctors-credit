@@ -52,6 +52,9 @@ export default function Nav({ signedIn }: { signedIn: boolean }) {
         <Link className="nav-cta" href="/enroll">
           Start my $5 Assessment
         </Link>
+        <Link className="nav-account" href={signedIn ? "/account" : "/signin?next=%2Faccount"}>
+          {signedIn ? "My Account" : "Sign in"}
+        </Link>
       </nav>
       <button
         className="nav-toggle"
@@ -75,7 +78,7 @@ export default function Nav({ signedIn }: { signedIn: boolean }) {
               Start my $5 Assessment
             </Link>
             <Link href={signedIn ? "/account" : "/signin?next=%2Faccount"} onClick={() => setOpen(false)}>
-              {signedIn ? "Your file" : "Sign in"}
+              {signedIn ? "My Account" : "Sign in"}
             </Link>
           </div>
         </div>

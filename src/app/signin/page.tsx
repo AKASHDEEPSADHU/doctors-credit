@@ -2,6 +2,9 @@ import GoogleButton from "@/components/GoogleButton";
 import TurnstileField from "@/components/TurnstileField";
 import { demoGoogleAllowed, googleConfigured } from "@/lib/google";
 import { safeNext } from "@/lib/origin";
+import { getSession } from "@/lib/session";
+import { getPatientById } from "@/lib/store";
+import Link from "next/link";
 
 export default async function SignInPage({
   searchParams,
@@ -12,6 +15,30 @@ export default async function SignInPage({
   const next = safeNext(q.next);
   const demo = demoGoogleAllowed();
   const live = googleConfigured();
+  const session = await getSession();
+  const patient = session ? await getPatientById(session.patientId) : null;
+
+  if (patient) {
+    return (
+      <main id="main" className="signin">
+        <p className="eyebrow">My Account</p>
+        <h1>You are signed in.</h1>
+        <p className="lede">
+          Signed in as <strong>{patient.name}</strong> · {patient.email}
+        </p>
+        <p>
+          <Link className="btn-solid" href={next === "/signin" ? "/account" : next}>
+            Continue
+          </Link>
+        </p>
+        <form action="/api/logout" method="post">
+          <button className="btn-ghost" type="submit">
+            Log out
+          </button>
+        </form>
+      </main>
+    );
+  }
   const errors: Record<string, string> = {
     google_unconfigured:
       "Google Sign-In is not configured yet. Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.",

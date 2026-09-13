@@ -35,9 +35,20 @@ export async function setSession(payload: Session, res?: NextResponse) {
   jar.set(COOKIE, token, cookieOpts());
 }
 
-export async function clearSession() {
+export const SESSION_COOKIE = COOKIE;
+
+export function clearedSessionCookie() {
+  return { name: COOKIE, value: "", ...cookieOpts(), maxAge: 0 };
+}
+
+export async function clearSession(res?: NextResponse) {
+  const opts = { ...cookieOpts(), maxAge: 0 };
+  if (res) {
+    res.cookies.set(COOKIE, "", opts);
+    return;
+  }
   const jar = await cookies();
-  jar.set(COOKIE, "", { ...cookieOpts(), maxAge: 0 });
+  jar.set(COOKIE, "", opts);
 }
 
 export async function getSession(): Promise<Session | null> {

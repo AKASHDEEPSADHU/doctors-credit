@@ -20,6 +20,10 @@ export type PaymentStatus = "UNPAID" | "PENDING" | "PAID" | "FAILED" | "REFUNDED
 
 export type SheetsSyncStatus = "pending" | "synced" | "failed";
 
+export type MeetingStatus = "" | "pending" | "provisioned" | "failed" | "slot_unavailable";
+
+export type NotificationStatus = "" | "pending" | "sent" | "skipped" | "failed";
+
 export type Identity = {
   id: string;
   email: string;
@@ -47,6 +51,15 @@ export type Application = {
   estimatedUsOop: string;
   preferredTimeline: string;
   preferredConsultationDate: string;
+  appointmentTime: string;
+  appointmentTimezone: string;
+  meetingProvider: string;
+  meetingId: string;
+  meetingJoinUrl: string;
+  meetingStartsAt: string;
+  meetingTimezone: string;
+  meetingStatus: MeetingStatus;
+  notificationStatus: NotificationStatus;
   paymentStatus: PaymentStatus;
   paymentReference: string;
   paymentProvider?: string;
@@ -92,6 +105,8 @@ export type AuditEventName =
   | "payment_initiated"
   | "payment_confirmed"
   | "consultation_booked"
+  | "meeting_provisioned"
+  | "meeting_failed"
   | "application_status_changed"
   | "coordinator_assigned"
   | "verification_performed"
@@ -133,6 +148,8 @@ export type CreateApplicationInput = {
   estimatedUsOop: string;
   preferredTimeline: string;
   preferredConsultationDate: string;
+  appointmentTime?: string;
+  appointmentTimezone?: string;
   sku: string;
   amountCents: number;
   currency?: string;
@@ -266,5 +283,10 @@ export function publicApplication(app: Application) {
     currency: app.currency,
     createdAt: app.createdAt,
     preferredConsultationDate: app.preferredConsultationDate,
+    appointmentTime: app.appointmentTime,
+    appointmentTimezone: app.appointmentTimezone,
+    meetingStatus: app.meetingStatus,
+    meetingJoinUrl:
+      app.paymentStatus === "PAID" && app.meetingStatus === "provisioned" ? app.meetingJoinUrl : "",
   };
 }
