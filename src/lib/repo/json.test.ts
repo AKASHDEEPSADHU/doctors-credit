@@ -51,5 +51,15 @@ describe("ApplicationRepository (local durable store)", () => {
     assert.deepEqual(ok, { ok: true });
     const miss = await repo.verifyCallId("CALL-ZZZZZ");
     assert.equal(miss.ok, false);
+    const replay = await repo.verifyCallId(call.callId);
+    assert.equal(replay.ok, false);
+  });
+
+  it("rejects an expired call ID", async () => {
+    const file = path.join(mkdtempSync(path.join(tmpdir(), "dc-")), "store.json");
+    const repo = createJsonRepository(file);
+    const call = await repo.createCallVerification("DC-000001", -1);
+    const result = await repo.verifyCallId(call.callId);
+    assert.equal(result.ok, false);
   });
 });

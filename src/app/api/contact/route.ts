@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { allowRequest, tooLarge } from "@/lib/rate-limit";
 import { getRepository } from "@/lib/repo";
 import { clientIp, verifyTurnstile } from "@/lib/turnstile";
 
 export async function POST(req: NextRequest) {
+  if (tooLarge(req, 12_000)) {
+    return NextResponse.json({ error: "Request too large." }, { status: 413 });
+  }
+  if (!allowRequest(req.headers, "contact", 5, 15 * 60 * 1000)) {
+    return NextResponse.json({ error: "Please wait and try again." }, { status: 429 });
+  }
   const fd = await req.formData().catch(() => null);
   if (!fd) return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   const token = String(fd.get("cf-turnstile-response") || fd.get("turnstileToken") || "");
@@ -17,7 +24,7 @@ export async function POST(req: NextRequest) {
   }
   if (/(mri|ct scan|x-ray|prescription|diagnos)/i.test(message)) {
     return NextResponse.json(
-      { error: "Please do not send medical records or diagnoses here. Use the $5 assessment instead." },
+      { error: "Please do not send medical records or diagnoses here. The $5 Initial Assessment also cannot accept imaging, prescriptions or detailed diagnoses." },
       { status: 400 }
     );
   }

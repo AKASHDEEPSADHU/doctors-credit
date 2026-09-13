@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isApplicationId, normalizePublicId } from "@/lib/ids";
+import { allowRequest, tooLarge } from "@/lib/rate-limit";
 import { getRepository } from "@/lib/repo";
 import { staffAuthenticated } from "@/lib/staff-session";
 
 export async function POST(req: NextRequest) {
+  if (tooLarge(req, 8_000)) return NextResponse.json({ error: "Invalid request." }, { status: 413 });
+  if (!allowRequest(req.headers, "staff-search", 30, 10 * 60 * 1000)) {
+    return NextResponse.json({ error: "Please wait and try again." }, { status: 429 });
+  }
   if (!(await staffAuthenticated())) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }

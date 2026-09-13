@@ -43,8 +43,8 @@ export default function ContactForm() {
       </button>
       {status !== "idle" ? <p className={status === "ok" ? "fine" : "enroll-error"}>{message}</p> : null}
       <p className="fine">
-        Do not include medical records, imaging, prescriptions or a detailed
-        diagnosis in this form.
+        Please do not submit medical records, diagnoses, prescriptions, imaging
+        or other sensitive clinical documents through this form.
       </p>
     </form>
   );

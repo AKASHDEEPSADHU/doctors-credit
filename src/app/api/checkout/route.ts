@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { firstError, parseApplicationInput } from "@/lib/application-fields";
-import { sendApplicationConfirmation } from "@/lib/email";
+import { sendApplicationConfirmationOnce } from "@/lib/email";
+import { secureCookiesEnabled } from "@/lib/env";
 import { requestOrigin, safeNext } from "@/lib/origin";
-import { packageBySku } from "@/lib/packages";
+import { purchasablePackage } from "@/lib/packages";
+import { allowRequest, tooLarge } from "@/lib/rate-limit";
 import { getRepository } from "@/lib/repo";
 import { getSession } from "@/lib/session";
 import { createCheckout, demoPayments } from "@/lib/stripe";
@@ -38,6 +40,13 @@ function readFields(source: FormData | Record<string, unknown>) {
 
 export async function POST(req: NextRequest) {
   const origin = requestOrigin(req);
+  if (tooLarge(req, 32_000)) {
+    return NextResponse.json({ error: "Request too large." }, { status: 413 });
+  }
+  if (!allowRequest(req.headers, "checkout", 8, 10 * 60 * 1000)) {
+    return NextResponse.json({ error: "Please wait and try again." }, { status: 429 });
+  }
+
   const session = await getSession();
   if (!session) {
     const next = encodeURIComponent("/enroll");
@@ -78,10 +87,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: firstError(parsed.errors), fields: parsed.errors }, { status: 400 });
   }
 
-  const pkg = packageBySku(parsed.value.sku);
+  const pkg = purchasablePackage(parsed.value.sku);
   if (!pkg) {
-    if (asForm) return failForm(origin, "Choose a package.");
-    return NextResponse.json({ error: "Choose a package." }, { status: 400 });
+    if (asForm) return failForm(origin, "That service is not available.");
+    return NextResponse.json({ error: "That service is not available." }, { status: 400 });
   }
 
   const identity = await repo.upsertIdentity({
@@ -114,7 +123,7 @@ export async function POST(req: NextRequest) {
   const cookie = {
     httpOnly: true,
     sameSite: "lax" as const,
-    secure: process.env.NODE_ENV === "production",
+    secure: secureCookiesEnabled(),
     path: "/",
     maxAge: 60 * 60 * 24,
   };
@@ -129,7 +138,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "The application could not be saved." }, { status: 500 });
     }
     try {
-      const mail = await sendApplicationConfirmation(paid);
+      const mail = await sendApplicationConfirmationOnce(paid, false);
       await repo.appendAudit(mail.sent ? "email_sent" : "email_failed", mail.sent ? "sent" : mail.reason, {
         applicationId: paid.applicationId,
         identityId: paid.identityId,

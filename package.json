@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test src/lib/ids.test.ts src/lib/repo/json.test.ts",
+    "test": "tsx --test src/lib/ids.test.ts src/lib/repo/json.test.ts src/lib/env.test.ts",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "deploy:staging": "opennextjs-cloudflare build && opennextjs-cloudflare deploy -- --env staging",

@@ -16,6 +16,14 @@ function confirmationBody(app: Application) {
   ].join("\n");
 }
 
+export async function sendApplicationConfirmationOnce(
+  app: Application,
+  alreadyPaid: boolean
+) {
+  if (alreadyPaid) return { sent: false as const, reason: "already_confirmed" as const };
+  return sendApplicationConfirmation(app);
+}
+
 export async function sendApplicationConfirmation(app: Application) {
   const key = process.env.RESEND_API_KEY;
   const from = process.env.TRANSACTIONAL_FROM_EMAIL || `DCredit <noreply@${SITE.domain}>`;

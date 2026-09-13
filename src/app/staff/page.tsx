@@ -26,7 +26,7 @@ export default async function StaffPage({
       <p>
         Search patients by Application ID only. Never discuss a case until the
         Conversation Verification ID matches. This desk does not store medical
-        records.
+        records. V1 staff authentication uses a shared operational credential.
       </p>
       {!staffConfigured() ? (
         <p className="enroll-error">Staff access is not configured in this environment.</p>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import TurnstileField from "@/components/TurnstileField";
 
@@ -31,6 +32,7 @@ const QUEUES = [
 ];
 
 export default function StaffClient({ signedIn, error }: { signedIn: boolean; error?: string }) {
+  const router = useRouter();
   const [found, setFound] = useState<Found | null>(null);
   const [callId, setCallId] = useState("");
   const [message, setMessage] = useState(error || "");
@@ -51,6 +53,12 @@ export default function StaffClient({ signedIn, error }: { signedIn: boolean; er
       return;
     }
     setFound(data);
+  }
+
+  async function logout() {
+    await fetch("/api/staff/logout", { method: "POST" });
+    router.push("/staff");
+    router.refresh();
   }
 
   async function issueCall() {
@@ -82,6 +90,11 @@ export default function StaffClient({ signedIn, error }: { signedIn: boolean; er
 
   return (
     <div className="staff">
+      <p className="fine">
+        <button className="btn-ghost" type="button" onClick={logout}>
+          Sign out
+        </button>
+      </p>
       <form className="enroll" onSubmit={search}>
         <label>
           Search by Application ID

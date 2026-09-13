@@ -6,11 +6,11 @@ export default function PartnersPage() {
       <p className="eyebrow">Disclosure</p>
       <h1>How DCredit may be paid.</h1>
       <p>
-        Patients pay for assessment, evaluation and coordination packages. Some
-        healthcare providers may compensate DCredit for coordination or referral
-        services. Where applicable, that relationship will be disclosed. We do
-        not claim complete independence if such compensation exists on a given
-        case.
+        In V1, patients pay for the $5 Initial Assessment. Later phases may
+        include evaluation and coordination services. Some healthcare providers
+        may later compensate DCredit for coordination or referral services.
+        Where applicable, that relationship will be disclosed. We do not claim
+        complete independence if such compensation exists on a given case.
       </p>
       <p>
         Any hospital referral fee or revenue-sharing model is reviewed against

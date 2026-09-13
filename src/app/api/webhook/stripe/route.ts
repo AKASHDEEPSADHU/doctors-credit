@@ -1,14 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sendApplicationConfirmation } from "@/lib/email";
+import { sendApplicationConfirmationOnce } from "@/lib/email";
 import { getRepository } from "@/lib/repo";
 import { getStripe } from "@/lib/stripe";
+import { tooLarge } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
+  if (tooLarge(req, 256_000)) {
+    return NextResponse.json({ error: "Invalid request." }, { status: 413 });
+  }
+
   const stripe = getStripe();
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!stripe || !secret) {
-    return NextResponse.json({ received: true, skipped: true });
+    return NextResponse.json({ error: "Payment confirmation is not configured." }, { status: 503 });
   }
+
   const raw = await req.text();
   const sig = req.headers.get("stripe-signature");
   if (!sig) {
@@ -26,7 +32,7 @@ export async function POST(req: NextRequest) {
 
   const session = event.data.object;
   if (session.payment_status !== "paid" && session.status !== "complete") {
-    return NextResponse.json({ received: true, ignored: "unpaid" });
+    return NextResponse.json({ received: true });
   }
 
   const repo = await getRepository();
@@ -37,9 +43,10 @@ export async function POST(req: NextRequest) {
     (meta.applicationId ? await repo.getApplicationByPublicId(meta.applicationId) : null);
 
   if (!existing) {
-    return NextResponse.json({ received: true, recoverable: true, missing: "application" }, { status: 500 });
+    return NextResponse.json({ error: "Application not found." }, { status: 500 });
   }
 
+  const alreadyPaid = existing.paymentStatus === "PAID";
   const paid = await repo.confirmPayment({
     id: existing.id,
     stripeSessionId: session.id,
@@ -47,15 +54,17 @@ export async function POST(req: NextRequest) {
     stripePaymentIntent: String(session.payment_intent || ""),
   });
   if (!paid || paid.paymentStatus !== "PAID") {
-    return NextResponse.json({ received: true, recoverable: true, persist: "failed" }, { status: 500 });
+    return NextResponse.json({ error: "Could not record payment." }, { status: 500 });
   }
 
   try {
-    const mail = await sendApplicationConfirmation(paid);
-    await repo.appendAudit(mail.sent ? "email_sent" : "email_failed", mail.sent ? "sent" : mail.reason, {
-      applicationId: paid.applicationId,
-      identityId: paid.identityId,
-    });
+    const mail = await sendApplicationConfirmationOnce(paid, alreadyPaid);
+    if (mail.reason !== "already_confirmed") {
+      await repo.appendAudit(mail.sent ? "email_sent" : "email_failed", mail.sent ? "sent" : mail.reason, {
+        applicationId: paid.applicationId,
+        identityId: paid.identityId,
+      });
+    }
   } catch {
     await repo.appendAudit("email_failed", "provider", {
       applicationId: paid.applicationId,
@@ -64,5 +73,5 @@ export async function POST(req: NextRequest) {
   }
 
   await repo.retryPendingSheetsSync();
-  return NextResponse.json({ received: true, applicationId: paid.applicationId });
+  return NextResponse.json({ received: true });
 }

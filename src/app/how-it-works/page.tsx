@@ -9,9 +9,10 @@ export default function HowItWorksPage() {
       <p className="eyebrow">The DCredit 7-step journey</p>
       <h1>Know your options before you decide.</h1>
       <p>
-        We do not begin by selling an Indian hospital. We begin by understanding
-        what treatment you need, whether it is planned, what you may actually pay
-        in the US, and whether India is a sensible option.
+        We are building DCredit in stages, starting with the decision itself.
+        The current paid service is the $5 Initial Assessment — a conversation
+        with DCredit, not a clinical assessment or medical evaluation. Later
+        steps describe how we think about the path, including future services.
       </p>
       {JOURNEY.map((s) => (
         <section key={s.n}>
@@ -22,11 +23,13 @@ export default function HowItWorksPage() {
         </section>
       ))}
       <p>
-        DCredit does not independently diagnose or prescribe treatment. Final
-        clinical terms are determined by the concerned healthcare institution.
+        DCredit does not independently diagnose, prescribe, clear patients for
+        travel or store medical records in V1. Final clinical terms are
+        determined by qualified healthcare professionals and the concerned
+        healthcare institution.
       </p>
       <Link className="btn-solid" href="/enroll">
-        Book my $5 assessment
+        Start my $5 Assessment
       </Link>
     </main>
   );

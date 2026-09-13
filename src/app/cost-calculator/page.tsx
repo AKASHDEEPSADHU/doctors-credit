@@ -11,7 +11,8 @@ export default function CostPage() {
         A $45,000 US price can become a few thousand dollars of patient
         responsibility — or remain a cash bill. India can look cheaper until you
         add flights, visa, stay, companion costs and follow-up. Potential savings
-        are not guaranteed.
+        are not guaranteed. This calculator is an estimate only — not a quote,
+        not insurance verification and not medical advice.
       </p>
       <CostCalculator />
     </main>

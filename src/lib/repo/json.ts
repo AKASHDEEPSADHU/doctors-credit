@@ -353,6 +353,7 @@ export function createJsonRepository(filePath: string, onPersist?: (app: Applica
       const db = load();
       const row = db.calls.find((c) => c.callId === normalizePublicId(callId));
       if (!row) return { ok: false };
+      if (row.consumedAt) return { ok: false };
       if (row.expiresAt < now()) return { ok: false, expired: true };
       row.consumedAt = now();
       db.audit.push({

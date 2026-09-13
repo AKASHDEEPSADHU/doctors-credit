@@ -3,9 +3,8 @@ import { appEnv, turnstileRequired } from "@/lib/env";
 export async function verifyTurnstile(token: string | null | undefined, ip?: string | null) {
   const secret = process.env.TURNSTILE_SECRET_KEY;
   if (!secret) {
-    if (appEnv() === "production" && turnstileRequired()) return false;
-    if (appEnv() === "production") return false;
-    return true;
+    if (turnstileRequired()) return false;
+    return appEnv() === "development";
   }
   if (!token) return false;
   const body = new URLSearchParams({

@@ -50,7 +50,7 @@ export default function Nav({ signedIn }: { signedIn: boolean }) {
           </Link>
         ))}
         <Link className="nav-cta" href="/enroll">
-          Start my $5 assessment
+          Start my $5 Assessment
         </Link>
       </nav>
       <button
@@ -72,7 +72,7 @@ export default function Nav({ signedIn }: { signedIn: boolean }) {
               </Link>
             ))}
             <Link className="btn-solid" href="/enroll" onClick={() => setOpen(false)}>
-              Start my $5 assessment
+              Start my $5 Assessment
             </Link>
             <Link href={signedIn ? "/account" : "/signin?next=%2Faccount"} onClick={() => setOpen(false)}>
               {signedIn ? "Your file" : "Sign in"}

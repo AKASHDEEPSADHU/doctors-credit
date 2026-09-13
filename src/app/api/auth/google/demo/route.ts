@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { demoGoogleAllowed } from "@/lib/google";
 import { requestOrigin, safeNext } from "@/lib/origin";
+import { allowRequest, tooLarge } from "@/lib/rate-limit";
 import { setSession } from "@/lib/session";
 import { upsertPatient } from "@/lib/store";
 import { clientIp, verifyTurnstile } from "@/lib/turnstile";
@@ -9,6 +10,8 @@ export async function POST(req: NextRequest) {
   const origin = requestOrigin(req);
   const fail = (reason = "demo_disabled") =>
     NextResponse.redirect(new URL(`/signin?error=${reason}`, origin), 303);
+  if (tooLarge(req, 16_000)) return fail("invalid");
+  if (!allowRequest(req.headers, "google-demo", 5, 10 * 60 * 1000)) return fail("invalid");
   if (!demoGoogleAllowed()) return fail();
 
   const fd = await req.formData().catch(() => null);

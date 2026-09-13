@@ -7,7 +7,8 @@ export default function CookiesPage() {
       <h1>Only what the file needs.</h1>
       <p>
         Essential cookies keep you signed in. We do not currently run advertising
-        cookies. If analytics are added, this page will name them.
+        cookies. If analytics are added, this page will name them. Cookies here
+        are not used to store medical records.
       </p>
     </main>
   );

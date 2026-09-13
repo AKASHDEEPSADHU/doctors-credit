@@ -9,9 +9,9 @@ export default function Footer() {
         <div className="foot-brand">
           <BrandLockup href="/" variant="footer" />
           <p>
-            A US-focused medical care coordination platform. We help you
-            understand whether planned treatment in India makes sense — and we
-            will say so when it does not.
+            A US-focused planned-care decision and coordination platform. We
+            help you understand whether planned treatment in India may make
+            sense — and we will say so when it does not.
           </p>
         </div>
         <div>
@@ -53,7 +53,7 @@ export default function Footer() {
         <p className="fine">{DISCLAIMER}</p>
         <p className="fine">
           {SITE.domain} · Not a hospital · Not a physician · Not insurance · Not
-          an emergency service
+          an emergency service · Not a diagnostic service
         </p>
       </div>
     </footer>

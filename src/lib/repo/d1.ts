@@ -14,7 +14,6 @@ import type {
   ContactMessage,
   CreateApplicationInput,
   Identity,
-  PaymentRecord,
   PipelineStatus,
 } from "@/lib/repo/types";
 
@@ -496,13 +495,18 @@ export function createD1Repository(db: D1Like, onPersist?: (app: Application) =>
         .bind(normalizePublicId(callId))
         .first();
       if (!row) return { ok: false };
+      if (row.consumed_at) return { ok: false };
       const expiresAt = String(row.expires_at);
       if (expiresAt < now()) return { ok: false, expired: true };
       const consumed = now();
-      await db
-        .prepare("UPDATE call_verifications SET consumed_at = ? WHERE id = ?")
-        .bind(consumed, String(row.id))
+      const updated = await db
+        .prepare(
+          "UPDATE call_verifications SET consumed_at = ? WHERE id = ? AND consumed_at IS NULL AND expires_at >= ?"
+        )
+        .bind(consumed, String(row.id), consumed)
         .run();
+      const changes = (updated as { meta?: { changes?: number } } | null)?.meta?.changes;
+      if (changes === 0) return { ok: false };
       await writeAudit("verification_performed", "call_verification", {
         applicationId: row.application_id ? String(row.application_id) : undefined,
       });

@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { sendApplicationConfirmation } from "@/lib/email";
+import { sendApplicationConfirmationOnce } from "@/lib/email";
 import { getRepository } from "@/lib/repo";
 import { getSession, setSession } from "@/lib/session";
 import { getStripe } from "@/lib/stripe";
@@ -39,6 +39,7 @@ export default async function SuccessPage({
         <Pending copy="Your payment was received, but the application record is still being written. Keep this tab open and refresh shortly. Do not pay again. If this persists, email care@dcredit.in with your Stripe receipt." />
       );
     }
+    const alreadyPaid = existing.paymentStatus === "PAID";
     paid = await repo.confirmPayment({
       id: existing.id,
       stripeSessionId: sessionId,
@@ -54,7 +55,13 @@ export default async function SuccessPage({
     }
     if (paid?.paymentStatus === "PAID") {
       try {
-        await sendApplicationConfirmation(paid);
+        const mail = await sendApplicationConfirmationOnce(paid, alreadyPaid);
+        if (mail.reason !== "already_confirmed") {
+          await repo.appendAudit(mail.sent ? "email_sent" : "email_failed", mail.sent ? "sent" : mail.reason, {
+            applicationId: paid.applicationId,
+            identityId: paid.identityId,
+          });
+        }
       } catch {
         await repo.appendAudit("email_failed", "success_page", {
           applicationId: paid.applicationId,
@@ -103,7 +110,8 @@ export default async function SuccessPage({
       </p>
       <p className="fine">
         Application status: {paid.applicationStatus}. A coordinator will use your
-        preferred consultation date where possible. You can also{" "}
+        preferred conversation date where possible. The $5 Initial Assessment is
+        a conversation with DCredit, not a clinical evaluation. You can also{" "}
         <a href="/account">open your file</a> or{" "}
         <a href="/verify">verify a DCredit communication</a>.
       </p>

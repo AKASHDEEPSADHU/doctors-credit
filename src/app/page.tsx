@@ -2,17 +2,19 @@ import Link from "next/link";
 import CostCalculator from "@/components/CostCalculator";
 import RealityCheck from "@/components/RealityCheck";
 import Reveal from "@/components/Reveal";
-import { PACKAGES } from "@/lib/packages";
+import { currentPackage } from "@/lib/packages";
 import { FAQS } from "@/lib/faq";
 import { JOURNEY, PROTECT, TRUST_PILLARS } from "@/lib/journey";
 import { INDIA_STATS, SOURCES } from "@/lib/sources";
-import { TREATMENTS } from "@/lib/treatments";
+import { SUITABILITY_LABEL, TREATMENTS, suitabilityClass } from "@/lib/treatments";
 
 const featured = TREATMENTS.filter((t) =>
   ["knee-replacement", "ivf", "dental-implants", "cabg", "cataract", "hip-replacement"].includes(
     t.slug
   )
 );
+
+const assessment = currentPackage();
 
 export default function Home() {
   return (
@@ -23,36 +25,39 @@ export default function Home() {
             <p className="eyebrow">US patients · Planned care · India options</p>
             <h1>Could India be the smarter choice for your planned treatment?</h1>
             <p className="lede">
-              DCredit helps US patients compare the real cost, medical options,
-              timeline and logistics of receiving planned treatment in India —
-              before making a decision.
+              DCredit is a US-focused planned-care decision and coordination
+              platform. For $5, speak with a DCredit care coordinator about your
+              planned treatment, insurance situation, timeline and goals. We&apos;ll
+              explain how DCredit works and help you understand whether exploring
+              care in India may make sense.
             </p>
             <div className="hero-actions">
               <Link className="btn-solid" href="/enroll">
-                Start my $5 consultation
+                Start my $5 Assessment
               </Link>
               <a className="btn-ghost" href="#how">
                 See how it works
               </a>
             </div>
             <p className="trust-mini">
-              Independent decision support. Transparent costs. Coordinated care.
+              An initial conversation with DCredit — not a clinical assessment,
+              diagnosis or medical clearance.
             </p>
           </div>
           <div className="hero-visual">
             <p className="eyebrow">The journey we actually map</p>
             <ul className="path-rail">
               <li>USA</li>
-              <li>Clinical review</li>
-              <li>India specialist</li>
-              <li>Treatment</li>
-              <li>Recovery</li>
+              <li>Decision support</li>
+              <li>India options</li>
+              <li>Practical review</li>
+              <li>Your decision</li>
               <li>USA</li>
             </ul>
             <p className="section-lede" style={{ marginTop: "1.4rem" }}>
               We do not begin by selling an Indian hospital. We begin by
-              understanding your situation — and we will not recommend India
-              simply because treatment is cheaper.
+              understanding your situation — and we will not recommend exploring
+              India simply because treatment is cheaper.
             </p>
           </div>
         </div>
@@ -91,6 +96,8 @@ export default function Home() {
             <p className="section-lede">
               If your US exposure is $5,500 and the India journey is $7,500,
               India may not save you money. That’s exactly why DCredit exists.
+              The calculator is an estimate only — not a quote and not medical
+              advice.
             </p>
           </div>
           <CostCalculator />
@@ -103,8 +110,10 @@ export default function Home() {
             <p className="eyebrow">How DCredit works</p>
             <h2>A structured decision. Not a sales pitch.</h2>
             <p className="section-lede">
-              For $5, speak with a care coordinator who will understand your
-              treatment need, insurance situation, timeline and goals.
+              We are building DCredit in stages, starting with the decision
+              itself. The current paid service is the $5 Initial Assessment — a
+              conversation that helps you decide whether exploring India further
+              may make sense.
             </p>
             <Link className="btn-solid" href="/how-it-works">
               Full 7-step journey
@@ -139,7 +148,8 @@ export default function Home() {
               waiting time.
             </p>
             <p className="section-lede">
-              We will not recommend India simply because treatment is cheaper.
+              We will not recommend exploring India simply because treatment is
+              cheaper.
             </p>
           </div>
         </div>
@@ -158,7 +168,7 @@ export default function Home() {
               acute trauma, and cases where long-distance travel is unsafe are
               not DCredit pathways.
             </p>
-            <p>Sometimes the right answer is India. Sometimes it isn’t. We’ll tell you which.</p>
+            <p>Sometimes the best decision is India. Sometimes it isn’t. Either way, you deserve to know.</p>
           </div>
         </div>
       </section>
@@ -171,8 +181,9 @@ export default function Home() {
             <p className="section-lede">
               India has major tertiary-care hospitals with internationally
               recognized accreditation systems and highly specialized clinicians.
-              DCredit evaluates healthcare providers individually. We never claim
-              that all Indian hospitals are world-class.
+              DCredit will publish provider information only when it can be
+              checked against reliable sources. We never claim that all Indian
+              hospitals are world-class.
             </p>
           </div>
           <div>
@@ -185,10 +196,10 @@ export default function Home() {
             </p>
             <p className="muted">
               Where JCI, bed counts, ICU capability or procedure volume are
-              published, they are labeled by source. We do not invent
+              later published, they will be labeled by source. We do not invent
               accreditation.
             </p>
-            <Link href="/hospitals">How we verify hospitals →</Link>
+            <Link href="/hospitals">How we will publish hospitals →</Link>
           </div>
         </div>
       </section>
@@ -197,23 +208,18 @@ export default function Home() {
         <div className="shell">
           <p className="eyebrow">Treatments</p>
           <h2>Where India may make the most sense.</h2>
+          <p className="section-lede">
+            These notes are editorial and informational. They do not determine
+            whether any individual patient should travel. Speak with your US
+            healthcare professional before making a treatment decision.
+          </p>
           <div className="treat-grid">
             {featured.map((t) => (
               <Link className="treat-card" href={`/treatments/${t.slug}`} key={t.slug}>
                 <small>{t.category}</small>
                 <h3>{t.name}</h3>
                 <p className="muted">{t.why}</p>
-                <span
-                  className={
-                    t.suitability === "YES"
-                      ? "flag flag-yes"
-                      : t.suitability === "POSSIBLY"
-                        ? "flag flag-maybe"
-                        : "flag flag-no"
-                  }
-                >
-                  Medical travel: {t.suitability}
-                </span>
+                <span className={suitabilityClass(t.suitability)}>{SUITABILITY_LABEL[t.suitability]}</span>
               </Link>
             ))}
           </div>
@@ -231,11 +237,12 @@ export default function Home() {
           </div>
           <div>
             <p className="section-lede">
-              Profiles appear only after accreditation and key facts are checked
-              against official sources. Until then, we will not populate a
-              directory with invented names, logos or outcomes.
+              Verified provider profiles are being developed. DCredit will
+              publish provider information only when it can be checked against
+              reliable sources. Until then, we will not populate a directory
+              with invented names, logos or outcomes.
             </p>
-            <Link href="/hospitals">Hospital verification →</Link>
+            <Link href="/hospitals">Hospital information →</Link>
           </div>
         </div>
       </section>
@@ -243,15 +250,16 @@ export default function Home() {
       <section className="band-soft">
         <div className="shell split">
           <div>
-            <p className="eyebrow">Return-home plan</p>
+            <p className="eyebrow">Return-home planning</p>
             <h2>Your journey doesn’t end when you leave India.</h2>
           </div>
           <div>
             <p className="section-lede">
-              Discharge summary, operative notes, medications, imaging, labs,
-              follow-up schedule, warning signs and recommended US review —
-              packed so a US clinician can continue care. DCredit does not itself
-              provide US medical treatment.
+              Continuity of care matters: discharge information, medications,
+              imaging, follow-up and recommended US review. In V1 we explain why
+              return-home planning belongs in the decision. A detailed
+              return-home packet or clinician handoff is a future service.
+              DCredit does not itself provide US medical treatment.
             </p>
           </div>
         </div>
@@ -261,7 +269,7 @@ export default function Home() {
         <div className="shell split">
           <div>
             <p className="eyebrow">DCredit Reality Check</p>
-            <h2>Green, yellow, or red — not a diagnosis.</h2>
+            <h2>Green, yellow, or red — an informational screening aid.</h2>
             <ul className="protect">
               {PROTECT.map((item) => (
                 <li key={item}>{item}</li>
@@ -289,7 +297,7 @@ export default function Home() {
               <strong>CDC</strong>
               <p>
                 US residents do travel abroad for medical care — with real risks
-                DCredit exists to help coordinate, not to erase.
+                DCredit exists to help you think through, not to erase.
               </p>
             </div>
           </div>
@@ -335,30 +343,44 @@ export default function Home() {
       <section>
         <div className="shell split">
           <div>
-            <p className="eyebrow">Begin</p>
+            <p className="eyebrow">$5 Initial Assessment</p>
             <h2>Your health. Your money. Your decision.</h2>
             <p className="section-lede">
-              DCredit gives you the information, medical coordination and support
-              to make that decision with confidence.
+              {assessment.blurb}
+            </p>
+            <p className="section-lede">
+              There is no obligation to continue. Savings are not guaranteed.
+              This is not medical advice, insurance verification or a specialist
+              consultation.
             </p>
             <div className="hero-actions">
               <Link className="btn-solid" href="/enroll">
-                Start my $5 assessment
+                Start my $5 Assessment
               </Link>
               <Link className="btn-ghost" href="/reality-check">
-                See if India makes sense for me
+                Try the Reality Check
               </Link>
             </div>
           </div>
-          <div className="treat-grid" style={{ gridTemplateColumns: "1fr" }}>
-            {PACKAGES.map((p) => (
-              <article className="treat-card" key={p.sku}>
-                <small>{p.priceLabel}</small>
-                <h3>{p.name}</h3>
-                <p className="muted">{p.blurb}</p>
-              </article>
-            ))}
-          </div>
+          <article className="treat-card">
+            <small>{assessment.priceLabel}</small>
+            <h3>{assessment.name}</h3>
+            <p className="muted">What it includes</p>
+            <ul className="protect" style={{ columns: 1 }}>
+              {assessment.includes.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+            <p className="muted" style={{ marginTop: "1rem" }}>
+              What it does not include
+            </p>
+            <ul className="protect" style={{ columns: 1 }}>
+              {assessment.excludes.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+            <p className="fine">{assessment.note}</p>
+          </article>
         </div>
       </section>
 

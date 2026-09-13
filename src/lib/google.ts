@@ -1,6 +1,7 @@
 import { createHash, randomBytes } from "crypto";
 import { SignJWT, jwtVerify } from "jose";
 import type { NextResponse } from "next/server";
+import { demoGoogleAllowed, secureCookiesEnabled, sessionSecretBytes } from "@/lib/env";
 
 const OAUTH_COOKIE = "dc_oauth";
 
@@ -10,17 +11,10 @@ export type OauthPayload = {
   next: string;
 };
 
-function secret() {
-  const s = process.env.SESSION_SECRET || "dev-only-change-me-doctors-credit";
-  return new TextEncoder().encode(s);
-}
+export { demoGoogleAllowed };
 
 export function googleConfigured() {
   return Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
-}
-
-export function demoGoogleAllowed() {
-  return process.env.DEMO_PAYMENTS === "true" && !googleConfigured();
 }
 
 export function googleClientId() {
@@ -58,11 +52,11 @@ export async function setOauthCookie(res: NextResponse, payload: OauthPayload) {
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("10m")
-    .sign(secret());
+    .sign(sessionSecretBytes());
   res.cookies.set(OAUTH_COOKIE, token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: secureCookiesEnabled(),
     path: "/",
     maxAge: 60 * 10,
   });
@@ -71,7 +65,7 @@ export async function setOauthCookie(res: NextResponse, payload: OauthPayload) {
 export async function readOauthCookie(token: string | undefined): Promise<OauthPayload | null> {
   if (!token) return null;
   try {
-    const { payload } = await jwtVerify(token, secret());
+    const { payload } = await jwtVerify(token, sessionSecretBytes());
     if (
       typeof payload.state !== "string" ||
       typeof payload.verifier !== "string" ||

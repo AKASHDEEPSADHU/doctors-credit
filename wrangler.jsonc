@@ -18,7 +18,7 @@
     {
       "binding": "DB",
       "database_name": "dcredit",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "00000000-0000-0000-0000-000000000000", // replace before deploy — placeholder, not a live database
       "migrations_dir": "migrations"
     }
   ],
@@ -41,7 +41,7 @@
         {
           "binding": "DB",
           "database_name": "dcredit-staging",
-          "database_id": "00000000-0000-0000-0000-000000000001",
+          "database_id": "00000000-0000-0000-0000-000000000001", // replace before staging deploy
           "migrations_dir": "migrations"
         }
       ]
@@ -51,6 +51,10 @@
       "vars": {
         "APP_ENV": "production"
       },
+      "routes": [
+        { "pattern": "dcredit.in", "custom_domain": true },
+        { "pattern": "www.dcredit.in", "custom_domain": true }
+      ],
       "services": [
         {
           "binding": "WORKER_SELF_REFERENCE",
@@ -61,7 +65,7 @@
         {
           "binding": "DB",
           "database_name": "dcredit-production",
-          "database_id": "00000000-0000-0000-0000-000000000002",
+          "database_id": "3fc013d0-b4f6-488c-904d-d4bb6b692d2c",
           "migrations_dir": "migrations"
         }
       ]

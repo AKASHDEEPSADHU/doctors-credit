@@ -80,7 +80,7 @@ export const TREATMENTS: Treatment[] = [
     why: "Often time-sensitive. Acute coronary syndromes require immediate local emergency care.",
     summary: "Catheter-based treatment of coronary artery disease. Emergencies are not DCredit cases.",
     usNotes: "If you have chest pain or a suspected heart attack, call 911.",
-    indiaNotes: "Elective, stable cases still require specialist review before any travel discussion.",
+    indiaNotes: "Elective, stable cases still require individual review by a qualified clinician before any travel discussion.",
   },
   {
     slug: "structural-heart",
@@ -128,7 +128,7 @@ export const TREATMENTS: Treatment[] = [
     name: "Immunotherapy",
     suitability: "POSSIBLY",
     why: "Indication, monitoring and cost structure vary. Not a default travel pathway.",
-    summary: "Requires specialist review of protocol, toxicity monitoring and continuity of care.",
+    summary: "Requires individual review of protocol, toxicity monitoring and continuity of care by a qualified clinician.",
     usNotes: "US prices and coverage are highly plan-specific.",
     indiaNotes: "Estimates are labeled as estimates until a named provider issues a plan.",
   },
@@ -238,7 +238,7 @@ export const TREATMENTS: Treatment[] = [
     name: "Brain surgery",
     suitability: "NOT GENERALLY",
     why: "Many neurosurgical cases are urgent or require immediate local intervention.",
-    summary: "Not a default medical-travel product. Selected planned cases need specialist review.",
+    summary: "Not a default medical-travel product. Selected planned cases need individual review by a qualified clinician.",
     usNotes: "If this is an emergency, seek local emergency care.",
     indiaNotes: "DCredit does not coordinate emergencies.",
   },
@@ -299,3 +299,16 @@ export function treatmentBySlug(slug: string) {
 }
 
 export const CATEGORIES = [...new Set(TREATMENTS.map((t) => t.category))];
+
+/** Editorial labels — not a clinical determination for any individual patient. */
+export const SUITABILITY_LABEL: Record<Suitability, string> = {
+  YES: "Often considered in international planned-care discussions",
+  POSSIBLY: "May be worth exploring — requires individual clinical review",
+  "NOT GENERALLY": "Not appropriate for emergency situations or as a default travel pathway",
+};
+
+export function suitabilityClass(s: Suitability) {
+  if (s === "YES") return "flag flag-yes";
+  if (s === "POSSIBLY") return "flag flag-maybe";
+  return "flag flag-no";
+}

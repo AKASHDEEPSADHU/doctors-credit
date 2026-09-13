@@ -16,7 +16,7 @@ const sans = Inter({
 export const metadata: Metadata = {
   title: `${SITE.name} — Know your options before you decide`,
   description:
-    "DCredit helps US patients compare the real cost, medical options, timeline and logistics of planned treatment in India — before making a decision. Not a hospital. No guaranteed savings or outcomes.",
+    "DCredit is a US-focused planned-care decision and coordination platform helping US patients understand whether planned treatment in India may make sense. The $5 Initial Assessment is a conversation with DCredit — not a hospital, diagnosis or emergency service. No guaranteed savings or outcomes.",
   metadataBase: new URL("https://dcredit.in"),
 };
 

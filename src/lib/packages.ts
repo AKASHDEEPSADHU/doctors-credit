@@ -8,9 +8,14 @@ export type CarePackage = {
   cadence: string;
   blurb: string;
   includes: string[];
+  excludes: string[];
   note: string;
   featured?: boolean;
+  /** Public V1 may sell only packages marked available. */
+  available: boolean;
 };
+
+export const CURRENT_SKU: PackageSku = "orientation";
 
 export const PACKAGES: CarePackage[] = [
   {
@@ -19,17 +24,29 @@ export const PACKAGES: CarePackage[] = [
     priceLabel: "$5",
     amountCents: 500,
     cadence: "once",
-    blurb:
-      "For $5, speak with a DCredit care coordinator who will understand your treatment need, insurance situation, timeline and goals, and explain how the India-care pathway works.",
-    includes: [
-      "Care coordinator call",
-      "Basic case understanding",
-      "India suitability discussion",
-      "Process explanation",
-      "Initial document checklist",
-    ],
-    note: "If India is not a sensible option for you, we will say so. The five dollars still stand.",
+    available: true,
     featured: true,
+    blurb:
+      "For $5, speak with a DCredit care coordinator about your planned treatment, insurance situation, timeline and goals. We’ll explain how DCredit works and help you understand whether exploring care in India may make sense.",
+    includes: [
+      "A conversation with a DCredit care coordinator",
+      "Discussion of your planned treatment need",
+      "Discussion of your general insurance situation — not a benefits verification",
+      "Discussion of your timeline and goals",
+      "An explanation of how DCredit works",
+      "Help deciding whether exploring India further may make sense",
+      "A list of information you may later need to gather",
+      "An explanation of possible next steps",
+    ],
+    excludes: [
+      "Medical diagnosis or treatment recommendation",
+      "Clinical assessment or medical clearance",
+      "Specialist opinion or medical-record review",
+      "Insurance verification",
+      "Hospital or travel booking",
+      "A guarantee of savings or outcomes",
+    ],
+    note: "If India is not a sensible option for you, we will say so. The five dollars still stand. There is no obligation to continue.",
   },
   {
     sku: "direction",
@@ -37,17 +54,18 @@ export const PACKAGES: CarePackage[] = [
     priceLabel: "$450",
     amountCents: 45000,
     cadence: "once",
+    available: false,
     blurb:
-      "A structured comparison of your likely US financial exposure against a complete India journey estimate — plus specialist and hospital options where appropriate.",
+      "A later-phase service for a structured comparison of your likely US financial exposure against a complete India journey estimate — plus specialist and hospital options where appropriate.",
     includes: [
-      "Medical record review",
-      "Specialist opinion coordination",
-      "Hospital options (individually evaluated)",
-      "Treatment estimate",
-      "Timeline estimate",
-      "US vs India cost comparison",
+      "Planned: medical-record review by a qualified professional, when a secure process is available",
+      "Planned: specialist opinion coordination",
+      "Planned: individually evaluated hospital options",
+      "Planned: treatment and timeline estimates",
+      "Planned: US vs India cost comparison",
     ],
-    note: "Hospital clinical fees are billed by the provider. DCredit does not diagnose or prescribe.",
+    excludes: [],
+    note: "Coming in a later phase. Not available for purchase in V1.",
   },
   {
     sku: "journey",
@@ -55,21 +73,36 @@ export const PACKAGES: CarePackage[] = [
     priceLabel: "$2,400",
     amountCents: 240000,
     cadence: "coordination",
+    available: false,
     blurb:
-      "End-to-end coordination before travel, during your India stay, and after you return home — without pressure to proceed.",
+      "A later-phase service for end-to-end coordination before travel, during an India stay, and after return home — without pressure to proceed.",
     includes: [
-      "Specialist and hospital coordination",
-      "Treatment scheduling",
-      "Visa guidance",
-      "Airport transfer and accommodation coordination",
-      "Local transportation and patient coordinator",
-      "Medical records and return-home plan",
-      "Follow-up coordination",
+      "Planned: specialist and hospital coordination",
+      "Planned: treatment scheduling and visa guidance",
+      "Planned: travel and on-the-ground support",
+      "Planned: medical records and return-home coordination",
+      "Planned: follow-up coordination",
     ],
-    note: "You decide whether to travel. Coordination fees are disclosed before you proceed.",
+    excludes: [],
+    note: "Coming in a later phase. Not available for purchase in V1.",
   },
 ];
 
 export function packageBySku(sku: string) {
   return PACKAGES.find((p) => p.sku === sku) ?? null;
+}
+
+/** V1 public checkout may sell only packages marked available (orientation). */
+export function purchasablePackage(sku: string) {
+  const pkg = packageBySku(sku);
+  if (!pkg || !pkg.available) return null;
+  return pkg;
+}
+
+export function currentPackage() {
+  return PACKAGES.find((p) => p.sku === CURRENT_SKU)!;
+}
+
+export function availablePackages() {
+  return PACKAGES.filter((p) => p.available);
 }

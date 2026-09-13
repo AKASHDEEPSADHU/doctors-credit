@@ -75,12 +75,12 @@ export default function AccountClient() {
         <p className="eyebrow">Your file</p>
         <h1>Sign in with Google to open it.</h1>
         <p className="lede">
-          After Orientation, this is where payments and orders live. The same
-          Google account you used before any money moved.
+          After the $5 Initial Assessment, this is where payments and orders
+          live. The same Google account you used before any money moved.
         </p>
         <GoogleButton next="/account" label="Continue with Google" />
         <p className="fine">
-          No file yet? <Link href="/enroll">Start a $5 assessment</Link>
+          No file yet? <Link href="/enroll">Start my $5 Assessment</Link>
         </p>
       </div>
     );
@@ -126,7 +126,7 @@ export default function AccountClient() {
 
       {unpaid ? (
         <p className="fine">
-          Signed in, not yet begun. <Link href="/enroll">Continue to the $5 assessment</Link>
+          Signed in, not yet begun. <Link href="/enroll">Continue to the $5 Initial Assessment</Link>
         </p>
       ) : null}
 

@@ -1,4 +1,4 @@
-import { appEnv, sheetsWriteAllowed } from "@/lib/env";
+import { appEnv, isDeployed, sheetsWriteAllowed } from "@/lib/env";
 import type { D1Like } from "@/lib/repo/d1";
 import type { ApplicationRepository } from "@/lib/repo/interface";
 import { upsertCrmRow } from "@/lib/repo/sheets";
@@ -29,6 +29,9 @@ export async function getRepository(): Promise<ApplicationRepository> {
     const { createD1Repository } = await import("@/lib/repo/d1");
     cached = createD1Repository(d1, projectToSheets);
     return cached;
+  }
+  if (isDeployed()) {
+    throw new Error("Server configuration is incomplete.");
   }
   const { createJsonRepository } = await import("@/lib/repo/json");
   cached = createJsonRepository(`data/${appEnv()}-store.json`, projectToSheets);

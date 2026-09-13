@@ -1,8 +1,9 @@
 "use client";
 
-import { SITE, whatsappHref } from "@/lib/contact";
+import { SITE, whatsappEnabled, whatsappHref } from "@/lib/contact";
 
 export default function WhatsAppFab() {
+  if (!whatsappEnabled()) return null;
   return (
     <a
       href={whatsappHref()}
@@ -20,7 +21,8 @@ export default function WhatsAppFab() {
       </svg>
       <span className="wa-fab-label">WhatsApp</span>
       <span className="sr-only">
-        Open a WhatsApp conversation with {SITE.name}
+        Open a WhatsApp conversation with {SITE.name}. Please do not send
+        medical records or other sensitive clinical documents through WhatsApp.
       </span>
     </a>
   );

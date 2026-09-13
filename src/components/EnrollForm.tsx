@@ -6,13 +6,8 @@ import {
   TIMELINES,
   splitName,
 } from "@/lib/application-fields";
-import { PACKAGES, type PackageSku } from "@/lib/packages";
+import { CURRENT_SKU, currentPackage } from "@/lib/packages";
 import { US_STATES } from "@/lib/us-states";
-
-function asSku(v: string | undefined): PackageSku {
-  if (v === "direction" || v === "journey" || v === "orientation") return v;
-  return "orientation";
-}
 
 type PatientLite = {
   name: string;
@@ -23,30 +18,28 @@ type PatientLite = {
 
 export default function EnrollForm({
   patient,
-  sku,
   error,
 }: {
   patient: PatientLite | null;
   sku?: string;
   error?: string;
 }) {
-  const selected = asSku(sku);
+  const assessment = currentPackage();
   if (!patient) {
     return (
       <div className="gate">
         {error ? <p className="enroll-error">{error}</p> : null}
         <p className="gate-copy">
-          Sign in with Google before any money moves. The account is yours; the
-          hospital bill never passes through it.
+          Sign in with Google before any money moves. The $5 Initial Assessment
+          is a conversation with DCredit — not a clinical evaluation. The
+          hospital bill never passes through this account.
         </p>
-        <GoogleButton
-          next={sku ? `/enroll?sku=${sku}` : "/enroll"}
-          label="Continue with Google"
-        />
+        <GoogleButton next="/enroll" label="Continue with Google" />
         <p className="fine">
-          We receive your name and email from Google. The $5 assessment then
-          collects only what a coordinator needs to open the conversation — not a
-          full medical history.
+          We receive your name and email from Google. The form then collects
+          only what a coordinator needs to open the conversation — not a full
+          medical history. Please do not send medical records, imaging,
+          prescriptions or diagnoses.
         </p>
       </div>
     );
@@ -61,16 +54,12 @@ export default function EnrollForm({
         Signed in as <strong>{patient.name}</strong>
         <span> · {patient.email}</span>
       </p>
-      <fieldset className="enroll-skus">
-        <legend>Package</legend>
-        {PACKAGES.map((p) => (
-          <label key={p.sku}>
-            <input type="radio" name="sku" value={p.sku} defaultChecked={p.sku === selected} />
-            <span className="enroll-sku-name">{p.name}</span>
-            <span className="enroll-sku-price">{p.priceLabel}</span>
-          </label>
-        ))}
-      </fieldset>
+      <input type="hidden" name="sku" value={CURRENT_SKU} />
+      <div className="treat-card" style={{ marginBottom: "1.2rem" }}>
+        <small>{assessment.priceLabel}</small>
+        <h3>{assessment.name}</h3>
+        <p className="muted">{assessment.blurb}</p>
+      </div>
       <div className="enroll-grid">
         <label>
           First name
@@ -160,18 +149,19 @@ export default function EnrollForm({
           </select>
         </label>
         <label>
-          Preferred consultation date
+          Preferred conversation date
           <input name="preferredConsultationDate" type="date" />
         </label>
       </div>
       <TurnstileField />
       <button className="btn-solid" type="submit">
-        Continue to $5 payment
+        Continue to $5 Assessment
       </button>
       <p className="fine">
         Payment is confirmed on our servers before the application is marked paid.
-        We do not store card numbers, CVV or banking passwords. Do not send MRI,
-        prescriptions or a detailed diagnosis on this form.
+        We do not store card numbers, CVV or banking passwords. Please do not send
+        MRI scans, prescriptions, diagnoses or other sensitive medical records on
+        this form.
       </p>
     </form>
   );

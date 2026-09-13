@@ -41,7 +41,7 @@ export async function createCheckout(opts: {
           unit_amount: opts.amountCents,
           product_data: {
             name: `Doctor's Credit — ${opts.title}`,
-            description: `Independent Hyderabad direction · ${opts.name}`,
+            description: "DCredit $5 Initial Assessment",
           },
         },
       },

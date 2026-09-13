@@ -102,4 +102,6 @@ The Conversation Verification ID is not a password, OTP, PIN or CVV. Coordinator
 | staging | D1 `dcredit-staging` | staging spreadsheet |
 | production | D1 `dcredit-production` | production spreadsheet |
 
-Production demo payments stay off unless `ALLOW_DEMO_PAYMENTS=true`.
+Demo payments and demo Google sign-in are development-only. They cannot be enabled in staging or production, including via `ALLOW_DEMO_PAYMENTS`.
+
+Replace the placeholder D1 `database_id` values in `wrangler.jsonc` before any live deploy. The all-zero IDs are not production databases.

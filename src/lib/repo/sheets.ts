@@ -62,8 +62,8 @@ async function sheets(path: string, init?: RequestInit) {
     },
   });
   if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`Sheets API ${res.status}: ${text.slice(0, 180)}`);
+    await res.text().catch(() => "");
+    throw new Error(`Sheets API ${res.status}`);
   }
   if (res.status === 204) return {};
   return res.json();

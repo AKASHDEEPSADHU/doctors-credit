@@ -8,9 +8,11 @@ export default function AboutPage() {
       <p className="eyebrow">About</p>
       <h1>Healthcare should be evaluated by value, not just price.</h1>
       <p>
-        DCredit is a US-focused medical care coordination platform. We are not a
-        hospital. We are not a doctor. We do not independently diagnose, prescribe
-        or guarantee medical outcomes.
+        DCredit is a US-focused planned-care decision and coordination platform.
+        We are not a hospital. We are not a doctor. We are not an insurer, an
+        emergency service or a diagnostic service. We do not independently
+        diagnose, prescribe, clear patients for travel or guarantee medical
+        outcomes.
       </p>
       <p>
         We believe patients deserve clarity, transparency, choice, safety, access
@@ -18,12 +20,15 @@ export default function AboutPage() {
         believe every patient should understand their options.
       </p>
       <p>
-        Founder portraits and a longer origin story will sit here when they are
-        ready. The philosophy is already in force: if India is not the better
-        option, we will say stay.
+        We are building DCredit in stages, starting with the decision itself.
+        The current paid service is the $5 Initial Assessment. Founder portraits
+        and a longer origin story will sit here when they are ready. The
+        philosophy is already in force: if India is not the better option, we
+        will say stay.
       </p>
+      <p>Sometimes the best decision is India. Sometimes it isn’t.</p>
       <Link className="btn-solid" href="/enroll">
-        Start my $5 assessment
+        Start my $5 Assessment
       </Link>
     </main>
   );

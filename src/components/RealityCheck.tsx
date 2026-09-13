@@ -31,8 +31,12 @@ export default function RealityCheck() {
 
   return (
     <form className="assess" onSubmit={run}>
-      <p className="tag">Decision support — not a diagnosis</p>
-      <h3>Should you consider treatment in India?</h3>
+      <p className="tag">Reality Check — informational only</p>
+      <h3>Is exploring planned care in India worth discussing?</h3>
+      <p className="source">
+        This tool is an informational screening aid, not a medical assessment,
+        diagnosis or clearance.
+      </p>
       <fieldset>
         <label>
           Is the treatment elective / planned?
@@ -50,14 +54,14 @@ export default function RealityCheck() {
           </select>
         </label>
         <label>
-          Can you travel internationally if a clinician agrees?
+          Could you travel internationally if a clinician later agreed?
           <select value={travel} onChange={(e) => setTravel(e.target.value)}>
             <option value="yes">Yes</option>
             <option value="no">No</option>
           </select>
         </label>
         <label>
-          Do you have medical records to share?
+          Do you have medical records you could later share through an appropriate process?
           <select value={records} onChange={(e) => setRecords(e.target.value)}>
             <option value="yes">Yes</option>
             <option value="partial">Some</option>
@@ -70,26 +74,33 @@ export default function RealityCheck() {
         </label>
       </fieldset>
       <button className="btn-solid" type="submit">
-        See if India makes sense for me
+        See if India may be worth exploring
       </button>
       {tone === "GREEN" ? (
-        <p className="verdict">India appears financially and logistically attractive — subject to clinical review.</p>
+        <p className="verdict">
+          India may be worth exploring — based on the information provided, this
+          pathway may deserve further evaluation. Speak with your US healthcare
+          professional before making a treatment decision.
+        </p>
       ) : null}
       {tone === "YELLOW" ? (
         <p className="verdict">
-          India may offer savings, but additional information is needed before we can assess suitability.
+          More information is needed before making a decision. India may still
+          be worth discussing, but this tool cannot tell you whether it is the
+          better option.
         </p>
       ) : null}
       {tone === "RED" ? (
         <p className="verdict">
           {urgency === "emergency"
             ? "DCredit does not handle emergencies. If you are in the US, call 911 or seek immediate local care."
-            : "Based on the information provided, India may not be the better option right now."}
+            : "Based on the information provided, this pathway may not be the better option to explore right now. Speak with your US healthcare professional before making a treatment decision."}
         </p>
       ) : null}
       <p className="source">
-        This is a decision-support classification, not a medical diagnosis or a
-        savings guarantee.
+        This is not a diagnosis, travel clearance, medical suitability
+        determination or treatment recommendation. It does not replace a
+        physician.
       </p>
     </form>
   );
