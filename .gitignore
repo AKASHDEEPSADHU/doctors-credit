@@ -30,14 +30,21 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files
+# env files and local secrets
 .env*
 !.env.example
+.dev.vars
+!.dev.vars.example
+google-*.json
+service-account*.json
 
 # local patient ledger (never commit)
+/data/
 /data/store.json
 
-# vercel
+# cloudflare / opennext
+.open-next
+.wrangler
 .vercel
 
 # typescript

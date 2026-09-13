@@ -92,9 +92,9 @@ export default function AccountClient() {
     <div className="account">
       {params.get("welcome") ? (
         <p className="welcome">
-          You are in. This is your DCredit file. Use your verification code only
-          to confirm a message is genuinely from us — never to share passwords or
-          bank codes.
+          You are in. Keep your Application ID and Conversation Verification ID
+          for genuine DCredit communication. We will never ask for passwords,
+          banking PINs, card CVV or one-time authentication codes.
         </p>
       ) : null}
       <header className="account-head">
@@ -109,11 +109,11 @@ export default function AccountClient() {
           {data.patient.publicId ? (
             <div className="codes">
               <div>
-                <span className="tag">Patient ID</span>
+                <span className="tag">Application ID</span>
                 <strong>{data.patient.publicId}</strong>
               </div>
               <div>
-                <span className="tag">Verification code</span>
+                <span className="tag">Conversation Verification ID</span>
                 <strong>{data.patient.verifyCode}</strong>
               </div>
             </div>

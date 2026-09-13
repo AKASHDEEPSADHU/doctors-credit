@@ -31,6 +31,7 @@ export default function Footer() {
           <Link href="/faq">FAQ</Link>
           <Link href="/about">About</Link>
           <Link href="/contact">Contact</Link>
+          <Link href="/verify">Verify a call</Link>
         </div>
         <div>
           <p className="foot-label">Legal</p>

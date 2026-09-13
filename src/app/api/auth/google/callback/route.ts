@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
   });
   if (!google) return fail("google_failed");
 
-  const patient = upsertPatient({
+  const patient = await upsertPatient({
     email: google.email,
     name: google.name,
     googleSub: google.sub,

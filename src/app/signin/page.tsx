@@ -1,4 +1,5 @@
 import GoogleButton from "@/components/GoogleButton";
+import TurnstileField from "@/components/TurnstileField";
 import { demoGoogleAllowed, googleConfigured } from "@/lib/google";
 import { safeNext } from "@/lib/origin";
 
@@ -19,6 +20,8 @@ export default async function SignInPage({
     missing_code: "Google returned without a code. Start again.",
     demo_disabled: "Demo Google is off because a real Google client is configured.",
     session: "Please sign in again.",
+    turnstile: "Please complete the verification check.",
+    invalid: "That sign-in was invalid.",
   };
   const message = q.error ? errors[q.error] || "Sign-in did not complete." : "";
 
@@ -41,6 +44,7 @@ export default async function SignInPage({
             This preview has no Google Cloud client yet. Continue as a labelled
             demo Google account — not a real Google login.
           </p>
+          <TurnstileField />
           <button className="btn-solid" type="submit">
             Continue with demo Google
           </button>

@@ -3,12 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "dev": "next dev --turbopack --hostname 127.0.0.1 --port 3100",
+    "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "tsx --test src/lib/ids.test.ts src/lib/repo/json.test.ts",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "deploy:staging": "opennextjs-cloudflare build && opennextjs-cloudflare deploy -- --env staging",
+    "deploy:production": "opennextjs-cloudflare build && opennextjs-cloudflare deploy -- --env production",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "d1:migrate:local": "wrangler d1 migrations apply dcredit --local",
+    "d1:migrate:staging": "wrangler d1 migrations apply dcredit-staging --env staging",
+    "d1:migrate:production": "wrangler d1 migrations apply dcredit-production --env production"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.20.6",
     "jose": "^6.2.12",
     "next": "^16.3.5",
     "react": "19.1.0",
@@ -24,6 +34,8 @@
     "eslint": "^9",
     "eslint-config-next": "^16.3.5",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.23.13",
+    "typescript": "^5",
+    "wrangler": "^4.131.1"
   }
 }

@@ -1,0 +1,5 @@
+NEXTJS_ENV=development
+APP_ENV=development
+DEMO_PAYMENTS=true
+SESSION_SECRET=dev-doctors-credit-preview
+NEXT_PUBLIC_WHATSAPP_E164=910000000000

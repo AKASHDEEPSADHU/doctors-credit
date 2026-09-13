@@ -13,7 +13,7 @@ export default async function EnrollPage({
 }) {
   const q = await searchParams;
   const session = await getSession();
-  const patient = session ? getPatientById(session.patientId) : null;
+  const patient = session ? await getPatientById(session.patientId) : null;
   return (
     <main id="main" className="enroll-page">
       <div className="shell enroll-layout">
@@ -21,10 +21,10 @@ export default async function EnrollPage({
           <p className="eyebrow">$5 initial care assessment</p>
           <h2>For $5, understand whether India even belongs in the conversation.</h2>
           <p className="section-lede">
-            Sign in with Google. Then pay. You receive a patient file, a unique
-            DCredit ID, and a verification code for genuine communication. We
-            will never ask for passwords, banking credentials or one-time
-            authentication codes.
+            Sign in with Google. Then pay $5. After payment is confirmed you
+            receive an Application ID and a Conversation Verification ID for
+            genuine communication. We will never ask for passwords, banking PINs,
+            card CVV or one-time authentication codes.
           </p>
         </div>
         <EnrollForm

@@ -543,7 +543,8 @@ h2 {
 }
 
 .calc label,
-.assess label {
+.assess label,
+.enroll label {
   display: grid;
   gap: 0.35rem;
   font-size: 0.78rem;
@@ -556,7 +557,9 @@ h2 {
 .calc select,
 .assess input,
 .assess select,
-.enroll input {
+.enroll input,
+.enroll select,
+.enroll textarea {
   width: 100%;
   min-height: 2.6rem;
   padding: 0.45rem 0.7rem;
@@ -849,6 +852,24 @@ h2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.8rem;
+}
+
+.enroll-span {
+  grid-column: 1 / -1;
+}
+
+.turnstile {
+  margin: 1rem 0;
+}
+
+.confirm-page .codes strong {
+  font-size: 1.2rem;
+}
+
+.staff blockquote {
+  border-left: 2px solid var(--navy);
+  padding-left: 1rem;
+  color: var(--ink);
 }
 
 .gate-copy {

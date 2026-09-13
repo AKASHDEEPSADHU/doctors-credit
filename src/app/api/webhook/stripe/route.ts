@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { sendApplicationConfirmation } from "@/lib/email";
+import { getRepository } from "@/lib/repo";
 import { getStripe } from "@/lib/stripe";
-import {
-  getOrderByStripeSession,
-  markOrderPaid,
-  createOrder,
-  upsertPatient,
-} from "@/lib/store";
-import { packageBySku } from "@/lib/packages";
 
 export async function POST(req: NextRequest) {
   const stripe = getStripe();
@@ -25,38 +20,49 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: "Invalid signature." }, { status: 400 });
   }
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object;
-    const sessionId = session.id;
-    const existing = getOrderByStripeSession(sessionId);
-    const meta = session.metadata || {};
-    if (existing) {
-      markOrderPaid(existing.id, String(session.payment_intent || ""));
-    } else if (meta.orderId) {
-      markOrderPaid(meta.orderId, String(session.payment_intent || ""));
-    } else {
-      const email = session.customer_email || session.customer_details?.email;
-      const sku = meta.sku || "orientation";
-      const pkg = packageBySku(sku);
-      if (email && pkg) {
-        const patient = upsertPatient({
-          email,
-          name: session.customer_details?.name || "Patient",
-          phone: session.customer_details?.phone || "",
-          country: "",
-        });
-        const order = createOrder({
-          patientId: patient.id,
-          sku: pkg.sku,
-          title: pkg.name,
-          amountCents: session.amount_total || pkg.amountCents,
-          currency: (session.currency || "usd").toLowerCase(),
-          status: "pending",
-          stripeSessionId: sessionId,
-        });
-        markOrderPaid(order.id, String(session.payment_intent || ""));
-      }
-    }
+  if (event.type !== "checkout.session.completed") {
+    return NextResponse.json({ received: true });
   }
-  return NextResponse.json({ received: true });
+
+  const session = event.data.object;
+  if (session.payment_status !== "paid" && session.status !== "complete") {
+    return NextResponse.json({ received: true, ignored: "unpaid" });
+  }
+
+  const repo = await getRepository();
+  const meta = session.metadata || {};
+  const existing =
+    (await repo.getApplicationByStripeSession(session.id)) ||
+    (meta.orderId ? await repo.getApplicationById(meta.orderId) : null) ||
+    (meta.applicationId ? await repo.getApplicationByPublicId(meta.applicationId) : null);
+
+  if (!existing) {
+    return NextResponse.json({ received: true, recoverable: true, missing: "application" }, { status: 500 });
+  }
+
+  const paid = await repo.confirmPayment({
+    id: existing.id,
+    stripeSessionId: session.id,
+    paymentReference: String(session.id),
+    stripePaymentIntent: String(session.payment_intent || ""),
+  });
+  if (!paid || paid.paymentStatus !== "PAID") {
+    return NextResponse.json({ received: true, recoverable: true, persist: "failed" }, { status: 500 });
+  }
+
+  try {
+    const mail = await sendApplicationConfirmation(paid);
+    await repo.appendAudit(mail.sent ? "email_sent" : "email_failed", mail.sent ? "sent" : mail.reason, {
+      applicationId: paid.applicationId,
+      identityId: paid.identityId,
+    });
+  } catch {
+    await repo.appendAudit("email_failed", "provider", {
+      applicationId: paid.applicationId,
+      identityId: paid.identityId,
+    });
+  }
+
+  await repo.retryPendingSheetsSync();
+  return NextResponse.json({ received: true, applicationId: paid.applicationId });
 }

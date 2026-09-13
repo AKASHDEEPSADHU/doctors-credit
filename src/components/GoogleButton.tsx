@@ -1,3 +1,5 @@
+import TurnstileField from "@/components/TurnstileField";
+
 export function GoogleMark() {
   return (
     <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
@@ -28,11 +30,14 @@ export default function GoogleButton({
   next?: string;
   label?: string;
 }) {
-  const href = `/api/auth/google?next=${encodeURIComponent(next)}`;
   return (
-    <a className="btn-google" href={href}>
-      <GoogleMark />
-      {label}
-    </a>
+    <form className="google-form" action="/api/auth/google" method="post">
+      <input type="hidden" name="next" value={next} />
+      <TurnstileField />
+      <button className="btn-google" type="submit">
+        <GoogleMark />
+        {label}
+      </button>
+    </form>
   );
 }

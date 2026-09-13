@@ -1,13 +1,12 @@
 import Stripe from "stripe";
+import { demoPayments } from "@/lib/env";
+
+export { demoPayments };
 
 export function getStripe(): Stripe | null {
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) return null;
   return new Stripe(key);
-}
-
-export function demoPayments() {
-  return process.env.DEMO_PAYMENTS === "true" || !process.env.STRIPE_SECRET_KEY;
 }
 
 function integrationId(sku: string) {
@@ -24,6 +23,7 @@ export async function createCheckout(opts: {
   amountCents: number;
   orderId: string;
   patientId: string;
+  applicationId: string;
 }) {
   const stripe = getStripe();
   if (!stripe) return null;
@@ -32,7 +32,7 @@ export async function createCheckout(opts: {
     customer_email: opts.email,
     client_reference_id: opts.orderId,
     success_url: `${opts.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${opts.origin}/enroll`,
+    cancel_url: `${opts.origin}/enroll?resume=1`,
     line_items: [
       {
         quantity: 1,
@@ -50,6 +50,7 @@ export async function createCheckout(opts: {
       orderId: opts.orderId,
       patientId: opts.patientId,
       sku: opts.sku,
+      applicationId: opts.applicationId,
     },
     integration_identifier: integrationId(opts.sku),
   });

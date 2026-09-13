@@ -1,4 +1,5 @@
 import { SITE, whatsappHref } from "@/lib/contact";
+import ContactForm from "@/components/ContactForm";
 
 export const metadata = { title: "Contact — Doctor's Credit" };
 
@@ -19,6 +20,7 @@ export default function ContactPage() {
         is staffed. Until then, the $5 assessment is the reliable way to open a
         file.
       </p>
+      <ContactForm />
       <p>
         India support hours follow the coordination team once a journey package
         is active.

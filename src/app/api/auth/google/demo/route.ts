@@ -3,15 +3,21 @@ import { demoGoogleAllowed } from "@/lib/google";
 import { requestOrigin, safeNext } from "@/lib/origin";
 import { setSession } from "@/lib/session";
 import { upsertPatient } from "@/lib/store";
+import { clientIp, verifyTurnstile } from "@/lib/turnstile";
 
 export async function POST(req: NextRequest) {
   const origin = requestOrigin(req);
-  const fail = () => NextResponse.redirect(new URL("/signin?error=demo_disabled", origin), 303);
+  const fail = (reason = "demo_disabled") =>
+    NextResponse.redirect(new URL(`/signin?error=${reason}`, origin), 303);
   if (!demoGoogleAllowed()) return fail();
 
   const fd = await req.formData().catch(() => null);
-  const next = safeNext(fd ? String(fd.get("next") || "") : "");
-  const patient = upsertPatient({
+  if (!fd) return fail("invalid");
+  if (!(await verifyTurnstile(String(fd.get("cf-turnstile-response") || ""), clientIp(req.headers)))) {
+    return fail("turnstile");
+  }
+  const next = safeNext(String(fd.get("next") || ""));
+  const patient = await upsertPatient({
     email: "demo.google@doctors-credit.local",
     name: "Demo Google",
     googleSub: "demo-google-local",

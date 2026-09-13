@@ -1,14 +1,8 @@
-import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import { sendApplicationConfirmation } from "@/lib/email";
+import { getRepository } from "@/lib/repo";
+import { getSession, setSession } from "@/lib/session";
 import { getStripe } from "@/lib/stripe";
-import { setSession } from "@/lib/session";
-import { packageBySku } from "@/lib/packages";
-import {
-  createOrder,
-  getOrderByStripeSession,
-  getPatientById,
-  markOrderPaid,
-  upsertPatient,
-} from "@/lib/store";
 
 export default async function SuccessPage({
   searchParams,
@@ -16,52 +10,117 @@ export default async function SuccessPage({
   searchParams: Promise<{ session_id?: string }>;
 }) {
   const { session_id: sessionId } = await searchParams;
-  const stripe = getStripe();
-  if (!sessionId || !stripe) redirect("/account");
+  const repo = await getRepository();
+  const jar = await cookies();
+  const pendingId = jar.get("dc_application")?.value;
+  const session = await getSession();
 
-  const checkout = await stripe.checkout.sessions.retrieve(sessionId);
-  if (checkout.payment_status !== "paid" && checkout.status !== "complete") {
-    redirect("/enroll");
-  }
+  let paid = pendingId ? await repo.getApplicationById(pendingId) : null;
 
-  const meta = checkout.metadata || {};
-  let order = getOrderByStripeSession(sessionId);
-  if (order) {
-    markOrderPaid(order.id, String(checkout.payment_intent || ""));
-  } else if (meta.orderId) {
-    markOrderPaid(meta.orderId, String(checkout.payment_intent || ""));
-  }
-
-  const email = checkout.customer_email || checkout.customer_details?.email || "";
-  if (email) {
-    const patient = upsertPatient({
-      email,
-      name: checkout.customer_details?.name || "Patient",
-      phone: checkout.customer_details?.phone || "",
-      country: "",
-      stripeCustomerId:
-        typeof checkout.customer === "string" ? checkout.customer : undefined,
+  if (sessionId) {
+    const stripe = getStripe();
+    if (!stripe) {
+      return <Pending copy="Payment confirmation is not configured. Contact care@dcredit.in with your receipt." />;
+    }
+    const checkout = await stripe.checkout.sessions.retrieve(sessionId);
+    const stripePaid = checkout.payment_status === "paid" || checkout.status === "complete";
+    if (!stripePaid) {
+      return (
+        <Pending copy="Stripe has not confirmed this payment yet. If you were charged, wait a moment and refresh — we will not show an application ID until the payment is verified server-side." />
+      );
+    }
+    const meta = checkout.metadata || {};
+    const existing =
+      (await repo.getApplicationByStripeSession(sessionId)) ||
+      (meta.orderId ? await repo.getApplicationById(meta.orderId) : null) ||
+      (paid && paid.id ? paid : null);
+    if (!existing) {
+      return (
+        <Pending copy="Your payment was received, but the application record is still being written. Keep this tab open and refresh shortly. Do not pay again. If this persists, email care@dcredit.in with your Stripe receipt." />
+      );
+    }
+    paid = await repo.confirmPayment({
+      id: existing.id,
+      stripeSessionId: sessionId,
+      paymentReference: sessionId,
+      stripePaymentIntent: String(checkout.payment_intent || ""),
     });
-    if (!order && !meta.orderId) {
-      const pkg = packageBySku(meta.sku || "orientation");
-      if (pkg) {
-        const created = createOrder({
-          patientId: patient.id,
-          sku: pkg.sku,
-          title: pkg.name,
-          amountCents: checkout.amount_total || pkg.amountCents,
-          currency: (checkout.currency || "usd").toLowerCase(),
-          status: "pending",
-          stripeSessionId: sessionId,
+    const email = checkout.customer_email || checkout.customer_details?.email;
+    if (email && paid) {
+      await setSession({ patientId: paid.identityId, email: paid.email });
+    } else if (paid) {
+      const identity = await repo.getIdentityById(paid.identityId);
+      if (identity) await setSession({ patientId: identity.id, email: identity.email });
+    }
+    if (paid?.paymentStatus === "PAID") {
+      try {
+        await sendApplicationConfirmation(paid);
+      } catch {
+        await repo.appendAudit("email_failed", "success_page", {
+          applicationId: paid.applicationId,
+          identityId: paid.identityId,
         });
-        markOrderPaid(created.id, String(checkout.payment_intent || ""));
       }
     }
-    await setSession({ patientId: patient.id, email: patient.email });
-  } else if (meta.patientId) {
-    const patient = getPatientById(meta.patientId);
-    if (patient) await setSession({ patientId: patient.id, email: patient.email });
+  } else if (paid && session && paid.identityId !== session.patientId) {
+    paid = null;
   }
 
-  redirect("/account?welcome=1");
+  if (!paid || paid.paymentStatus !== "PAID") {
+    if (session) {
+      const apps = await repo.listApplicationsForIdentity(session.patientId);
+      paid = apps.find((a) => a.paymentStatus === "PAID") || null;
+    }
+  }
+
+  if (!paid || paid.paymentStatus !== "PAID") {
+    return (
+      <Pending copy="We can only show your Application ID after payment is confirmed on our servers. If you just paid, refresh this page in a few seconds." />
+    );
+  }
+
+  return (
+    <main id="main" className="legal confirm-page">
+      <p className="eyebrow">Application received</p>
+      <h1>Your DCredit application has been received.</h1>
+      <div className="codes">
+        <div>
+          <span className="tag">Application ID</span>
+          <strong>{paid.applicationId}</strong>
+        </div>
+        <div>
+          <span className="tag">Conversation Verification ID</span>
+          <strong>{paid.conversationVerificationId}</strong>
+        </div>
+      </div>
+      <p>
+        Keep these details available when communicating with DCredit. We may ask
+        for your Conversation Verification ID to verify your case.
+      </p>
+      <p>
+        DCredit will never ask for your password, banking PIN, card CVV or
+        one-time authentication code.
+      </p>
+      <p className="fine">
+        Application status: {paid.applicationStatus}. A coordinator will use your
+        preferred consultation date where possible. You can also{" "}
+        <a href="/account">open your file</a> or{" "}
+        <a href="/verify">verify a DCredit communication</a>.
+      </p>
+    </main>
+  );
+}
+
+function Pending({ copy }: { copy: string }) {
+  return (
+    <main id="main" className="legal confirm-page">
+      <p className="eyebrow">Payment</p>
+      <h1>We are confirming your application.</h1>
+      <p>{copy}</p>
+      <p className="fine">
+        DCredit will never ask for your password, banking PIN, card CVV or
+        one-time authentication code.
+      </p>
+    </main>
+  );
 }
