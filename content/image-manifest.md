@@ -1,0 +1,9 @@
+# Image manifest
+
+Editorial images used on `/india-medical-achievements`. None of these images are documentary photographs of the historical events they accompany. None represent DCredit patients.
+
+| Filename | Section | Description | Source | Source URL | License | Attribution | Verified | Kind | Alt text |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `/images/editorial/innovation-imaging.jpg` | Hero, timeline, devices, technology | Diagnostic imaging still | DCredit editorial library | https://dcredit.in/india-medical-achievements | Original editorial asset commissioned for DCredit | Doctor's Credit editorial library | September 2026 | Representative | Diagnostic imaging slices used as a representative illustration of advanced medical technology. Not a named hospital or patient. |
+| `/images/editorial/innovation-laboratory.jpg` | Timeline, beyond surgery, pharmaceuticals, vaccines | Laboratory environment | DCredit editorial library | https://dcredit.in/india-medical-achievements | Original editorial asset commissioned for DCredit | Doctor's Credit editorial library | September 2026 | Representative | Laboratory environment used as a representative illustration of research and manufacturing capability. Not a named facility. |
+| `/images/editorial/hero-gateway-couple.jpg` | International patient framework | Editorial reconstruction of an international couple in India | DCredit editorial library | https://dcredit.in/india-medical-achievements | Original editorial reconstruction. Not a photograph of DCredit patients. | Doctor's Credit editorial library | September 2026 | Editorial reconstruction | Editorial reconstruction of a relaxed international couple at a historic Indian waterfront. Generated imagery, not a photograph of DCredit patients. |
