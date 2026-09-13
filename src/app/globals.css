@@ -111,7 +111,6 @@ section {
   background: color-mix(in srgb, var(--paper) 86%, transparent);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid transparent;
-  overflow: hidden;
   transition:
     background 400ms ease,
     border-color 400ms ease,
