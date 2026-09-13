@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test src/lib/ids.test.ts src/lib/repo/json.test.ts src/lib/env.test.ts",
+    "test": "tsx --test src/lib/ids.test.ts src/lib/repo/json.test.ts src/lib/env.test.ts src/lib/payments.test.ts src/app/api/webhook/dodo/route.test.ts",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "deploy:staging": "opennextjs-cloudflare build && opennextjs-cloudflare deploy -- --env staging",
@@ -18,12 +18,13 @@
     "d1:migrate:production": "wrangler d1 migrations apply dcredit-production --env production"
   },
   "dependencies": {
+    "@dodopayments/nextjs": "^0.3.9",
     "@opennextjs/cloudflare": "^1.20.6",
+    "dodopayments": "^2.50.0",
     "jose": "^6.2.12",
     "next": "^16.3.5",
     "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "stripe": "^22.6.2"
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -38,7 +38,7 @@ export function secureCookiesEnabled() {
  */
 export function demoPayments() {
   if (isDeployed()) return false;
-  return process.env.DEMO_PAYMENTS === "true" || !process.env.STRIPE_SECRET_KEY;
+  return process.env.DEMO_PAYMENTS === "true" || !process.env.DODO_PAYMENTS_API_KEY;
 }
 
 export function demoGoogleAllowed() {
@@ -66,10 +66,6 @@ export function sheetsWriteAllowed() {
     return false;
   }
   return true;
-}
-
-export function stripeLiveConfigured() {
-  return Boolean(process.env.STRIPE_SECRET_KEY && process.env.STRIPE_WEBHOOK_SECRET);
 }
 
 function tooWeak(value: string | undefined, min: number, banned?: string) {

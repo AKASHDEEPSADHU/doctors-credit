@@ -29,7 +29,8 @@
     "staging": {
       "name": "dcredit-staging",
       "vars": {
-        "APP_ENV": "staging"
+        "APP_ENV": "staging",
+        "DODO_PAYMENTS_ENVIRONMENT": "test_mode"
       },
       "services": [
         {
@@ -49,7 +50,9 @@
     "production": {
       "name": "dcredit-production",
       "vars": {
-        "APP_ENV": "production"
+        "APP_ENV": "production",
+        "DODO_PAYMENTS_ENVIRONMENT": "live_mode",
+        "DODO_PAYMENTS_RETURN_URL": "https://dcredit.in/success"
       },
       "routes": [
         { "pattern": "dcredit.in", "custom_domain": true },

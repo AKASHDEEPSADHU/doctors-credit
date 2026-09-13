@@ -4,3 +4,10 @@ DEMO_PAYMENTS=true
 SESSION_SECRET=dev-doctors-credit-preview
 # Leave unset to hide WhatsApp. Do not use a fake production number.
 # NEXT_PUBLIC_WHATSAPP_E164=
+
+# Dodo Payments (placeholders only — never commit live keys)
+# DODO_PAYMENTS_API_KEY=
+# DODO_PAYMENTS_WEBHOOK_KEY=
+# DODO_PAYMENTS_ENVIRONMENT=test_mode
+# DODO_PAYMENTS_RETURN_URL=http://127.0.0.1:3100/success
+# DODO_PRODUCT_ID_ORIENTATION=

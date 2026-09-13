@@ -15,9 +15,9 @@ export default function PrivacyPage() {
       <h2>What we collect</h2>
       <p>
         Google sign-in (name and email), the $5 Initial Assessment payment
-        processed by Stripe (we never store card numbers, CVV or banking
+        processed by Dodo Payments (we never store card numbers, CVV or banking
         passwords), application status, and messages you send. Payment is marked
-        paid only after Stripe confirms it on the server. Operational fields may
+        paid only after Dodo confirms it on the server. Operational fields may
         be copied to a private Google Sheet used as a temporary CRM. That sheet
         is not public and is not a healthcare database. We do not store full
         medical history, imaging, prescriptions or detailed diagnoses there.

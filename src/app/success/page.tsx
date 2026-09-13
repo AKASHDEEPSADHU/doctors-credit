@@ -1,88 +1,18 @@
 import { cookies } from "next/headers";
-import { sendApplicationConfirmationOnce } from "@/lib/email";
 import { getRepository } from "@/lib/repo";
-import { getSession, setSession } from "@/lib/session";
-import { getStripe } from "@/lib/stripe";
+import { getSession } from "@/lib/session";
+import { loadConfirmedApplication } from "@/lib/success-state";
 
-export default async function SuccessPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ session_id?: string }>;
-}) {
-  const { session_id: sessionId } = await searchParams;
+export default async function SuccessPage() {
   const repo = await getRepository();
   const jar = await cookies();
   const pendingId = jar.get("dc_application")?.value;
   const session = await getSession();
-
-  let paid = pendingId ? await repo.getApplicationById(pendingId) : null;
-
-  if (sessionId) {
-    const stripe = getStripe();
-    if (!stripe) {
-      return <Pending copy="Payment confirmation is not configured. Contact care@dcredit.in with your receipt." />;
-    }
-    const checkout = await stripe.checkout.sessions.retrieve(sessionId);
-    const stripePaid = checkout.payment_status === "paid" || checkout.status === "complete";
-    if (!stripePaid) {
-      return (
-        <Pending copy="Stripe has not confirmed this payment yet. If you were charged, wait a moment and refresh — we will not show an application ID until the payment is verified server-side." />
-      );
-    }
-    const meta = checkout.metadata || {};
-    const existing =
-      (await repo.getApplicationByStripeSession(sessionId)) ||
-      (meta.orderId ? await repo.getApplicationById(meta.orderId) : null) ||
-      (paid && paid.id ? paid : null);
-    if (!existing) {
-      return (
-        <Pending copy="Your payment was received, but the application record is still being written. Keep this tab open and refresh shortly. Do not pay again. If this persists, email care@dcredit.in with your Stripe receipt." />
-      );
-    }
-    const alreadyPaid = existing.paymentStatus === "PAID";
-    paid = await repo.confirmPayment({
-      id: existing.id,
-      stripeSessionId: sessionId,
-      paymentReference: sessionId,
-      stripePaymentIntent: String(checkout.payment_intent || ""),
-    });
-    const email = checkout.customer_email || checkout.customer_details?.email;
-    if (email && paid) {
-      await setSession({ patientId: paid.identityId, email: paid.email });
-    } else if (paid) {
-      const identity = await repo.getIdentityById(paid.identityId);
-      if (identity) await setSession({ patientId: identity.id, email: identity.email });
-    }
-    if (paid?.paymentStatus === "PAID") {
-      try {
-        const mail = await sendApplicationConfirmationOnce(paid, alreadyPaid);
-        if (mail.reason !== "already_confirmed") {
-          await repo.appendAudit(mail.sent ? "email_sent" : "email_failed", mail.sent ? "sent" : mail.reason, {
-            applicationId: paid.applicationId,
-            identityId: paid.identityId,
-          });
-        }
-      } catch {
-        await repo.appendAudit("email_failed", "success_page", {
-          applicationId: paid.applicationId,
-          identityId: paid.identityId,
-        });
-      }
-    }
-  } else if (paid && session && paid.identityId !== session.patientId) {
-    paid = null;
-  }
-
-  if (!paid || paid.paymentStatus !== "PAID") {
-    if (session) {
-      const apps = await repo.listApplicationsForIdentity(session.patientId);
-      paid = apps.find((a) => a.paymentStatus === "PAID") || null;
-    }
-  }
+  const paid = await loadConfirmedApplication(repo, { pendingId, session });
 
   if (!paid || paid.paymentStatus !== "PAID") {
     return (
-      <Pending copy="We can only show your Application ID after payment is confirmed on our servers. If you just paid, refresh this page in a few seconds." />
+      <Pending copy="Payment is still processing. We only show your Application ID after Dodo Payments confirms the charge on our servers. If you just paid, refresh this page in a few seconds. Do not pay again." />
     );
   }
 

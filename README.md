@@ -11,11 +11,11 @@ GitHub → Cloudflare Worker (website + API)
               ├── Turnstile
               ├── D1     durable operational records (IDs, payment state, audit)
               ├── Google Sheets   staff CRM replica (not medical records)
-              ├── Stripe Checkout $5 assessment (webhook is authoritative)
+              ├── Dodo Payments $5 assessment (webhook is authoritative)
               └── Resend (optional) transactional email
 ```
 
-The browser never talks to Google Sheets, Stripe secrets, or Cloudflare credentials. `ApplicationRepository` is the only persistence API. Today the Worker writes D1 first (so a paid application cannot vanish if Sheets is down), then projects the same **non-clinical** columns into Google Sheets. A later D1-primary / Sheets-off cutover does not require a frontend rewrite.
+The browser never talks to Google Sheets, Dodo secrets, or Cloudflare credentials. `ApplicationRepository` is the only persistence API. Today the Worker writes D1 first (so a paid application cannot vanish if Sheets is down), then projects the same **non-clinical** columns into Google Sheets. A later D1-primary / Sheets-off cutover does not require a frontend rewrite.
 
 R2 private document storage is **not** implemented. Do not upload MRI/CT/X-ray files, prescriptions or detailed diagnoses until a dedicated privacy/compliance review is done. Do not claim HIPAA compliance.
 
@@ -56,8 +56,9 @@ npx wrangler secret put SESSION_SECRET --env production
 npx wrangler secret put TURNSTILE_SECRET_KEY --env production
 npx wrangler secret put GOOGLE_CLIENT_ID --env production
 npx wrangler secret put GOOGLE_CLIENT_SECRET --env production
-npx wrangler secret put STRIPE_SECRET_KEY --env production
-npx wrangler secret put STRIPE_WEBHOOK_SECRET --env production
+npx wrangler secret put DODO_PAYMENTS_API_KEY --env production
+npx wrangler secret put DODO_PAYMENTS_WEBHOOK_KEY --env production
+# Non-secret vars: DODO_PAYMENTS_ENVIRONMENT, DODO_PAYMENTS_RETURN_URL, DODO_PRODUCT_ID_ORIENTATION
 npx wrangler secret put GOOGLE_SHEETS_SPREADSHEET_ID --env production
 npx wrangler secret put GOOGLE_SHEETS_PRODUCTION_SPREADSHEET_ID --env production
 npx wrangler secret put GOOGLE_SERVICE_ACCOUNT_JSON --env production
@@ -70,7 +71,7 @@ npx wrangler secret put RESEND_API_KEY --env production
 
 5. Google Sheet **DCredit — Patient Applications**: private, not published, not embedded. Import `crm/patient-applications.headers.csv`. Share only with coordinators and the service account. Columns match the CRM replica; they are operational, not a healthcare database.
 
-6. Stripe webhook URL: `https://dcredit.in/api/webhook/stripe`. Success in the browser is never enough to mark PAID.
+6. Dodo webhook URL: `https://dcredit.in/api/webhook/dodo`. Subscribe to `payment.succeeded`. Success in the browser is never enough to mark PAID.
 
 7. Google OAuth redirect: `https://dcredit.in/api/auth/google/callback`.
 
@@ -87,7 +88,7 @@ Workers custom domains require the zone on the same account. If DNS is still at 
 
 ## Application IDs
 
-After Stripe (or the non-production demo path) confirms payment, the patient sees:
+After Dodo (or the non-production demo path) confirms payment, the patient sees:
 
 - Application ID `DC-000001`
 - Conversation Verification ID `CV-7K4P9`

@@ -17,7 +17,6 @@ export type ApplicationRepository = {
     phone?: string;
     country?: string;
     googleSub?: string;
-    stripeCustomerId?: string;
   }): Promise<Identity>;
   getIdentityById(id: string): Promise<Identity | null>;
   getIdentityByEmail(email: string): Promise<Identity | null>;
@@ -25,15 +24,19 @@ export type ApplicationRepository = {
   createApplication(input: CreateApplicationInput): Promise<Application>;
   getApplicationById(id: string): Promise<Application | null>;
   getApplicationByPublicId(applicationId: string): Promise<Application | null>;
-  getApplicationByStripeSession(sessionId: string): Promise<Application | null>;
+  getApplicationByProviderCheckout(checkoutId: string): Promise<Application | null>;
+  getApplicationByProviderPayment(paymentId: string): Promise<Application | null>;
   listApplicationsForIdentity(identityId: string): Promise<Application[]>;
 
-  markPaymentInitiated(id: string, stripeSessionId: string): Promise<Application | null>;
+  markPaymentInitiated(id: string, providerCheckoutId: string): Promise<Application | null>;
+  markPaymentFailed(id: string, detail?: string): Promise<Application | null>;
   confirmPayment(input: {
     id?: string;
-    stripeSessionId?: string;
+    applicationId?: string;
+    paymentProvider?: string;
+    providerCheckoutId?: string;
+    providerPaymentId?: string;
     paymentReference?: string;
-    stripePaymentIntent?: string;
   }): Promise<Application | null>;
 
   updateStatus(applicationId: string, status: PipelineStatus, notes?: string): Promise<Application | null>;

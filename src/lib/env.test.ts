@@ -3,7 +3,14 @@ import { afterEach, describe, it } from "node:test";
 import { demoGoogleAllowed, demoPayments } from "./env";
 import { purchasablePackage } from "./packages";
 
-const keys = ["APP_ENV", "DEMO_PAYMENTS", "ALLOW_DEMO_PAYMENTS", "GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET"] as const;
+const keys = [
+  "APP_ENV",
+  "DEMO_PAYMENTS",
+  "ALLOW_DEMO_PAYMENTS",
+  "GOOGLE_CLIENT_ID",
+  "GOOGLE_CLIENT_SECRET",
+  "DODO_PAYMENTS_API_KEY",
+] as const;
 const snapshot = Object.fromEntries(keys.map((k) => [k, process.env[k]]));
 
 afterEach(() => {
@@ -31,5 +38,14 @@ describe("production fail-closed flags", () => {
     process.env.GOOGLE_CLIENT_SECRET = "";
     assert.equal(demoPayments(), false);
     assert.equal(demoGoogleAllowed(), false);
+  });
+
+  it("uses the Dodo API key for local demo detection", () => {
+    process.env.APP_ENV = "development";
+    delete process.env.DEMO_PAYMENTS;
+    process.env.DODO_PAYMENTS_API_KEY = "test-placeholder";
+    assert.equal(demoPayments(), false);
+    delete process.env.DODO_PAYMENTS_API_KEY;
+    assert.equal(demoPayments(), true);
   });
 });

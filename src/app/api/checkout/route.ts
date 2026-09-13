@@ -3,11 +3,12 @@ import { firstError, parseApplicationInput } from "@/lib/application-fields";
 import { sendApplicationConfirmationOnce } from "@/lib/email";
 import { secureCookiesEnabled } from "@/lib/env";
 import { requestOrigin, safeNext } from "@/lib/origin";
-import { purchasablePackage } from "@/lib/packages";
+import { evaluateCheckoutAccess, resolveCheckoutProduct } from "@/lib/checkout-policy";
+import { createCheckout } from "@/lib/dodo";
+import { demoPayments } from "@/lib/env";
 import { allowRequest, tooLarge } from "@/lib/rate-limit";
 import { getRepository } from "@/lib/repo";
 import { getSession } from "@/lib/session";
-import { createCheckout, demoPayments } from "@/lib/stripe";
 import { clientIp, verifyTurnstile } from "@/lib/turnstile";
 
 function failForm(origin: string, msg: string) {
@@ -48,7 +49,7 @@ export async function POST(req: NextRequest) {
   }
 
   const session = await getSession();
-  if (!session) {
+  if (!session || !evaluateCheckoutAccess(session).ok) {
     const next = encodeURIComponent("/enroll");
     return NextResponse.redirect(new URL(`/signin?next=${next}`, origin), 303);
   }
@@ -87,8 +88,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: firstError(parsed.errors), fields: parsed.errors }, { status: 400 });
   }
 
-  const pkg = purchasablePackage(parsed.value.sku);
-  if (!pkg) {
+  const pkg = resolveCheckoutProduct({ sku: parsed.value.sku });
+  if (!pkg.ok) {
     if (asForm) return failForm(origin, "That service is not available.");
     return NextResponse.json({ error: "That service is not available." }, { status: 400 });
   }
@@ -160,17 +161,18 @@ export async function POST(req: NextRequest) {
     return res;
   }
 
-  const checkout = await createCheckout({
-    origin,
-    email: identity.email,
-    name: identity.name,
-    sku: pkg.sku,
-    title: pkg.name,
-    amountCents: pkg.amountCents,
-    orderId: application.id,
-    patientId: identity.id,
-    applicationId: application.applicationId,
-  });
+  let checkout: Awaited<ReturnType<typeof createCheckout>> = null;
+  try {
+    checkout = await createCheckout({
+      origin,
+      email: identity.email,
+      name: identity.name,
+      sku: pkg.sku,
+      applicationId: application.applicationId,
+    });
+  } catch {
+    checkout = null;
+  }
   if (!checkout?.url || !checkout.id) {
     if (asForm) return failForm(origin, "Checkout could not be started.");
     return NextResponse.json({ error: "Checkout could not be started." }, { status: 502 });

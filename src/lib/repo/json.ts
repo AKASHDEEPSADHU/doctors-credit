@@ -92,7 +92,6 @@ export function createJsonRepository(filePath: string, onPersist?: (app: Applica
           country: (input.country || "").trim(),
           createdAt: now(),
           googleSub: input.googleSub,
-          stripeCustomerId: input.stripeCustomerId,
         };
         db.identities.push(identity);
       } else {
@@ -101,7 +100,6 @@ export function createJsonRepository(filePath: string, onPersist?: (app: Applica
         if (input.phone) identity.phone = input.phone.trim();
         if (input.country) identity.country = input.country.trim();
         if (input.googleSub) identity.googleSub = input.googleSub;
-        if (input.stripeCustomerId) identity.stripeCustomerId = input.stripeCustomerId;
       }
       save(db);
       return identity;
@@ -175,8 +173,15 @@ export function createJsonRepository(filePath: string, onPersist?: (app: Applica
       return load().applications.find((a) => a.applicationId === id) ?? null;
     },
 
-    async getApplicationByStripeSession(sessionId) {
-      return load().applications.find((a) => a.stripeSessionId === sessionId) ?? null;
+    async getApplicationByProviderCheckout(checkoutId) {
+      return load().applications.find((a) => a.providerCheckoutId === checkoutId) ?? null;
+    },
+
+    async getApplicationByProviderPayment(paymentId) {
+      const db = load();
+      const payment = db.payments.find((p) => p.providerPaymentId === paymentId);
+      if (payment) return db.applications.find((a) => a.id === payment.applicationId) ?? null;
+      return db.applications.find((a) => a.providerPaymentId === paymentId) ?? null;
     },
 
     async listApplicationsForIdentity(identityId) {
@@ -185,11 +190,13 @@ export function createJsonRepository(filePath: string, onPersist?: (app: Applica
         .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
     },
 
-    async markPaymentInitiated(id, stripeSessionId) {
+    async markPaymentInitiated(id, providerCheckoutId) {
       const db = load();
       const app = db.applications.find((a) => a.id === id);
       if (!app) return null;
-      app.stripeSessionId = stripeSessionId;
+      if (app.paymentStatus === "PAID") return app;
+      app.paymentProvider = "dodo";
+      app.providerCheckoutId = providerCheckoutId;
       app.paymentStatus = "PENDING";
       app.updatedAt = now();
       db.audit.push({
@@ -197,7 +204,27 @@ export function createJsonRepository(filePath: string, onPersist?: (app: Applica
         applicationId: app.applicationId,
         identityId: app.identityId,
         event: "payment_initiated",
-        detail: "stripe_checkout",
+        detail: "dodo_checkout",
+        createdAt: app.updatedAt,
+      });
+      await project(app);
+      save(db);
+      return app;
+    },
+
+    async markPaymentFailed(id, detail) {
+      const db = load();
+      const app = db.applications.find((a) => a.id === id);
+      if (!app) return null;
+      if (app.paymentStatus === "PAID") return app;
+      app.paymentStatus = "FAILED";
+      app.updatedAt = now();
+      db.audit.push({
+        id: newInternalId(),
+        applicationId: app.applicationId,
+        identityId: app.identityId,
+        event: "payment_initiated",
+        detail: detail ? `dodo_failed:${detail}` : "dodo_failed",
         createdAt: app.updatedAt,
       });
       await project(app);
@@ -207,27 +234,40 @@ export function createJsonRepository(filePath: string, onPersist?: (app: Applica
 
     async confirmPayment(input) {
       const db = load();
+      const byPayment = input.providerPaymentId
+        ? db.payments.find((p) => p.providerPaymentId === input.providerPaymentId)
+        : undefined;
       const app = db.applications.find(
         (a) =>
           (input.id && a.id === input.id) ||
-          (input.stripeSessionId && a.stripeSessionId === input.stripeSessionId)
+          (input.applicationId && a.applicationId === input.applicationId) ||
+          (input.providerCheckoutId && a.providerCheckoutId === input.providerCheckoutId) ||
+          (byPayment && a.id === byPayment.applicationId)
       );
       if (!app) return null;
       if (app.paymentStatus !== "PAID") {
         app.paymentStatus = "PAID";
         app.applicationStatus = "PAID — CONSULTATION PENDING";
         app.paymentReference = input.paymentReference || app.paymentReference || app.applicationId;
-        app.stripePaymentIntent = input.stripePaymentIntent || app.stripePaymentIntent;
-        if (input.stripeSessionId) app.stripeSessionId = input.stripeSessionId;
+        app.paymentProvider = input.paymentProvider || app.paymentProvider || "dodo";
+        if (input.providerCheckoutId) app.providerCheckoutId = input.providerCheckoutId;
+        if (input.providerPaymentId) app.providerPaymentId = input.providerPaymentId;
         app.updatedAt = now();
-        db.payments.push({
-          id: newInternalId(),
-          applicationId: app.id,
-          amountCents: app.amountCents,
-          currency: app.currency,
-          stripePaymentIntent: app.stripePaymentIntent,
-          createdAt: app.updatedAt,
-        });
+        const duplicatePayment =
+          input.providerPaymentId &&
+          db.payments.some((p) => p.providerPaymentId === input.providerPaymentId);
+        if (!duplicatePayment) {
+          db.payments.push({
+            id: newInternalId(),
+            applicationId: app.id,
+            amountCents: app.amountCents,
+            currency: app.currency,
+            paymentProvider: app.paymentProvider,
+            providerCheckoutId: app.providerCheckoutId,
+            providerPaymentId: app.providerPaymentId,
+            createdAt: app.updatedAt,
+          });
+        }
         db.audit.push({
           id: newInternalId(),
           applicationId: app.applicationId,

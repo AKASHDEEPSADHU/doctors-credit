@@ -42,7 +42,6 @@ function identityFrom(row: Record<string, unknown> | null): Identity | null {
     country: String(row.country || ""),
     createdAt: String(row.created_at),
     googleSub: row.google_sub ? String(row.google_sub) : undefined,
-    stripeCustomerId: row.stripe_customer_id ? String(row.stripe_customer_id) : undefined,
   };
 }
 
@@ -67,8 +66,9 @@ function applicationFrom(row: Record<string, unknown> | null): Application | nul
     preferredConsultationDate: String(row.preferred_consultation_date || ""),
     paymentStatus: String(row.payment_status) as Application["paymentStatus"],
     paymentReference: String(row.payment_reference || ""),
-    stripeSessionId: row.stripe_session_id ? String(row.stripe_session_id) : undefined,
-    stripePaymentIntent: row.stripe_payment_intent ? String(row.stripe_payment_intent) : undefined,
+    paymentProvider: row.payment_provider ? String(row.payment_provider) : undefined,
+    providerCheckoutId: row.provider_checkout_id ? String(row.provider_checkout_id) : undefined,
+    providerPaymentId: row.provider_payment_id ? String(row.provider_payment_id) : undefined,
     sku: String(row.sku),
     amountCents: Number(row.amount_cents),
     currency: String(row.currency || "usd"),
@@ -141,22 +141,12 @@ export function createD1Repository(db: D1Like, onPersist?: (app: Application) =>
           country: (input.country || "").trim(),
           createdAt: now(),
           googleSub: input.googleSub,
-          stripeCustomerId: input.stripeCustomerId,
         };
         await db
           .prepare(
             "INSERT INTO identities (id, email, name, phone, country, google_sub, stripe_customer_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
           )
-          .bind(
-            row.id,
-            row.email,
-            row.name,
-            row.phone,
-            row.country,
-            row.googleSub || null,
-            row.stripeCustomerId || null,
-            row.createdAt
-          )
+          .bind(row.id, row.email, row.name, row.phone, row.country, row.googleSub || null, null, row.createdAt)
           .run();
         return row;
       }
@@ -165,12 +155,11 @@ export function createD1Repository(db: D1Like, onPersist?: (app: Application) =>
       if (input.phone) row.phone = input.phone.trim();
       if (input.country) row.country = input.country.trim();
       if (input.googleSub) row.googleSub = input.googleSub;
-      if (input.stripeCustomerId) row.stripeCustomerId = input.stripeCustomerId;
       await db
         .prepare(
-          "UPDATE identities SET email = ?, name = ?, phone = ?, country = ?, google_sub = ?, stripe_customer_id = ? WHERE id = ?"
+          "UPDATE identities SET email = ?, name = ?, phone = ?, country = ?, google_sub = ? WHERE id = ?"
         )
-        .bind(row.email, row.name, row.phone, row.country, row.googleSub || null, row.stripeCustomerId || null, row.id)
+        .bind(row.email, row.name, row.phone, row.country, row.googleSub || null, row.id)
         .run();
       return row;
     },
@@ -289,9 +278,24 @@ export function createD1Repository(db: D1Like, onPersist?: (app: Application) =>
       );
     },
 
-    async getApplicationByStripeSession(sessionId) {
+    async getApplicationByProviderCheckout(checkoutId) {
       return applicationFrom(
-        await db.prepare("SELECT * FROM applications WHERE stripe_session_id = ?").bind(sessionId).first()
+        await db.prepare("SELECT * FROM applications WHERE provider_checkout_id = ?").bind(checkoutId).first()
+      );
+    },
+
+    async getApplicationByProviderPayment(paymentId) {
+      const byApp = applicationFrom(
+        await db.prepare("SELECT * FROM applications WHERE provider_payment_id = ?").bind(paymentId).first()
+      );
+      if (byApp) return byApp;
+      const payment = await db
+        .prepare("SELECT application_id FROM payments WHERE provider_payment_id = ?")
+        .bind(paymentId)
+        .first<{ application_id: string }>();
+      if (!payment) return null;
+      return applicationFrom(
+        await db.prepare("SELECT * FROM applications WHERE id = ?").bind(payment.application_id).first()
       );
     },
 
@@ -303,17 +307,38 @@ export function createD1Repository(db: D1Like, onPersist?: (app: Application) =>
       return results.map((row) => applicationFrom(row)!);
     },
 
-    async markPaymentInitiated(id, stripeSessionId) {
+    async markPaymentInitiated(id, providerCheckoutId) {
       const app = applicationFrom(await db.prepare("SELECT * FROM applications WHERE id = ?").bind(id).first());
       if (!app) return null;
-      app.stripeSessionId = stripeSessionId;
+      if (app.paymentStatus === "PAID") return project(app);
+      app.paymentProvider = "dodo";
+      app.providerCheckoutId = providerCheckoutId;
       app.paymentStatus = "PENDING";
       app.updatedAt = now();
       await db
-        .prepare("UPDATE applications SET stripe_session_id = ?, payment_status = ?, updated_at = ? WHERE id = ?")
-        .bind(stripeSessionId, app.paymentStatus, app.updatedAt, app.id)
+        .prepare(
+          "UPDATE applications SET payment_provider = ?, provider_checkout_id = ?, payment_status = ?, updated_at = ? WHERE id = ?"
+        )
+        .bind(app.paymentProvider, providerCheckoutId, app.paymentStatus, app.updatedAt, app.id)
         .run();
-      await writeAudit("payment_initiated", "stripe_checkout", {
+      await writeAudit("payment_initiated", "dodo_checkout", {
+        applicationId: app.applicationId,
+        identityId: app.identityId,
+      });
+      return project(app);
+    },
+
+    async markPaymentFailed(id, detail) {
+      const app = applicationFrom(await db.prepare("SELECT * FROM applications WHERE id = ?").bind(id).first());
+      if (!app) return null;
+      if (app.paymentStatus === "PAID") return project(app);
+      app.paymentStatus = "FAILED";
+      app.updatedAt = now();
+      await db
+        .prepare("UPDATE applications SET payment_status = ?, updated_at = ? WHERE id = ?")
+        .bind(app.paymentStatus, app.updatedAt, app.id)
+        .run();
+      await writeAudit("payment_initiated", detail ? `dodo_failed:${detail}` : "dodo_failed", {
         applicationId: app.applicationId,
         identityId: app.identityId,
       });
@@ -321,49 +346,88 @@ export function createD1Repository(db: D1Like, onPersist?: (app: Application) =>
     },
 
     async confirmPayment(input) {
-      const row = input.id
+      let row = input.id
         ? await db.prepare("SELECT * FROM applications WHERE id = ?").bind(input.id).first()
-        : await db
-            .prepare("SELECT * FROM applications WHERE stripe_session_id = ?")
-            .bind(input.stripeSessionId || "")
-            .first();
+        : null;
+      if (!row && input.applicationId) {
+        row = await db
+          .prepare("SELECT * FROM applications WHERE application_id = ?")
+          .bind(input.applicationId)
+          .first();
+      }
+      if (!row && input.providerCheckoutId) {
+        row = await db
+          .prepare("SELECT * FROM applications WHERE provider_checkout_id = ?")
+          .bind(input.providerCheckoutId)
+          .first();
+      }
+      if (!row && input.providerPaymentId) {
+        row = await db
+          .prepare("SELECT * FROM applications WHERE provider_payment_id = ?")
+          .bind(input.providerPaymentId)
+          .first();
+        if (!row) {
+          const payment = await db
+            .prepare("SELECT application_id FROM payments WHERE provider_payment_id = ?")
+            .bind(input.providerPaymentId)
+            .first<{ application_id: string }>();
+          if (payment) {
+            row = await db.prepare("SELECT * FROM applications WHERE id = ?").bind(payment.application_id).first();
+          }
+        }
+      }
       const app = applicationFrom(row);
       if (!app) return null;
       if (app.paymentStatus !== "PAID") {
         app.paymentStatus = "PAID";
         app.applicationStatus = "PAID — CONSULTATION PENDING";
         app.paymentReference = input.paymentReference || app.paymentReference || app.applicationId;
-        app.stripePaymentIntent = input.stripePaymentIntent || app.stripePaymentIntent;
-        if (input.stripeSessionId) app.stripeSessionId = input.stripeSessionId;
+        app.paymentProvider = input.paymentProvider || app.paymentProvider || "dodo";
+        if (input.providerCheckoutId) app.providerCheckoutId = input.providerCheckoutId;
+        if (input.providerPaymentId) app.providerPaymentId = input.providerPaymentId;
         app.updatedAt = now();
         await db
           .prepare(
             `UPDATE applications SET payment_status = ?, application_status = ?, payment_reference = ?,
-             stripe_payment_intent = ?, stripe_session_id = ?, updated_at = ? WHERE id = ?`
+             payment_provider = ?, provider_checkout_id = ?, provider_payment_id = ?, updated_at = ? WHERE id = ?`
           )
           .bind(
             app.paymentStatus,
             app.applicationStatus,
             app.paymentReference,
-            app.stripePaymentIntent || null,
-            app.stripeSessionId || null,
+            app.paymentProvider || null,
+            app.providerCheckoutId || null,
+            app.providerPaymentId || null,
             app.updatedAt,
             app.id
           )
           .run();
-        await db
-          .prepare(
-            "INSERT INTO payments (id, application_id, amount_cents, currency, stripe_payment_intent, created_at) VALUES (?, ?, ?, ?, ?, ?)"
-          )
-          .bind(
-            newInternalId(),
-            app.id,
-            app.amountCents,
-            app.currency,
-            app.stripePaymentIntent || null,
-            app.updatedAt
-          )
-          .run();
+        const existingPayment = input.providerPaymentId
+          ? await db
+              .prepare("SELECT id FROM payments WHERE provider_payment_id = ?")
+              .bind(input.providerPaymentId)
+              .first()
+          : null;
+        if (!existingPayment) {
+          await db
+            .prepare(
+              `INSERT INTO payments (id, application_id, amount_cents, currency, stripe_payment_intent,
+               payment_provider, provider_checkout_id, provider_payment_id, created_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+            )
+            .bind(
+              newInternalId(),
+              app.id,
+              app.amountCents,
+              app.currency,
+              null,
+              app.paymentProvider || null,
+              app.providerCheckoutId || null,
+              app.providerPaymentId || null,
+              app.updatedAt
+            )
+            .run();
+        }
         await writeAudit("payment_confirmed", app.paymentReference, {
           applicationId: app.applicationId,
           identityId: app.identityId,
@@ -463,7 +527,9 @@ export function createD1Repository(db: D1Like, onPersist?: (app: Application) =>
         applicationId: String(p.application_id),
         amountCents: Number(p.amount_cents),
         currency: String(p.currency),
-        stripePaymentIntent: p.stripe_payment_intent ? String(p.stripe_payment_intent) : undefined,
+        paymentProvider: p.payment_provider ? String(p.payment_provider) : undefined,
+        providerCheckoutId: p.provider_checkout_id ? String(p.provider_checkout_id) : undefined,
+        providerPaymentId: p.provider_payment_id ? String(p.provider_payment_id) : undefined,
         createdAt: String(p.created_at),
       }));
     },

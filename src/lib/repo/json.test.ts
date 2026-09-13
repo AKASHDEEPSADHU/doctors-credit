@@ -38,7 +38,7 @@ describe("ApplicationRepository (local durable store)", () => {
     const unpaid = await repo.getApplicationByPublicId(app.applicationId);
     assert.equal(unpaid?.paymentStatus, "PENDING");
 
-    const paid = await repo.confirmPayment({ id: app.id, paymentReference: "stripe_test" });
+    const paid = await repo.confirmPayment({ id: app.id, paymentReference: "dodo_test" });
     assert.equal(paid?.paymentStatus, "PAID");
     assert.equal(paid?.applicationStatus, "PAID — CONSULTATION PENDING");
   });

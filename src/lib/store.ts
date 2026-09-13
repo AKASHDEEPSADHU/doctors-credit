@@ -9,7 +9,6 @@ export async function upsertPatient(input: {
   phone?: string;
   country?: string;
   googleSub?: string;
-  stripeCustomerId?: string;
 }): Promise<Identity> {
   return (await getRepository()).upsertIdentity(input);
 }

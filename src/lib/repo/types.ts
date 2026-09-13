@@ -28,7 +28,6 @@ export type Identity = {
   country: string;
   createdAt: string;
   googleSub?: string;
-  stripeCustomerId?: string;
 };
 
 export type Application = {
@@ -50,8 +49,9 @@ export type Application = {
   preferredConsultationDate: string;
   paymentStatus: PaymentStatus;
   paymentReference: string;
-  stripeSessionId?: string;
-  stripePaymentIntent?: string;
+  paymentProvider?: string;
+  providerCheckoutId?: string;
+  providerPaymentId?: string;
   sku: string;
   amountCents: number;
   currency: string;
@@ -72,7 +72,9 @@ export type PaymentRecord = {
   applicationId: string;
   amountCents: number;
   currency: string;
-  stripePaymentIntent?: string;
+  paymentProvider?: string;
+  providerCheckoutId?: string;
+  providerPaymentId?: string;
   createdAt: string;
 };
 
