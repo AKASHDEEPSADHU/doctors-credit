@@ -20,7 +20,7 @@ export function whatsappHref(prefill?: string) {
   if (!whatsappEnabled()) return "";
   const text = encodeURIComponent(
     prefill ||
-      "Hello. I would like to start a $5 Initial Assessment to understand whether exploring planned treatment in India may make sense for me. I will not send medical records or other sensitive clinical documents through WhatsApp."
+      "Hello. I would like to talk with a DCredit care coordinator about planned care and whether exploring treatment in India may make sense for me. I will not send medical records or other sensitive clinical documents through WhatsApp."
   );
   return `https://wa.me/${WHATSAPP_E164}?text=${text}`;
 }

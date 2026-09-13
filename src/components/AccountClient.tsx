@@ -66,15 +66,15 @@ export default function AccountClient() {
     return (
       <div className="account-gate">
         <p className="eyebrow">My Account</p>
-        <h1>Sign in with Google to open your assessment.</h1>
+        <h1>Sign in with Google to open your account.</h1>
         <p className="lede">
-          This page shows your $5 Initial Assessment, selected conversation time,
+          This page shows your care conversation, selected conversation time,
           and Zoom join details after payment is confirmed. It is not a medical
           record.
         </p>
         <GoogleButton next="/account" label="Continue with Google" />
         <p className="fine">
-          No assessment yet? <Link href="/enroll">Start my $5 Assessment</Link>
+          No conversation yet? <Link href="/enroll">Talk to a care coordinator</Link>
         </p>
       </div>
     );
@@ -111,7 +111,7 @@ export default function AccountClient() {
 
       <section className="account-card account-card-primary" aria-labelledby="assessment-heading">
         <h2 id="assessment-heading" className="account-card-title">
-          Your assessment
+          Your care conversation
         </h2>
 
         <div className="account-field">
@@ -141,9 +141,15 @@ export default function AccountClient() {
         ) : null}
 
         {!paid ? (
-          <Link className="btn-solid account-cta" href="/enroll">
-            Continue to $5 Assessment
-          </Link>
+          <>
+            <Link className="btn-solid account-cta" href="/enroll">
+              Talk to a care coordinator
+            </Link>
+            <p className="account-hint">
+              Choose a convenient time for your conversation and continue when
+              you are ready.
+            </p>
+          </>
         ) : null}
       </section>
 

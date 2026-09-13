@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { SITE, whatsappEnabled, whatsappHref } from "@/lib/contact";
 import ContactForm from "@/components/ContactForm";
 
@@ -22,8 +23,13 @@ export default function ContactPage() {
       </p>
       <p>
         Business hours and a public phone number will be published when the
-        line is staffed. Until then, the $5 Initial Assessment is the reliable
-        way to open a file.
+        line is staffed. Until then, talking with a care coordinator is the
+        reliable way to open a file.
+      </p>
+      <p>
+        <Link className="btn-solid" href="/enroll">
+          Talk to a care coordinator
+        </Link>
       </p>
       <ContactForm />
       {whatsappEnabled() ? (

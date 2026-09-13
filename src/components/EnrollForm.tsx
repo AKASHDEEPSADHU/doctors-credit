@@ -37,9 +37,10 @@ export default function EnrollForm({
       <div className="gate">
         {error ? <p className="enroll-error">{error}</p> : null}
         <p className="gate-copy">
-          Sign in with Google before any money moves. The $5 Initial Assessment
-          is a conversation with DCredit, not a clinical evaluation. The
-          hospital bill never passes through this account.
+          Sign in with Google before any money moves. This conversation is
+          with a DCredit care coordinator. It is not a medical diagnosis or
+          clinical evaluation. The hospital bill never passes through this
+          account.
         </p>
         <GoogleButton next="/enroll" label="Continue with Google" />
         <p className="fine">
@@ -58,7 +59,7 @@ export default function EnrollForm({
     <form className="enroll" action="/api/checkout" method="post">
       {error ? <p className="enroll-error">{error}</p> : null}
       {justSignedIn ? (
-        <p className="welcome">You are signed in. Choose a conversation time, then continue to the $5 Assessment.</p>
+        <p className="welcome">You are signed in. Choose a convenient time for your conversation and continue when you are ready.</p>
       ) : null}
       <p className="signed-as">
         Signed in as <strong>{patient.name}</strong>
@@ -73,10 +74,15 @@ export default function EnrollForm({
         </span>
       </p>
       <input type="hidden" name="sku" value={CURRENT_SKU} />
-      <div className="treat-card" style={{ marginBottom: "1.2rem" }}>
-        <small>{assessment.priceLabel}</small>
-        <h3>{assessment.name}</h3>
-        <p className="muted">{assessment.blurb}</p>
+      <div className="care-checkout-card">
+        <p className="eyebrow">Initial Care Conversation</p>
+        <p className="care-price">{assessment.priceLabel}</p>
+        <p className="care-fee">One-time fee</p>
+        <p>{assessment.blurb}</p>
+        <p className="fine">
+          This conversation is with a DCredit care coordinator. It is not a
+          medical diagnosis or clinical evaluation.
+        </p>
       </div>
       <div className="enroll-grid">
         <label>
@@ -170,7 +176,7 @@ export default function EnrollForm({
       </div>
       <TurnstileField />
       <button className="btn-solid" type="submit">
-        Continue to $5 Assessment
+        Continue to $5 checkout
       </button>
       <p className="fine">
         Payment is confirmed on our servers before the application is marked paid.

@@ -84,8 +84,8 @@ export const FAQS: [string, string][] = [
     "After Google sign-in and a confirmed $5 payment you receive an Application ID and a Conversation Verification ID for genuine DCredit communication. We will never ask you to share passwords, banking credentials, OTPs or one-time authentication codes. Look for dcredit.in.",
   ],
   [
-    "How does the $5 Initial Assessment work?",
-    "For $5, speak with a DCredit care coordinator about the care you are considering, your healthcare coverage or funding situation, your timeline and your goals. The conversation helps you understand how DCredit works and whether exploring care in India may be worth investigating further. It is an initial conversation, not a diagnosis, clinical assessment, specialist opinion, insurance verification or booking fee for surgery.",
+    "How does the initial care conversation work?",
+    "Your first conversation with DCredit is a $5 one-time service. Talk with a DCredit care coordinator about the care you are considering, your goals, timing and whether exploring care in India may make sense for you. It is an initial conversation, not a diagnosis, clinical assessment, specialist opinion, insurance verification or booking fee for surgery.",
   ],
   [
     "Is the $5 Initial Assessment refundable?",

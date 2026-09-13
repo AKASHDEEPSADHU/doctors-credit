@@ -33,6 +33,11 @@ export default function TreatmentsPage() {
         Labels: YES, {SUITABILITY_LABEL.YES}. POSSIBLY, {SUITABILITY_LABEL.POSSIBLY}.
         NOT GENERALLY, {SUITABILITY_LABEL["NOT GENERALLY"]}.
       </p>
+      <p>
+        <Link className="btn-solid" href="/enroll">
+          Talk to a care coordinator
+        </Link>
+      </p>
     </main>
   );
 }

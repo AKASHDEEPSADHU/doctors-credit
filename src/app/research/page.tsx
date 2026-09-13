@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { INDIA_STATS, SOURCES } from "@/lib/sources";
 
 export const metadata = { title: "Research | Doctor's Credit" };
@@ -52,6 +53,11 @@ export default function ResearchPage() {
       <p className="source">
         Methodology: illustrative plan-math in the on-site calculator. Label:
         ESTIMATE. Limitations: not your plan; not a quote.
+      </p>
+      <p>
+        <Link className="btn-solid" href="/enroll">
+          Talk to a care coordinator
+        </Link>
       </p>
     </main>
   );

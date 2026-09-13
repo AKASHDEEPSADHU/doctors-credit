@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { FAQS } from "@/lib/faq";
 
 export const metadata = { title: "FAQ | Doctor's Credit" };
@@ -15,6 +16,11 @@ export default function FaqPage() {
           </details>
         ))}
       </div>
+      <p>
+        <Link className="btn-solid" href="/enroll">
+          Talk to a care coordinator
+        </Link>
+      </p>
     </main>
   );
 }

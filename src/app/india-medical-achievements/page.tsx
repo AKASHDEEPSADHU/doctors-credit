@@ -694,16 +694,16 @@ export default function IndiaMedicalAchievementsPage() {
 
       <section className="ach-cta">
         <div className="shell ach-narrow">
-          <p className="eyebrow">$5 Initial Assessment</p>
+          <p className="eyebrow">Your first step is a conversation</p>
           <h2>Wondering whether India may make sense for your situation?</h2>
           <p>
-            The $5 Initial Assessment is a conversation with a DCredit care
-            coordinator about planned treatment, insurance situation, timeline
-            and next questions. Completing it does not mean a patient is
-            medically approved for treatment in India.
+            Talk with a DCredit care coordinator about planned treatment, your
+            goals, timing and whether exploring care in India may make sense
+            for you. Completing it does not mean a patient is medically
+            approved for treatment in India.
           </p>
           <Link className="btn-solid" href="/enroll">
-            Start my $5 Assessment
+            Talk to a care coordinator
           </Link>
         </div>
       </section>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import CostCalculator from "@/components/CostCalculator";
 
 export const metadata = { title: "Cost calculator | Doctor's Credit" };
@@ -22,6 +23,11 @@ export default function CostPage() {
         quote, not insurance verification and not medical advice.
       </p>
       <CostCalculator />
+      <p>
+        <Link className="btn-solid" href="/enroll">
+          Talk to a care coordinator
+        </Link>
+      </p>
     </main>
   );
 }

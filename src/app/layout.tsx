@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Caveat, Inter } from "next/font/google";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import WhatsAppFab from "@/components/WhatsAppFab";
@@ -11,6 +11,12 @@ import "./globals.css";
 const sans = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+});
+
+const script = Caveat({
+  variable: "--font-script",
+  subsets: ["latin"],
+  weight: ["500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -28,7 +34,7 @@ export default async function RootLayout({
   const session = await getSession();
   return (
     <html lang="en">
-      <body id="top" className={sans.variable}>
+      <body id="top" className={`${sans.variable} ${script.variable}`}>
         <p className="emergency-bar">
           DCredit does not handle medical emergencies. If you are in the United
           States, call 911. Otherwise seek immediate local emergency care.

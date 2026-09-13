@@ -1,9 +1,11 @@
 import Link from "next/link";
 import CostCalculator from "@/components/CostCalculator";
 import { IndiaDecisionMap } from "@/components/IndiaDecisionMap";
+import { PatientStoriesGrid } from "@/components/PatientStoriesGrid";
 import Reveal from "@/components/Reveal";
 import { FAQS } from "@/lib/faq";
 import { JOURNEY } from "@/lib/journey";
+import { publishedStories } from "@/lib/patient-stories";
 import { SUITABILITY_LABEL, TREATMENTS, suitabilityClass } from "@/lib/treatments";
 
 const featured = TREATMENTS.filter((t) =>
@@ -12,36 +14,69 @@ const featured = TREATMENTS.filter((t) =>
   )
 );
 
+const TREAT_VISUAL: Record<string, { src: string; position: string }> = {
+  "knee-replacement": {
+    src: "/images/editorial/innovation-laboratory.jpg",
+    position: "50% 40%",
+  },
+  ivf: {
+    src: "/images/editorial/hero-india-care.jpg",
+    position: "50% 30%",
+  },
+  "dental-implants": {
+    src: "/images/editorial/innovation-laboratory.jpg",
+    position: "70% 55%",
+  },
+  cabg: {
+    src: "/images/editorial/innovation-imaging.jpg",
+    position: "50% 45%",
+  },
+  cataract: {
+    src: "/images/editorial/innovation-imaging.jpg",
+    position: "30% 20%",
+  },
+  "hip-replacement": {
+    src: "/images/editorial/hero-india-care.jpg",
+    position: "62% 55%",
+  },
+};
+
 const CAPABILITIES = [
   {
-    title: "Clinical expertise",
-    text: "Specialist teams and complex-care capabilities",
+    title: "World-class",
+    line: "Specialists",
+    text: "Renowned doctors and centres of excellence",
     icon: "expertise",
   },
   {
-    title: "Modern hospitals",
-    text: "Advanced infrastructure and quality systems",
+    title: "Modern",
+    line: "Hospitals",
+    text: "Advanced technology and global standards",
     icon: "hospital",
   },
   {
-    title: "Advanced technology",
-    text: "Modern diagnostic and treatment technologies",
-    icon: "tech",
-  },
-  {
-    title: "Compassionate care",
-    text: "Care that treats patients with dignity and attention",
+    title: "Compassionate",
+    line: "Care",
+    text: "Patients are treated with respect and warmth",
     icon: "care",
   },
   {
-    title: "Greater value",
-    text: "A broader view of cost, quality and practical fit",
+    title: "Greater",
+    line: "Value",
+    text: "High-quality care with significant cost advantages",
     icon: "value",
   },
   {
-    title: "A smoother journey",
-    text: "Planning from first conversation through return home",
+    title: "A smoother",
+    line: "Journey",
+    text: "Support from planning to your return home",
     icon: "journey",
+  },
+  {
+    title: "Better",
+    line: "Tomorrows",
+    text: "People return to their lives with renewed hope",
+    icon: "people",
   },
 ] as const;
 
@@ -55,12 +90,12 @@ const VALUE_LENSES = [
 ] as const;
 
 const QUALITY_LENSES = [
-  "Accreditation",
-  "Specialist experience",
-  "Technology",
-  "Infrastructure",
-  "Patient safety",
-  "Continuity of care",
+  { title: "Accreditation", icon: "hospital" },
+  { title: "Specialist experience", icon: "expertise" },
+  { title: "Technology", icon: "tech" },
+  { title: "Infrastructure", icon: "value" },
+  { title: "Patient safety", icon: "care" },
+  { title: "Continuity", icon: "journey" },
 ] as const;
 
 const REGIONS = [
@@ -70,25 +105,6 @@ const REGIONS = [
   "Africa",
   "Middle East",
   "Asia",
-] as const;
-
-const ILLUSTRATIVE = [
-  {
-    region: "Canada",
-    text: "A person considers India after weighing specialist expertise, access and the total cost of the journey, not a hospital sticker price alone.",
-  },
-  {
-    region: "Australia",
-    text: "Someone looks at selected tertiary centres for a planned procedure, then asks whether timing, technology and travel would actually fit.",
-  },
-  {
-    region: "South Africa",
-    text: "A family explores whether a particular capability exists in India, and what follow-up would look like after returning home.",
-  },
-  {
-    region: "United Kingdom",
-    text: "A patient compares quality systems, waiting time and overall value before deciding whether India is even worth investigating.",
-  },
 ] as const;
 
 const HOME_JOURNEY = [
@@ -108,7 +124,11 @@ const HOME_JOURNEY = [
   },
 ] as const;
 
-function LineIcon({ name }: { name: (typeof CAPABILITIES)[number]["icon"] }) {
+function LineIcon({
+  name,
+}: {
+  name: (typeof CAPABILITIES)[number]["icon"] | "tech";
+}) {
   const common = {
     viewBox: "0 0 24 24",
     fill: "none",
@@ -162,71 +182,100 @@ function LineIcon({ name }: { name: (typeof CAPABILITIES)[number]["icon"] }) {
           <path d="M4 9.5h5" />
         </>
       ) : null}
+      {name === "people" ? (
+        <>
+          <circle cx="9" cy="8" r="2.2" />
+          <circle cx="16" cy="9" r="1.8" />
+          <path d="M4.6 18.4c.5-2.8 2.2-4.3 4.4-4.3s3.9 1.5 4.4 4.3" />
+          <path d="M13.6 18.4c.3-1.8 1.4-2.9 2.8-2.9 1.5 0 2.6 1.1 2.9 2.9" />
+        </>
+      ) : null}
     </svg>
   );
 }
 
 export default function Home() {
+  const liveStories = publishedStories();
+  const hasStories = liveStories.length > 0;
+
   return (
     <main id="main">
-      <section className="hero hero-editorial">
-        <div className="shell hero-grid">
+      <section className="hero-scene" aria-label="Doctor's Credit homepage">
+        <div className="hero-copy-wrap">
           <div className="hero-copy">
-            <p className="eyebrow">International patients · Planned care · India</p>
-            <h1>India is a global destination for advanced, compassionate care.</h1>
-            <p className="lede">
-              People from around the world consider India for complex and
-              specialized care. The reasons can go far beyond cost: specialist
-              expertise, modern hospitals, advanced technology, access, timing
-              and overall value.
+            <p className="eyebrow hero-eyebrow">World-class care. A brighter tomorrow.</p>
+            <h1>
+              India is a global
+              <br />
+              destination for
+              <br />
+              <span>life-changing care.</span>
+            </h1>
+            <p className="hero-lede">
+              People from around the world choose India for advanced medical
+              expertise, modern hospitals, compassionate care and outstanding
+              value. We help you explore whether India is the right choice for
+              your treatment journey.
             </p>
-            <p className="lede">
-              DCredit helps you explore whether India is worth considering for
-              your particular healthcare journey.
+            <p className="hero-support">
+              Start a conversation about your planned care, goals, timing and
+              whether India may be worth exploring.
             </p>
             <div className="hero-actions">
-              <Link className="btn-solid" href="/enroll">
-                Start my $5 Assessment
+              <Link className="btn-solid hero-cta" href="/enroll">
+                Talk to a care coordinator
+                <span aria-hidden="true">→</span>
               </Link>
-              <Link className="btn-ghost" href="/india-medical-achievements">
-                Explore India&apos;s Medical Achievements
-              </Link>
+              <button className="hero-watch" type="button">
+                <span className="hero-watch-play" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10.2" />
+                    <path d="M10 8.6v6.8l6-3.4z" />
+                  </svg>
+                </span>
+                <span className="hero-watch-copy">
+                  <strong>Watch our story</strong>
+                  <small>2 minutes</small>
+                </span>
+              </button>
             </div>
-            <p className="trust-mini">
-              Start with a conversation about whether exploring India makes
-              sense for you. This is not a clinical assessment, diagnosis or
-              medical clearance.
-            </p>
           </div>
-          <figure className="hero-photo">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/editorial/hero-india-care.jpg"
-              width={1400}
-              height={1866}
-              alt="Editorial photograph of two people standing together in a modern city at sunset, used to suggest hope after planned care. Not a photograph of a DCredit patient."
-              fetchPriority="high"
-            />
-            <figcaption>
-              Editorial imagery. Not a DCredit patient, testimonial or hospital
-              affiliation.
-            </figcaption>
-          </figure>
         </div>
+
+        <figure className="hero-stage">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/editorial/hero-gateway-couple.jpg"
+            width={2000}
+            height={1333}
+            alt="Editorial photograph of a relaxed international couple at a historic waterfront in India. Generated imagery, not a photograph of DCredit patients."
+            fetchPriority="high"
+          />
+          <figcaption className="sr-only">
+            Editorial imagery. Not a DCredit patient, testimonial or hospital
+            affiliation.
+          </figcaption>
+          <p className="hero-handwrite" aria-hidden="true">
+            “New Treatment
+            <br />
+            New Hope
+            <br />
+            A Brighter Tomorrow”
+            <span className="hero-handwrite-stroke" />
+          </p>
+        </figure>
       </section>
 
       <section className="capability-strip" aria-label="Capabilities found across India healthcare">
         <div className="shell">
-          <p className="capability-note">
-            These are capabilities found across India&apos;s healthcare ecosystem
-            and at selected institutions. They are not a description of every
-            hospital.
-          </p>
           <ul className="capability-grid">
-            {CAPABILITIES.map((item) => (
-              <li key={item.title}>
+            {CAPABILITIES.map((item, index) => (
+              <li key={item.line} style={{ animationDelay: `${index * 80}ms` }}>
                 <LineIcon name={item.icon} />
-                <strong>{item.title}</strong>
+                <strong>
+                  {item.title}
+                  <span>{item.line}</span>
+                </strong>
                 <p>{item.text}</p>
               </li>
             ))}
@@ -234,63 +283,57 @@ export default function Home() {
         </div>
       </section>
 
-      <IndiaDecisionMap />
-
-      <section className="band-soft" id="stories">
+      <section className="story-band" id="stories">
         <div className="shell story-split">
-          <div>
-            <p className="eyebrow">Illustrative patient journeys</p>
-            <h2>Lives changed. Futures regained.</h2>
+          <Reveal>
+            <p className="eyebrow">Real patient stories</p>
+            <h2 className="home-display">
+              Lives changed.
+              <br />
+              Futures regained.
+            </h2>
             <p className="section-lede">
-              People from many countries choose India for planned medical care.
-              The outcomes, experiences and reasons are different for every
-              patient.
+              {hasStories
+                ? "Patient stories, shared with permission."
+                : "We are building this section from real patient experiences. Verified stories will appear here as patients choose to share them."}
             </p>
-            <p>
-              Verified patient stories are coming soon. The cards beside this
-              text are illustrative scenarios only. They are not real
-              testimonials and they do not describe DCredit customers.
-            </p>
-            <Link className="btn-ghost" href="/stories">
-              Patient stories
+            <Link className="btn-ghost story-cta" href="/stories">
+              {hasStories ? "Read more patient stories" : "Patient stories coming soon"}
+              <span aria-hidden="true">→</span>
             </Link>
-          </div>
-          <ul className="story-cards">
-            {ILLUSTRATIVE.map((card) => (
-              <li key={card.region}>
-                <p className="story-label">Illustrative scenario</p>
-                <p>{card.text}</p>
-                <p className="story-meta">
-                  Example patient
-                  <span>{card.region}</span>
-                </p>
-                <p className="fine">
-                  Illustrative scenario, not a real patient testimonial.
-                </p>
-              </li>
-            ))}
-          </ul>
+          </Reveal>
+          <PatientStoriesGrid stories={liveStories} />
         </div>
       </section>
 
+      <IndiaDecisionMap />
+
       <section>
         <div className="shell">
-          <p className="eyebrow">Not just cost</p>
-          <h2>It is not only about the price.</h2>
-          <p className="section-lede">
-            Cost may be part of the reason someone looks abroad. It should not
-            be the only reason.
-          </p>
-          <ul className="lens-row">
-            {VALUE_LENSES.map((item) => (
-              <li key={item}>{item}</li>
+          <Reveal>
+            <p className="eyebrow">Quality</p>
+            <h2 className="home-display">Quality deserves to be investigated.</h2>
+            <p className="section-lede">
+              India is a large and diverse healthcare market. Capabilities vary
+              by hospital, department and physician. That is why provider-level
+              information matters.
+            </p>
+          </Reveal>
+          <ul className="quality-ribbon">
+            {QUALITY_LENSES.map((item) => (
+              <li key={item.title}>
+                <LineIcon name={item.icon} />
+                <strong>{item.title}</strong>
+              </li>
             ))}
           </ul>
-          <p className="section-lede">
-            A treatment price is only one part of a medical journey. The fuller
-            picture includes healthcare costs at home, treatment cost in India,
-            travel, accommodation, companion costs, recovery time, follow-up
-            and continuity of care.
+          <p>
+            DCredit does not assume that every hospital or physician offers the
+            same level of care. Accreditation is useful information, but it is
+            not a guarantee of outcome.
+          </p>
+          <p className="section-link">
+            <Link href="/hospitals">How we evaluate providers →</Link>
           </p>
         </div>
       </section>
@@ -311,9 +354,9 @@ export default function Home() {
               is institution-specific.
             </figcaption>
           </figure>
-          <div>
+          <Reveal>
             <p className="eyebrow">India&apos;s Medical Achievements</p>
-            <h2>A healthcare story that goes beyond affordability.</h2>
+            <h2 className="home-display">A healthcare story that goes beyond affordability.</h2>
             <p className="section-lede">
               India&apos;s medical story includes decades of specialist medicine,
               complex surgery, transplantation, cancer care, pharmaceuticals,
@@ -326,61 +369,52 @@ export default function Home() {
             </p>
             <Link className="btn-solid" href="/india-medical-achievements">
               Explore India&apos;s Medical Achievements
+              <span aria-hidden="true">→</span>
             </Link>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       <section>
         <div className="shell">
-          <p className="eyebrow">Quality</p>
-          <h2>Quality deserves to be investigated.</h2>
-          <p className="section-lede">
-            India is a large and diverse healthcare market. Capabilities vary
-            by hospital, department and physician. That is why provider-level
-            information matters.
-          </p>
-          <ul className="lens-row">
-            {QUALITY_LENSES.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-          <p>
-            DCredit does not assume that every hospital or physician offers the
-            same level of care. Accreditation is useful information, but it is
-            not a guarantee of outcome.
-          </p>
-          <p style={{ marginTop: "1.2rem" }}>
-            <Link href="/hospitals">How we evaluate providers →</Link>
-          </p>
-        </div>
-      </section>
-
-      <section className="band-soft">
-        <div className="shell">
-          <p className="eyebrow">Treatments</p>
-          <h2>Where India&apos;s capabilities may be worth exploring.</h2>
-          <p className="section-lede">
-            Different treatments call for different questions. Explore the
-            procedures and specialties people commonly investigate in India.
-          </p>
-          <div className="treat-grid">
-            {featured.map((t) => (
-              <Link className="treat-card" href={`/treatments/${t.slug}`} key={t.slug}>
-                <small>{t.category}</small>
-                <h3>{t.name}</h3>
-                <p className="muted">{t.why}</p>
-                <span className={suitabilityClass(t.suitability)}>{SUITABILITY_LABEL[t.suitability]}</span>
-              </Link>
-            ))}
+          <Reveal>
+            <p className="eyebrow">Treatments</p>
+            <h2 className="home-display">Where India&apos;s capabilities may be worth exploring.</h2>
+            <p className="section-lede">
+              Different treatments call for different questions. Explore the
+              procedures and specialties people commonly investigate in India.
+            </p>
+          </Reveal>
+          <div className="treat-visual-grid">
+            {featured.map((t) => {
+              const visual = TREAT_VISUAL[t.slug];
+              return (
+                <Link className="treat-visual" href={`/treatments/${t.slug}`} key={t.slug}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={visual.src}
+                    alt=""
+                    style={{ objectPosition: visual.position }}
+                  />
+                  <div className="treat-visual-body">
+                    <small>{t.category}</small>
+                    <h3>{t.name}</h3>
+                    <p className="muted">{t.why}</p>
+                    <span className={suitabilityClass(t.suitability)}>
+                      {SUITABILITY_LABEL[t.suitability]}
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
-          <p style={{ marginTop: "1.5rem" }}>
+          <p className="section-link">
             <Link href="/treatments">All treatments →</Link>
           </p>
         </div>
       </section>
 
-      <section>
+      <section className="band-soft">
         <div className="shell">
           <p className="eyebrow">International patients</p>
           <h2>Care knows no single border.</h2>
@@ -397,14 +431,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="band-soft" id="how">
+      <section id="how">
         <div className="shell">
           <Reveal>
             <p className="eyebrow">The journey</p>
-            <h2>A structured decision. Not a sales pitch.</h2>
+            <h2 className="home-display">A structured decision. Not a sales pitch.</h2>
             <p className="section-lede">
               You have not already chosen India by starting this conversation.
-              The current paid service is the $5 Initial Assessment.
+              Your first step is a conversation with a DCredit care coordinator.
             </p>
           </Reveal>
           <ol className="journey-rail">
@@ -422,39 +456,54 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="calculator">
-        <div className="shell split">
-          <div>
-            <p className="eyebrow">Home country versus India</p>
-            <h2>What does the whole journey look like?</h2>
+      <section className="band-soft" id="calculator">
+        <div className="shell">
+          <Reveal>
+            <p className="eyebrow">Total value</p>
+            <h2 className="home-display">It is not only about the price.</h2>
             <p className="section-lede">
-              Compare more than a treatment price. Think about the full
-              journey: expected healthcare costs at home, expected treatment
-              cost in India, travel, accommodation, companion costs, recovery
-              and follow-up.
+              Cost may be part of the reason someone looks abroad. It should not
+              be the only reason. Cost is one part of total value.
             </p>
-            <p>
-              Sometimes India may offer strong value. Sometimes it may not.
-              The calculator is an estimate only. Savings are not guaranteed.
-            </p>
+          </Reveal>
+          <ul className="value-formula">
+            {VALUE_LENSES.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+          <div className="split cost-split">
+            <div>
+              <p className="section-lede">
+                A treatment price is only one part of a medical journey. The
+                fuller picture includes healthcare costs at home, treatment
+                cost in India, travel, accommodation, companion costs, recovery
+                time, follow-up and continuity of care.
+              </p>
+              <p>
+                Sometimes India may offer strong value. Sometimes it may not.
+                The calculator is an estimate only. Savings are not guaranteed.
+              </p>
+            </div>
+            <CostCalculator />
           </div>
-          <CostCalculator />
         </div>
       </section>
 
-      <section className="band-navy">
-        <div className="shell split">
+      <section className="band-navy return-band">
+        <div className="shell return-split">
           <div>
             <p className="eyebrow">Return-home planning</p>
-            <h2>Treatment may happen in India. Your life continues at home.</h2>
+            <h2 className="home-display">
+              Treatment may happen in India.
+              <br />
+              Your life continues at home.
+            </h2>
           </div>
-          <div>
-            <p>
-              Planning does not end when treatment ends. Travel, recovery,
-              follow-up and communication with healthcare professionals at home
-              all matter. DCredit does not itself provide clinical follow-up.
-            </p>
-          </div>
+          <p>
+            Planning does not end when treatment ends. Travel, recovery,
+            follow-up and communication with healthcare professionals at home
+            all matter. DCredit does not itself provide clinical follow-up.
+          </p>
         </div>
       </section>
 
@@ -478,18 +527,18 @@ export default function Home() {
 
       <section>
         <div className="shell final-cta">
-          <p className="eyebrow">$5 Initial Assessment</p>
-          <h2>Could India be worth considering for you?</h2>
+          <p className="eyebrow">Your first step is a conversation</p>
+          <h2 className="home-display">Could India be worth considering for you?</h2>
           <p className="section-lede">
             Start with a conversation. Understand the possibilities. Decide for
             yourself.
           </p>
           <div className="hero-actions">
             <Link className="btn-solid" href="/enroll">
-              Start my $5 Assessment
+              Talk to a care coordinator
             </Link>
-            <Link className="btn-ghost" href="/how-it-works">
-              Explore how it works
+            <Link className="btn-ghost" href="/india-medical-achievements">
+              Explore India&apos;s Medical Achievements
             </Link>
           </div>
         </div>

@@ -115,7 +115,7 @@ export default function WhyDoctorsCredit() {
             <p className="why-dc-cta-kicker">Still have a question?</p>
             <p className="why-dc-cta-title">Let’s talk about your requirement.</p>
             <a className="btn-solid why-dc-cta-btn" href="/enroll">
-              Talk to Doctor’s Credit →
+              Talk to a care coordinator
             </a>
             <p className="why-dc-cta-note">
               No pressure. Just a conversation to understand what may be possible.

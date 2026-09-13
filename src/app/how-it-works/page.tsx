@@ -30,7 +30,7 @@ export default function HowItWorksPage() {
         healthcare institution.
       </p>
       <Link className="btn-solid" href="/enroll">
-        Start my $5 Assessment
+        Talk to a care coordinator
       </Link>
     </main>
   );

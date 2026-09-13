@@ -16,7 +16,7 @@ export function conversationConfirmationText(app: Application) {
   const time = app.appointmentTime ? formatTimeLabel(app.appointmentTime) : "";
   const zone = app.appointmentTimezone ? scheduleTimezoneLabel() : "";
   const lines = [
-    "Thank you. Your $5 Initial Assessment is confirmed.",
+    "Your care conversation has been confirmed.",
     "",
   ];
   if (date && time) {

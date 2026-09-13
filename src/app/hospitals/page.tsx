@@ -35,7 +35,9 @@ export default function HospitalsPage() {
       <p className="source">
         NABH: {SOURCES.nabh.publisher}. {SOURCES.nabh.url}
       </p>
-      <Link href="/enroll">Start my $5 Assessment →</Link>
+      <Link className="btn-solid" href="/enroll">
+        Talk to a care coordinator
+      </Link>
     </main>
   );
 }

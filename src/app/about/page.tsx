@@ -31,7 +31,7 @@ export default function AboutPage() {
       </p>
       <p>Sometimes India may make sense. Sometimes it may not.</p>
       <Link className="btn-solid" href="/enroll">
-        Start my $5 Assessment
+        Talk to a care coordinator
       </Link>
     </main>
   );

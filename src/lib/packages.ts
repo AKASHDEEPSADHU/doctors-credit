@@ -20,14 +20,14 @@ export const CURRENT_SKU: PackageSku = "orientation";
 export const PACKAGES: CarePackage[] = [
   {
     sku: "orientation",
-    name: "$5 Initial Assessment",
-    priceLabel: "$5",
+    name: "Initial Care Conversation",
+    priceLabel: "$5 USD",
     amountCents: 500,
     cadence: "once",
     available: true,
     featured: true,
     blurb:
-      "For $5, speak with a DCredit care coordinator about the care you are considering, your healthcare coverage or funding situation, your timeline and your goals. The conversation helps you understand how DCredit works and whether exploring care in India may be worth investigating further.",
+      "Talk with a DCredit care coordinator about what you are considering, your goals, timing and whether exploring care in India may make sense for you.",
     includes: [
       "A conversation with a DCredit care coordinator",
       "Discussion of the care you are considering",

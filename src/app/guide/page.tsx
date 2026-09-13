@@ -38,6 +38,11 @@ export default function GuidePage() {
         <Link href="/faq">FAQ</Link> ·{" "}
         <Link href="/cost-calculator">Cost calculator</Link>
       </p>
+      <p>
+        <Link className="btn-solid" href="/enroll">
+          Talk to a care coordinator
+        </Link>
+      </p>
     </main>
   );
 }
