@@ -13,7 +13,8 @@ import { SourceCite } from "@/components/achievements/SourceCite";
 import { SourceLibrary } from "@/components/achievements/SourceLibrary";
 import { TransplantChart } from "@/components/achievements/TransplantChart";
 import { WhatThisDoesNotMean } from "@/components/achievements/WhatThisDoesNotMean";
-import { DEVICE_EXAMPLES } from "@/lib/india-medical-achievements";
+import { FeatureTile } from "@/components/editorial/FeatureTile";
+import { SectionLabel } from "@/components/editorial/SectionLabel";
 import "./achievements.css";
 
 export const metadata: Metadata = {
@@ -35,6 +36,64 @@ export const metadata: Metadata = {
   ],
 };
 
+const BEYOND = [
+  {
+    href: "#pharmaceuticals",
+    kicker: "Pharmaceuticals",
+    title: "Medicines at global scale",
+    metric: "~20%",
+    image: "/images/editorial/innovation-laboratory.jpg",
+    position: "52% 40%",
+  },
+  {
+    href: "#vaccines",
+    kicker: "Vaccines",
+    title: "A global manufacturing powerhouse",
+    metric: "~60%",
+    image: "/images/editorial/innovation-laboratory.jpg",
+    position: "30% 60%",
+  },
+  {
+    href: "#medical-devices",
+    kicker: "Medical devices",
+    title: "Indigenous clinical engineering",
+    image: "/images/editorial/innovation-imaging.jpg",
+    position: "70% 40%",
+  },
+  {
+    href: "#advanced-technology",
+    kicker: "Advanced technology",
+    title: "Selected tertiary capability",
+    image: "/images/editorial/innovation-imaging.jpg",
+    position: "40% 28%",
+  },
+  {
+    href: "#transplantation",
+    kicker: "Transplantation",
+    title: "National program growth",
+    metric: "~20,000",
+    image: "/images/editorial/innovation-imaging.jpg",
+    position: "28% 20%",
+  },
+  {
+    href: "#digital-health",
+    kicker: "Digital health",
+    title: "A connected public system",
+    metric: "94.87 crore",
+    image: "/images/editorial/innovation-laboratory.jpg",
+    position: "35% 25%",
+  },
+] as const;
+
+const DEVICE_TILES = [
+  "Artificial heart valves",
+  "Blood bags",
+  "Membrane oxygenators",
+  "Hydrocephalus shunts",
+  "Biomedical composites",
+  "Respiratory devices",
+] as const;
+
 export default function IndiaMedicalAchievementsPage() {
   return (
     <main id="main" className="achievements-page">
@@ -42,16 +101,26 @@ export default function IndiaMedicalAchievementsPage() {
       <MedicalStats />
       <MedicalTimeline />
 
-      <section className="ma-beyond" id="beyond-surgery">
+      <section className="ed-dark ma-beyond" id="beyond-surgery">
         <div className="shell">
-          <p className="eyebrow">Beyond the operating theatre</p>
+          <SectionLabel>Beyond the operating theatre</SectionLabel>
           <h2>The story did not stop with surgery.</h2>
-          <p>
-            India&apos;s healthcare ecosystem extends into medicines, vaccines,
-            medical devices, digital health and advanced technology. None of
-            these, taken alone, tells a patient which hospital or physician is
-            appropriate.
-          </p>
+          <ul className="ed-mosaic ma-beyond-mosaic">
+            {BEYOND.map((item, index) => (
+              <li key={item.href}>
+                <FeatureTile
+                  href={item.href}
+                  kicker={item.kicker}
+                  title={item.title}
+                  metric={"metric" in item ? item.metric : undefined}
+                  image={item.image}
+                  imageAlt={`Representative image for ${item.kicker}. Not a named facility.`}
+                  imagePosition={item.position}
+                  size={index === 0 ? "lg" : index < 3 ? "md" : "sm"}
+                />
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
@@ -64,85 +133,50 @@ export default function IndiaMedicalAchievementsPage() {
         image="/images/editorial/innovation-laboratory.jpg"
         imageAlt="Representative laboratory image illustrating pharmaceutical research and manufacturing. Not a named plant."
         imagePosition="52% 40%"
-        imageKind="Representative image"
         sourceId="pib-pharma"
-      >
-        <p>
-          The Government of India describes India as the third-largest
-          pharmaceutical industry in the world by volume and the largest
-          supplier of generic medicines. Government data also states that India
-          supplies more than 70% of global antiretroviral medicines.
-        </p>
-        <aside className="ma-why">
-          <p>What this means</p>
-          <p>
-            India has built a large pharmaceutical manufacturing and export
-            ecosystem. That does not mean every medicine or manufacturer has
-            identical standards.
-          </p>
-        </aside>
-        <SourceCite id="pib-usfda-plants" />
-      </MedicalChapter>
+      />
 
       <MedicalChapter
         id="vaccines"
         kicker="Vaccines"
-        title="Vaccines at global scale"
+        title="A global manufacturing powerhouse"
         statistic="~60%"
-        statisticNote="Approximate share of global vaccine production by volume."
+        statisticNote="Approximate share of global vaccine production by volume. Indian manufacturers also supply international procurement systems."
         image="/images/editorial/innovation-laboratory.jpg"
         imageAlt="Representative laboratory image illustrating vaccine development and manufacture. Not a named facility."
         imagePosition="30% 60%"
-        imageKind="Representative image"
         sourceId="pib-vaccines"
-        reverse
-      >
-        <p>
-          India has become one of the world&apos;s major vaccine manufacturing
-          centres. Indian manufacturers also supply vaccines to international
-          procurement systems and global health programs.
-        </p>
-        <div className="ma-inset">
-          <h3>Indigenous development</h3>
-          <p>
-            The ICMR-National Institute of Virology played a major role in
-            development of Covaxin, India&apos;s indigenous COVID-19 vaccine.
-            That is a documented development role. It is not a comparative
-            claim about effectiveness or safety versus other vaccines.
-          </p>
-          <SourceCite id="niv-covaxin" />
-        </div>
-      </MedicalChapter>
+      />
 
-      <MedicalChapter
-        id="medical-devices"
-        kicker="Medical devices"
-        title="Medical-device innovation"
-        image="/images/editorial/innovation-imaging.jpg"
-        imageAlt="Representative imaging still used to illustrate indigenous medical-device development. Not a named device photograph."
-        imagePosition="70% 40%"
-        imageKind="Representative image"
-        sourceId="sctimst"
-      >
-        <p>
-          Sree Chitra Tirunal Institute for Medical Sciences and Technology has
-          developed and commercialized technologies including the examples
-          below. One example is the Sree Chitra heart valve, cited by
-          India&apos;s Department of Science &amp; Technology as frugal medical
-          innovation.
-        </p>
-        <ul className="ma-chips">
-          {DEVICE_EXAMPLES.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-        <SourceCite id="dst-chitra-valve" />
-        <p>
-          These examples illustrate a history of combining clinical medicine,
-          engineering and cost-conscious innovation. They do not mean every
-          device used in India is indigenous.
-        </p>
-      </MedicalChapter>
+      <section className="ma-devices" id="medical-devices">
+        <div className="shell ed-split">
+          <figure className="ed-visual">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/editorial/innovation-imaging.jpg"
+              alt="Representative imaging still used to illustrate indigenous medical-device development. Not a named device photograph."
+              style={{ objectPosition: "70% 40%" }}
+            />
+            <figcaption>Representative image</figcaption>
+          </figure>
+          <div>
+            <SectionLabel>Medical devices</SectionLabel>
+            <h2>Indigenous clinical engineering</h2>
+            <p>
+              Sree Chitra Tirunal Institute for Medical Sciences and Technology
+              developed and commercialized technologies including the examples
+              below.
+            </p>
+            <ul className="ed-chip-grid">
+              {DEVICE_TILES.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+            <SourceCite id="sctimst" />
+            <SourceCite id="dst-chitra-valve" />
+          </div>
+        </div>
+      </section>
 
       <MedicalTechnologyGallery />
       <TransplantChart />
@@ -152,25 +186,17 @@ export default function IndiaMedicalAchievementsPage() {
 
       <section className="ma-cost" id="cost">
         <div className="shell">
-          <p className="eyebrow">Total value</p>
+          <SectionLabel>Total value</SectionLabel>
           <h2>Cost is part of the picture.</h2>
-          <ol className="ma-cost-layers">
+          <ol className="ed-process">
             <li>Treatment</li>
             <li>Journey</li>
             <li>Continuity</li>
           </ol>
-          <div className="ma-cost-compare">
-            <p>Home country</p>
-            <span>versus</span>
-            <p>India</p>
-          </div>
           <p>
             A lower quoted treatment price can become much less attractive
             after travel, accommodation, companion costs, recovery time,
-            complications, repeat procedures and follow-up are considered. The
-            correct comparison is total expected cost at home versus the total
-            expected India journey, together with quality, clinical
-            suitability, risk and continuity of care.
+            complications, repeat procedures and follow-up are considered.
           </p>
         </div>
       </section>
@@ -179,8 +205,8 @@ export default function IndiaMedicalAchievementsPage() {
 
       <section className="ma-view" id="dcredit-perspective">
         <div className="shell">
-          <p className="eyebrow">The DCredit view</p>
-          <h2>
+          <SectionLabel>The DCredit view</SectionLabel>
+          <h2 className="ed-display">
             India may be worth exploring.
             <br />
             The question is whether it is right for you.
@@ -190,12 +216,6 @@ export default function IndiaMedicalAchievementsPage() {
             individual decision still comes down to the specific treatment,
             physician, hospital, quality evidence, practical realities and
             total journey.
-          </p>
-          <p>
-            DCredit does not ask a patient to trust India simply because India
-            has impressive medical achievements. Sometimes India may make
-            sense. Sometimes it may not. The point is to make the decision with
-            better information.
           </p>
           <Link className="btn-solid" href="/enroll">
             Talk to a care coordinator

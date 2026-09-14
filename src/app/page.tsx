@@ -200,29 +200,21 @@ export default function Home() {
 
   return (
     <main id="main">
-      <section className="hero-scene" aria-label="Doctor's Credit homepage">
-        <div className="hero-copy-wrap">
-          <div className="hero-copy">
-            <p className="eyebrow hero-eyebrow">World-class care. A brighter tomorrow.</p>
+      <section className="ed-home-hero" aria-label="Doctor's Credit homepage">
+        <div className="ed-hero-bleed">
+          <div className="ed-hero-copy">
+            <p className="ed-label">World-class care. A brighter tomorrow.</p>
             <h1>
-              India is a global
-              <br />
-              destination for
-              <br />
-              <span>life-changing care.</span>
+              India is a global destination for <em>life-changing care.</em>
             </h1>
-            <p className="hero-lede">
+            <p className="ed-lede">
               People from around the world choose India for advanced medical
               expertise, modern hospitals, compassionate care and outstanding
               value. We help you explore whether India is the right choice for
               your treatment journey.
             </p>
-            <p className="hero-support">
-              Start a conversation about your planned care, goals, timing and
-              whether India may be worth exploring.
-            </p>
             <div className="hero-actions">
-              <Link className="btn-solid hero-cta" href="/enroll">
+              <Link className="btn-solid" href="/enroll">
                 Talk to a care coordinator
                 <span aria-hidden="true">→</span>
               </Link>
@@ -240,41 +232,38 @@ export default function Home() {
               </button>
             </div>
           </div>
+          <figure className="ed-visual">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/editorial/hero-gateway-couple.jpg"
+              width={2000}
+              height={1333}
+              alt="Editorial photograph of a relaxed international couple at a historic waterfront in India. Generated imagery, not a photograph of DCredit patients."
+              fetchPriority="high"
+            />
+            <p className="ed-handwrite" aria-hidden="true">
+              “New Treatment
+              <br />
+              New Hope
+              <br />
+              A Brighter Tomorrow”
+              <span />
+            </p>
+            <aside className="ed-float">
+              <p>Stories appear here when people choose to share them.</p>
+            </aside>
+          </figure>
         </div>
-
-        <figure className="hero-stage">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/images/editorial/hero-gateway-couple.jpg"
-            width={2000}
-            height={1333}
-            alt="Editorial photograph of a relaxed international couple at a historic waterfront in India. Generated imagery, not a photograph of DCredit patients."
-            fetchPriority="high"
-          />
-          <figcaption className="sr-only">
-            Editorial imagery. Not a DCredit patient, testimonial or hospital
-            affiliation.
-          </figcaption>
-          <p className="hero-handwrite" aria-hidden="true">
-            “New Treatment
-            <br />
-            New Hope
-            <br />
-            A Brighter Tomorrow”
-            <span className="hero-handwrite-stroke" />
-          </p>
-        </figure>
       </section>
 
-      <section className="capability-strip" aria-label="Capabilities found across India healthcare">
+      <section className="ed-band" aria-label="Capabilities found across India healthcare">
         <div className="shell">
-          <ul className="capability-grid">
-            {CAPABILITIES.map((item, index) => (
-              <li key={item.line} style={{ animationDelay: `${index * 80}ms` }}>
+          <ul>
+            {CAPABILITIES.map((item) => (
+              <li key={item.line}>
                 <LineIcon name={item.icon} />
                 <strong>
-                  {item.title}
-                  <span>{item.line}</span>
+                  {item.title} {item.line}
                 </strong>
                 <p>{item.text}</p>
               </li>
@@ -283,11 +272,11 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="story-band" id="stories">
-        <div className="shell story-split">
+      <section className="ed-home-stories" id="stories">
+        <div className="shell ed-home-split">
           <Reveal>
-            <p className="eyebrow">Real patient stories</p>
-            <h2 className="home-display">
+            <p className="ed-label">Real people. Real journeys.</p>
+            <h2 className="ed-display">
               Lives changed.
               <br />
               Futures regained.
@@ -295,10 +284,10 @@ export default function Home() {
             <p className="section-lede">
               {hasStories
                 ? "Patient stories, shared with permission."
-                : "We are building this section from real patient experiences. Verified stories will appear here as patients choose to share them."}
+                : "Verified patient stories will appear here as people choose to share their experiences."}
             </p>
             <Link className="btn-ghost story-cta" href="/stories">
-              {hasStories ? "Read more patient stories" : "Patient stories coming soon"}
+              Read more patient stories
               <span aria-hidden="true">→</span>
             </Link>
           </Reveal>
@@ -311,15 +300,15 @@ export default function Home() {
       <section>
         <div className="shell">
           <Reveal>
-            <p className="eyebrow">Quality</p>
-            <h2 className="home-display">Quality deserves to be investigated.</h2>
+            <p className="ed-label">Quality</p>
+            <h2 className="ed-display">Quality deserves to be investigated.</h2>
             <p className="section-lede">
               India is a large and diverse healthcare market. Capabilities vary
               by hospital, department and physician. That is why provider-level
               information matters.
             </p>
           </Reveal>
-          <ul className="quality-ribbon">
+          <ul className="quality-ribbon is-compact">
             {QUALITY_LENSES.map((item) => (
               <li key={item.title}>
                 <LineIcon name={item.icon} />
@@ -355,8 +344,8 @@ export default function Home() {
             </figcaption>
           </figure>
           <Reveal>
-            <p className="eyebrow">India&apos;s Medical Achievements</p>
-            <h2 className="home-display">A healthcare story that goes beyond affordability.</h2>
+            <p className="ed-label">India&apos;s Medical Achievements</p>
+            <h2 className="ed-display">A healthcare story that goes beyond affordability.</h2>
             <p className="section-lede">
               India&apos;s medical story includes decades of specialist medicine,
               complex surgery, transplantation, cancer care, pharmaceuticals,
@@ -378,14 +367,14 @@ export default function Home() {
       <section>
         <div className="shell">
           <Reveal>
-            <p className="eyebrow">Treatments</p>
-            <h2 className="home-display">Where India&apos;s capabilities may be worth exploring.</h2>
+            <p className="ed-label">Treatments</p>
+            <h2 className="ed-display">Where India&apos;s capabilities may be worth exploring.</h2>
             <p className="section-lede">
               Different treatments call for different questions. Explore the
               procedures and specialties people commonly investigate in India.
             </p>
           </Reveal>
-          <div className="treat-visual-grid">
+          <div className="treat-mosaic">
             {featured.map((t) => {
               const visual = TREAT_VISUAL[t.slug];
               return (
@@ -416,14 +405,14 @@ export default function Home() {
 
       <section className="band-soft">
         <div className="shell">
-          <p className="eyebrow">International patients</p>
+          <p className="ed-label">International patients</p>
           <h2>Care knows no single border.</h2>
           <p className="section-lede">
             People considering treatment in India come from many healthcare
             systems and many parts of the world. These regions describe who
             DCredit is written for. They are not patient counts.
           </p>
-          <ul className="region-grid">
+          <ul className="region-grid is-compact">
             {REGIONS.map((region) => (
               <li key={region}>{region}</li>
             ))}
@@ -434,8 +423,8 @@ export default function Home() {
       <section id="how">
         <div className="shell">
           <Reveal>
-            <p className="eyebrow">The journey</p>
-            <h2 className="home-display">A structured decision. Not a sales pitch.</h2>
+            <p className="ed-label">The journey</p>
+            <h2 className="ed-display">A structured decision. Not a sales pitch.</h2>
             <p className="section-lede">
               You have not already chosen India by starting this conversation.
               Your first step is a conversation with a DCredit care coordinator.
@@ -459,8 +448,8 @@ export default function Home() {
       <section className="band-soft" id="calculator">
         <div className="shell">
           <Reveal>
-            <p className="eyebrow">Total value</p>
-            <h2 className="home-display">It is not only about the price.</h2>
+            <p className="ed-label">Total value</p>
+            <h2 className="ed-display">It is not only about the price.</h2>
             <p className="section-lede">
               Cost may be part of the reason someone looks abroad. It should not
               be the only reason. Cost is one part of total value.
@@ -492,8 +481,8 @@ export default function Home() {
       <section className="band-navy return-band">
         <div className="shell return-split">
           <div>
-            <p className="eyebrow">Return-home planning</p>
-            <h2 className="home-display">
+            <p className="ed-label">Return-home planning</p>
+            <h2 className="ed-display">
               Treatment may happen in India.
               <br />
               Your life continues at home.
@@ -510,11 +499,11 @@ export default function Home() {
       <section className="band-soft" id="faq">
         <div className="shell split">
           <div>
-            <p className="eyebrow">Questions</p>
+            <p className="ed-label">Questions</p>
             <h2>Asked plainly.</h2>
             <Link href="/faq">All questions →</Link>
           </div>
-          <div className="faq">
+          <div className="faq faq-editorial">
             {FAQS.slice(0, 6).map(([q, a]) => (
               <details key={q}>
                 <summary>{q}</summary>
@@ -527,8 +516,8 @@ export default function Home() {
 
       <section>
         <div className="shell final-cta">
-          <p className="eyebrow">Your first step is a conversation</p>
-          <h2 className="home-display">Could India be worth considering for you?</h2>
+          <p className="ed-label">Your first step is a conversation</p>
+          <h2 className="ed-display">Could India be worth considering for you?</h2>
           <p className="section-lede">
             Start with a conversation. Understand the possibilities. Decide for
             yourself.

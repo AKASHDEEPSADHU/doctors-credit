@@ -10,7 +10,7 @@ export function QuestionAccordion() {
   return (
     <section className="ma-questions" id="questions-worth-asking">
       <div className="shell">
-        <p className="eyebrow">What this means</p>
+        <p className="ed-label">What this means</p>
         <h2>What should an international patient actually investigate?</h2>
         <p className="section-lede">
           These questions are the practical next step after reading a national

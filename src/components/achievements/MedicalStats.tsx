@@ -5,7 +5,7 @@ import { GLANCE_STATS } from "@/lib/india-medical-achievements";
 import { SourceCite } from "@/components/achievements/SourceCite";
 
 function formatCount(stat: (typeof GLANCE_STATS)[number], progress: number) {
-  if (stat.numeric === null) return stat.display;
+  if (stat.numeric === null || progress === 1) return stat.display;
   if (stat.id === "abha") {
     return `${(stat.numeric * progress).toFixed(progress === 1 ? 2 : 1)}${stat.suffix}`;
   }
@@ -54,23 +54,22 @@ export function MedicalStats() {
   return (
     <section className="ma-glance" id="india-at-a-glance">
       <div className="shell" ref={ref}>
-        <p className="eyebrow">Scale, with sources</p>
+        <p className="ed-label">Scale, with sources</p>
         <h2>India at a glance</h2>
         <p className="section-lede">
           National statistics describe India&apos;s healthcare ecosystem at
-          scale. They do not establish the suitability or quality of a specific
-          hospital, physician or treatment for an individual patient.
+          scale. They do not establish suitability for an individual patient.
         </p>
-        <div className="ma-glance-board">
-          <article className="ma-glance-feature">
-            <p className="ma-glance-number">{formatCount(featured, progress)}</p>
+        <div className="ed-metric-panel">
+          <article className="ed-metric-feature">
+            <p className="ed-num">{formatCount(featured, progress)}</p>
             <p>{featured.label}</p>
             <SourceCite id={featured.sourceId} />
           </article>
-          <ul className="ma-glance-side">
-            {rest.map((item, index) => (
-              <li key={item.id} style={{ animationDelay: `${120 + index * 90}ms` }}>
-                <p className="ma-glance-number">{formatCount(item, progress)}</p>
+          <ul className="ed-metric-list">
+            {rest.map((item) => (
+              <li key={item.id}>
+                <strong>{formatCount(item, progress)}</strong>
                 <p>{item.label}</p>
                 <SourceCite id={item.sourceId} />
               </li>

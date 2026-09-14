@@ -497,7 +497,7 @@ export const TECHNOLOGY_CARDS = [
     position: "50% 45%",
   },
   {
-    title: "Cardiac intervention",
+    title: "Advanced cardiac intervention",
     text: "Advanced catheterization and transcatheter procedures exist at selected centres, not at every hospital.",
     image: "/images/editorial/innovation-laboratory.jpg",
     position: "48% 40%",
@@ -525,9 +525,9 @@ export const TRANSPLANT_BARS = [
 export const DIGITAL_NODES = [
   "Patient",
   "Digital ID",
-  "Health facility",
-  "Health professional",
-  "Digital health ecosystem",
+  "Facility",
+  "Professional",
+  "Health ecosystem",
 ] as const;
 
 export const QUALITY_CARDS = [
@@ -559,11 +559,11 @@ export const QUALITY_CARDS = [
 
 export const PATIENT_FACTORS = [
   "Expertise",
-  "Access",
+  "Quality",
   "Technology",
-  "Timing",
+  "Access",
   "Value",
-  "Availability",
+  "Continuity",
 ] as const;
 
 export const INVESTIGATION_QUESTIONS = [
@@ -619,7 +619,7 @@ export const CAUTION_POINTS = [
     text: "The presence of a technology somewhere in India does not mean it is available, appropriate or outcome-assured in a specific case.",
   },
   {
-    title: "Lower cost is not the same as lower risk.",
+    title: "Lower cost is not lower risk.",
     text: "A lower quoted procedure price can become much less attractive after travel, recovery, complications and follow-up are considered.",
   },
 ] as const;

@@ -1,12 +1,13 @@
 import { CAUTION_POINTS } from "@/lib/india-medical-achievements";
 import Reveal from "@/components/Reveal";
+import { SectionLabel } from "@/components/editorial/SectionLabel";
 
 export function WhatThisDoesNotMean() {
   return (
-    <section className="ma-caution" id="what-this-does-not-mean">
+    <section className="ed-dark ma-caution" id="what-this-does-not-mean">
       <div className="shell">
-        <p className="eyebrow">Limits of the record</p>
-        <h2>What this does not mean</h2>
+        <SectionLabel>Limits of the record</SectionLabel>
+        <h2>What this does NOT mean</h2>
         <ol>
           {CAUTION_POINTS.map((item) => (
             <li key={item.title}>

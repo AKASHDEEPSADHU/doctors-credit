@@ -23,24 +23,24 @@ export type PatientStory = {
 
 export const RESERVED_STORY_SLOTS = [
   {
-    src: "/images/editorial/innovation-imaging.jpg",
-    position: "50% 40%",
-    alt: "Decorative diagnostic imaging still. Not a patient photograph.",
+    src: "/images/editorial/story-us.jpg",
+    position: "50% 18%",
+    alt: "Editorial portrait reserved for a future verified patient story. Not a DCredit patient.",
   },
   {
-    src: "/images/editorial/innovation-laboratory.jpg",
-    position: "48% 35%",
-    alt: "Decorative laboratory still. Not a patient photograph.",
+    src: "/images/editorial/story-au.jpg",
+    position: "50% 20%",
+    alt: "Editorial portrait reserved for a future verified patient story. Not a DCredit patient.",
   },
   {
-    src: "/images/editorial/innovation-imaging.jpg",
-    position: "28% 18%",
-    alt: "Decorative medical-technology still. Not a patient photograph.",
+    src: "/images/editorial/story-za.jpg",
+    position: "50% 18%",
+    alt: "Editorial portrait reserved for a future verified patient story. Not a DCredit patient.",
   },
   {
-    src: "/images/editorial/innovation-laboratory.jpg",
-    position: "72% 58%",
-    alt: "Decorative clinical-environment still. Not a patient photograph.",
+    src: "/images/editorial/story-uk.jpg",
+    position: "50% 22%",
+    alt: "Editorial portrait reserved for a future verified patient story. Not a DCredit patient.",
   },
 ] as const;
 

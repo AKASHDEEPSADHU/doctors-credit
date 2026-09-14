@@ -2,19 +2,18 @@ import Link from "next/link";
 
 export function MedicalAchievementsHero() {
   return (
-    <section className="ma-hero" aria-label="India's Medical Achievements">
-      <div className="shell ma-hero-grid">
-        <div className="ma-hero-copy">
-          <p className="eyebrow ma-hero-kicker">Research note</p>
-          <h1>India&apos;s Medical Achievements</h1>
-          <p className="ma-hero-lede">
+    <section className="ed-hero" aria-label="India's Medical Achievements">
+      <div className="ed-hero-bleed">
+        <div className="ed-hero-copy">
+          <p className="ed-label">Research note</p>
+          <h1>
+            India&apos;s Medical
+            <br />
+            Achievements
+          </h1>
+          <p className="ed-lede">
             A closer look at the healthcare capabilities behind India&apos;s
             growing role in global care.
-          </p>
-          <p>
-            India&apos;s healthcare story spans decades of specialist medicine,
-            complex surgery, transplantation, cancer care, pharmaceuticals,
-            vaccines, medical devices and digital health.
           </p>
           <div className="hero-actions">
             <a className="btn-solid" href="#india-at-a-glance">
@@ -25,13 +24,12 @@ export function MedicalAchievementsHero() {
             </Link>
           </div>
         </div>
-        <figure className="ma-hero-visual">
+        <figure className="ed-visual">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/editorial/innovation-imaging.jpg"
-            alt="Diagnostic imaging slices used as a representative illustration of advanced medical technology. Not a named hospital or patient."
+            src="/images/editorial/hero-india-care.jpg"
+            alt="Editorial reconstruction of people in an Indian urban setting, used as the research-note hero. Generated imagery, not a photograph of DCredit patients."
           />
-          <figcaption>Representative image. Capability is institution-specific.</figcaption>
         </figure>
       </div>
     </section>

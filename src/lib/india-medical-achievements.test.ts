@@ -52,6 +52,8 @@ describe("India medical achievements research record", () => {
 
   it("keeps glance statistics tied to existing citations", () => {
     assert.equal(GLANCE_STATS.length, 6);
+    assert.equal(GLANCE_STATS.filter((stat) => stat.featured).length, 1);
+    assert.equal(GLANCE_STATS[0].id, "arrivals");
     for (const stat of GLANCE_STATS) {
       assert.ok(sourceById(stat.sourceId));
     }

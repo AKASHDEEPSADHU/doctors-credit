@@ -7,7 +7,7 @@ export function SourceLibrary() {
   return (
     <section className="ma-sources" id="sources">
       <div className="shell">
-        <p className="eyebrow">How this page was assembled</p>
+        <p className="ed-label">Research library</p>
         <h2>Sources &amp; methodology</h2>
         <p className="section-lede">
           Every statistic and historical milestone on this page is tied to a

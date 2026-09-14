@@ -90,8 +90,40 @@
   font-size: 0.78rem;
 }
 
+.achievements-page .ed-hero {
+  padding: 0;
+}
+
+.achievements-page .ma-glance {
+  padding: 2.2rem 0 3.4rem;
+  margin-top: -1.4rem;
+}
+
+.achievements-page .ma-feature,
+.achievements-page .ma-devices {
+  padding: 3.2rem 0;
+}
+
 .ma-glance {
   background: #edf4f8;
+}
+
+.ed-metric-feature .ma-cite,
+.ed-metric-feature .ma-cite a,
+.ed-dark .ma-cite,
+.ed-dark .ma-cite a,
+.ed-tile .ma-cite,
+.ed-tile .ma-cite a,
+.ma-transplant .ma-cite,
+.ma-transplant .ma-cite a {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.ed-metric-feature .ma-cite span,
+.ed-dark .ma-cite span,
+.ed-tile .ma-cite span,
+.ma-transplant .ma-cite span {
+  color: var(--teal-bright);
 }
 
 .ma-glance-board {
@@ -179,12 +211,12 @@
   top: 5.6rem;
   z-index: 2;
   display: grid;
-  grid-template-columns: 5.5rem minmax(0, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: 4.6rem minmax(0, 1fr);
+  gap: 1.35rem;
   min-height: calc(100vh - 7.2rem);
   max-height: 42rem;
   padding: 1rem 0 1.4rem;
-  background: #fff;
+  background: var(--paper);
 }
 
 .ma-timeline-years {
@@ -198,8 +230,8 @@
 
 .ma-timeline-stage {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-  gap: 1.6rem;
+  grid-template-columns: minmax(0, 0.5fr) minmax(0, 0.45fr);
+  gap: 1.5rem;
   align-items: center;
 }
 
@@ -219,7 +251,13 @@
 }
 
 .ma-timeline-copy {
-  animation: ma-rise 420ms ease both;
+  animation: ma-rise 420ms ease forwards;
+  color: var(--ink);
+}
+
+.ma-timeline-copy h3,
+.ma-mobile-chapter h3 {
+  color: var(--navy);
 }
 
 .ma-timeline-copy p,
@@ -239,7 +277,8 @@
 .ma-timeline-copy h3,
 .ma-mobile-chapter h3 {
   margin: 0 0 0.75rem;
-  font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+  max-width: 16ch;
+  font-size: clamp(1.9rem, 3vw, 2.7rem);
 }
 
 .ma-timeline-stack {
@@ -318,29 +357,26 @@
 }
 
 .ma-beyond {
-  min-height: 22rem;
-  display: grid;
-  align-items: center;
   color: #fff;
-  background:
-    linear-gradient(180deg, rgba(6, 45, 86, 0.72), rgba(6, 45, 86, 0.82)),
-    url("/images/editorial/innovation-laboratory.jpg") center / cover no-repeat;
+  background: var(--navy);
+}
+
+.ma-beyond-mosaic {
+  margin-top: 2rem;
 }
 
 .ma-beyond h2,
 .ma-beyond p,
+.ma-beyond .ed-label,
 .ma-caution h2,
 .ma-caution p,
-.ma-caution .eyebrow,
-.ma-view h2,
-.ma-view p,
-.ma-view .eyebrow {
+.ma-caution .ed-label,
+.ma-caution .eyebrow {
   color: #fff;
 }
 
-.ma-beyond h2,
-.ma-beyond p {
-  max-width: 22ch;
+.ma-beyond h2 {
+  max-width: 14ch;
 }
 
 .ma-beyond p,
@@ -348,11 +384,12 @@
   max-width: 40rem;
 }
 
-.ma-chapter-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 2.4rem;
-  align-items: center;
+.ma-feature .ed-tile-lg {
+  min-height: 28rem;
+}
+
+.ma-devices {
+  background: #fff;
 }
 
 .ma-chapter.is-reverse .ma-chapter-grid {
@@ -381,6 +418,10 @@
 .ma-sources,
 .ma-legal {
   background: #f6f9fc;
+}
+
+.ma-tech .ed-mosaic {
+  margin-top: 2rem;
 }
 
 .ma-tech-grid {
@@ -699,7 +740,18 @@
 }
 
 .ma-view {
-  background: #08345f;
+  background: var(--paper);
+}
+
+.ma-view h2,
+.ma-view p,
+.ma-view .ed-label {
+  color: inherit;
+}
+
+.ma-view h2 {
+  max-width: 16ch;
+  font-size: clamp(2.6rem, 5vw, 4.4rem);
 }
 
 .ma-view .btn-solid {
@@ -725,7 +777,7 @@
 
 .ma-source-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.9rem;
   margin: 0.8rem 0 0;
   padding: 0;

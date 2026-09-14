@@ -1,33 +1,31 @@
 import { TECHNOLOGY_CARDS } from "@/lib/india-medical-achievements";
+import { ImageTile } from "@/components/editorial/ImageTile";
+import { SectionLabel } from "@/components/editorial/SectionLabel";
+
+const GALLERY = TECHNOLOGY_CARDS.filter((card) => card.title !== "Transplantation");
 
 export function MedicalTechnologyGallery() {
   return (
     <section className="ma-tech" id="advanced-technology">
       <div className="shell">
-        <p className="eyebrow">Selected tertiary capability</p>
+        <SectionLabel>Selected tertiary capability</SectionLabel>
         <h2>Advanced medical technology</h2>
         <p className="section-lede">
-          Depending on the institution and specialty, Indian tertiary hospitals
-          now use technologies including robotic surgery, advanced radiation
-          therapy, proton therapy, PET-CT, PET-MRI, cardiac intervention,
-          transplantation and image-guided procedures.
+          Image-led notes on technologies found at selected Indian tertiary
+          centres. Availability depends on the hospital, specialty and team.
         </p>
-        <ul className="ma-tech-grid">
-          {TECHNOLOGY_CARDS.map((card) => (
+        <ul className="ed-mosaic">
+          {GALLERY.map((card, index) => (
             <li key={card.title}>
-              <article>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={card.image}
-                  alt={`Representative image for ${card.title}. Not a named hospital.`}
-                  style={{ objectPosition: card.position }}
-                />
-                <div>
-                  <h3>{card.title}</h3>
-                  <p>{card.text}</p>
-                  <small>Availability varies by institution</small>
-                </div>
-              </article>
+              <ImageTile
+                title={card.title}
+                text={card.text}
+                note="Availability varies by institution"
+                image={card.image}
+                imageAlt={`Representative image for ${card.title}. Not a named hospital.`}
+                imagePosition={card.position}
+                size={index === 0 ? "lg" : index < 3 ? "md" : "sm"}
+              />
             </li>
           ))}
         </ul>

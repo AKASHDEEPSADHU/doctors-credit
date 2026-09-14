@@ -49,7 +49,7 @@ export function IndiaDecisionMap() {
   return (
     <section className="decision-map" aria-labelledby="decision-map-title">
       <div className="shell">
-        <p className="eyebrow">Decision map</p>
+        <p className="ed-label">Decision map</p>
         <h2 id="decision-map-title">Why India enters the conversation</h2>
         <p className="section-lede">
           India enters the conversation for more than one reason.

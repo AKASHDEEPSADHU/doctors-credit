@@ -8,14 +8,17 @@
   --ink: #102033;
   --muted: #5c6b7a;
   --line: rgba(6, 45, 86, 0.12);
-  --paper: #ffffff;
-  --paper-2: #f5f7fa;
-  --paper-3: #eef3f7;
+  --paper: #fffdf9;
+  --paper-2: #f4f1ea;
+  --paper-3: #e8eef3;
+  --tan: #b7a48a;
   --danger: #9b1c1c;
+  --display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
 }
 
 @theme inline {
   --font-sans: var(--font-inter);
+  --font-display: var(--font-fraunces);
   --font-script: var(--font-script);
 }
 
@@ -98,12 +101,12 @@ summary {
 }
 
 .shell {
-  width: min(1180px, calc(100% - 10vw));
+  width: min(1320px, calc(100% - 6vw));
   margin-inline: auto;
 }
 
 section {
-  padding: clamp(4.5rem, 10vw, 8.5rem) 0;
+  padding: clamp(3.6rem, 7vw, 6.5rem) 0;
   scroll-margin-top: 5.5rem;
 }
 
@@ -334,11 +337,14 @@ section {
 
 h1,
 h2,
-.closing {
+.closing,
+.ed-display,
+.home-display {
+  font-family: var(--display);
   font-weight: 500;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.035em;
   color: var(--navy);
-  line-height: 1.08;
+  line-height: 1.04;
 }
 
 h1 {
@@ -397,11 +403,10 @@ h2 {
 }
 
 .hero-scene {
-  display: grid;
-  grid-template-columns: minmax(22rem, 0.82fr) minmax(26rem, 1.18fr);
-  min-height: calc(100svh - 7.35rem);
+  display: block;
+  min-height: 0;
   padding: 0;
-  background: #f6f9fc;
+  background: var(--paper);
 }
 
 .hero-copy-wrap {
@@ -2157,7 +2162,14 @@ h2 {
 }
 
 .patient-story-card.is-reserved {
+  position: relative;
+  padding: 0;
+  border: 0;
   box-shadow: none;
+}
+
+.patient-story-card.is-reserved .patient-story-body {
+  display: none;
 }
 
 .stories-hero {

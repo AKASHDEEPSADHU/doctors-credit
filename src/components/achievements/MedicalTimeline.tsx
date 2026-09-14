@@ -12,7 +12,7 @@ function ChapterBody({
   return (
     <>
       <p className="ma-chapter-year">{chapter.year}</p>
-      <h3>{chapter.title}</h3>
+      <h3 className="ed-display">{chapter.title}</h3>
       <p>{chapter.lead}</p>
       <p>{chapter.body}</p>
       {"chips" in chapter && chapter.chips ? (
@@ -66,7 +66,7 @@ export function MedicalTimeline() {
   return (
     <section className="ma-firsts" id="medical-firsts" aria-labelledby="medical-firsts-title">
       <div className="shell">
-        <p className="eyebrow">Selected milestones</p>
+        <p className="ed-label">Selected milestones</p>
         <h2 id="medical-firsts-title">A history of medical firsts</h2>
         <p className="section-lede">
           These dates mark documented developments at specific institutions.
