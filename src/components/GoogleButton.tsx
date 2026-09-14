@@ -25,7 +25,7 @@ export function GoogleMark() {
 
 export default function GoogleButton({
   next = "/enroll",
-  label = "Continue with Google",
+  label = "Sign in with Google",
 }: {
   next?: string;
   label?: string;

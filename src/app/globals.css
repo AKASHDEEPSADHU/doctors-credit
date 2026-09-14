@@ -53,10 +53,16 @@ body {
   .story-cards li,
   .patient-story-card,
   .path-rail span,
-  .decision-node {
+  .decision-node,
+  .btn-google {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  .btn-google:hover,
+  .btn-google:focus-visible {
+    box-shadow: none;
   }
 }
 
@@ -259,15 +265,37 @@ section {
   color: #fff;
 }
 
+.google-form {
+  width: 100%;
+}
+
 .btn-google {
+  width: 100%;
+  min-height: 3.2rem;
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 550;
+}
+
+.btn-google:hover,
+.btn-google:focus-visible {
+  background: #0a3d6f;
+  border-color: var(--teal);
+  box-shadow:
+    0 0 0 4px rgba(18, 163, 146, 0.22),
+    0 14px 30px rgba(6, 45, 86, 0.2);
+  transform: translateY(-1px);
+}
+
+.btn-google svg {
+  flex: 0 0 auto;
   background: #fff;
-  color: #1f1f1f;
-  border-color: var(--line);
-  text-transform: none;
-  letter-spacing: 0;
-  font-size: 0.95rem;
-  font-weight: 500;
-  width: min(24rem, 100%);
+  border-radius: 999px;
+  padding: 0.18rem;
 }
 
 .nav-toggle {
@@ -1165,22 +1193,75 @@ h2 {
   margin-top: 2rem;
 }
 
-.enroll-layout {
+.enroll-layout,
+.ed-enroll-grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: clamp(2rem, 5vw, 5rem);
+  grid-template-columns: minmax(20rem, 0.92fr) minmax(22rem, 1.08fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: start;
 }
 
 .enroll-page {
   min-height: calc(100svh - 4rem);
-  padding: 6rem 0 4rem;
+  padding: clamp(4.5rem, 8vw, 7rem) 0 5rem;
+  background: var(--paper);
+}
+
+.ed-enroll-copy h1 {
+  max-width: 12ch;
+  font-size: clamp(2.8rem, 5vw, 4.4rem);
+}
+
+.ed-enroll-steps {
+  display: grid;
+  gap: 0.85rem;
+  margin: 1.6rem 0 1.4rem;
+  padding: 0;
+  list-style: none;
+}
+
+.ed-enroll-steps li {
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr);
+  gap: 0.15rem 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--line);
+}
+
+.ed-enroll-steps span {
+  grid-row: span 2;
+  color: var(--teal);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+}
+
+.ed-enroll-steps strong {
+  color: var(--navy);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+}
+
+.ed-enroll-steps p,
+.ed-enroll-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
 }
 
 .enroll,
 .gate {
-  background: var(--paper);
+  background: #fff;
   border: 1px solid var(--line);
-  padding: clamp(1.4rem, 3vw, 2.2rem);
+  border-top: 3px solid var(--teal);
+  padding: clamp(1.6rem, 3vw, 2.3rem);
+  box-shadow: 0 18px 40px rgba(6, 45, 86, 0.06);
+}
+
+.gate h2 {
+  max-width: 14ch;
+  margin-bottom: 0.85rem;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
 }
 
 .enroll-skus {
@@ -2169,7 +2250,21 @@ h2 {
 }
 
 .patient-story-card.is-reserved .patient-story-body {
-  display: none;
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 1;
+  display: block;
+  padding: 1.15rem 1rem 1.2rem;
+  background: linear-gradient(180deg, transparent, rgba(6, 45, 86, 0.9));
+}
+
+.patient-story-card.is-reserved .patient-story-label,
+.patient-story-card.is-reserved .patient-story-body p {
+  color: #fff;
+}
+
+.patient-story-card.is-reserved .patient-story-label {
+  color: var(--teal-bright);
 }
 
 .stories-hero {
@@ -2470,6 +2565,19 @@ h2 {
   .ach-questions,
   .foot-grid,
   .enroll-layout,
+  .ed-enroll-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ed-enroll-copy {
+    order: 2;
+  }
+
+  .ed-enroll-grid .gate,
+  .ed-enroll-grid .enroll {
+    order: 1;
+  }
+
   .calc-grid,
   .assess fieldset,
   .codes,

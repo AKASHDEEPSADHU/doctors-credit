@@ -2,10 +2,11 @@ import Link from "next/link";
 import CostCalculator from "@/components/CostCalculator";
 import { IndiaDecisionMap } from "@/components/IndiaDecisionMap";
 import { PatientStoriesGrid } from "@/components/PatientStoriesGrid";
+import { FeedbackSlider } from "@/components/editorial/FeedbackSlider";
 import Reveal from "@/components/Reveal";
 import { FAQS } from "@/lib/faq";
 import { JOURNEY } from "@/lib/journey";
-import { publishedStories } from "@/lib/patient-stories";
+import { STORY_CONSENT_COPY, publishedStories } from "@/lib/patient-stories";
 import { SUITABILITY_LABEL, TREATMENTS, suitabilityClass } from "@/lib/treatments";
 
 const featured = TREATMENTS.filter((t) =>
@@ -249,9 +250,7 @@ export default function Home() {
               A Brighter Tomorrow”
               <span />
             </p>
-            <aside className="ed-float">
-              <p>Stories appear here when people choose to share them.</p>
-            </aside>
+            <FeedbackSlider variant="float" />
           </figure>
         </div>
       </section>
@@ -284,14 +283,18 @@ export default function Home() {
             <p className="section-lede">
               {hasStories
                 ? "Patient stories, shared with permission."
-                : "Verified patient stories will appear here as people choose to share their experiences."}
+                : STORY_CONSENT_COPY}
             </p>
             <Link className="btn-ghost story-cta" href="/stories">
               Read more patient stories
               <span aria-hidden="true">→</span>
             </Link>
           </Reveal>
-          <PatientStoriesGrid stories={liveStories} />
+          {hasStories ? (
+            <PatientStoriesGrid stories={liveStories} />
+          ) : (
+            <FeedbackSlider variant="panel" />
+          )}
         </div>
       </section>
 

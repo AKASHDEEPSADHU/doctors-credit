@@ -1,4 +1,5 @@
 import EnrollForm from "@/components/EnrollForm";
+import { SectionLabel } from "@/components/editorial/SectionLabel";
 import { buildSlotCalendar } from "@/lib/appointment-slots";
 import { getRepository } from "@/lib/repo";
 import { getSession } from "@/lib/session";
@@ -9,6 +10,12 @@ function first(v: string | string[] | undefined) {
 }
 
 export const metadata = { title: "Talk to a care coordinator | Doctor's Credit" };
+
+const STEPS = [
+  { n: "01", title: "Sign in", text: "Google opens your file before any money moves." },
+  { n: "02", title: "Choose a time", text: "Pick a published conversation window." },
+  { n: "03", title: "Pay $5", text: "One conversation. Not a booking for surgery." },
+] as const;
 
 export default async function EnrollPage({
   searchParams,
@@ -22,31 +29,28 @@ export default async function EnrollPage({
   const calendar = buildSlotCalendar(await repo.listPaidSlotOccupancy());
   return (
     <main id="main" className="enroll-page">
-      <div className="shell enroll-layout">
-        <div>
-          <p className="eyebrow">Talk to a care coordinator</p>
-          <h2>Tell us what you are considering and choose a convenient time for your conversation.</h2>
-          <p className="section-lede">
-            Your first step is a conversation. Start by signing in with Google,
-            choosing a published conversation window, and paying the one-time
-            fee shown beside this form.
+      <div className="shell ed-enroll-grid">
+        <div className="ed-enroll-copy">
+          <SectionLabel>Talk to a care coordinator</SectionLabel>
+          <h1>Tell us what you are considering.</h1>
+          <p className="ed-lede">
+            Your first step is a conversation about planned care, timing and
+            whether India may be worth exploring.
           </p>
-          <div className="care-intro">
-            <p className="eyebrow">Initial Care Conversation</p>
-            <p>
-              Your first conversation with DCredit is a $5 one-time service.
-            </p>
-            <p>
-              This is a conversation with a DCredit care coordinator. It is not
-              a diagnosis, clinical evaluation, specialist medical opinion or
-              medical-record review.
-            </p>
-          </div>
-          <p className="section-lede">
-            After payment is confirmed you receive an Application ID, a
-            Conversation Verification ID, and your Zoom join details when they
-            are ready. Please do not send MRI scans, prescriptions, diagnoses
-            or other sensitive medical records on this form.
+          <ol className="ed-enroll-steps">
+            {STEPS.map((step) => (
+              <li key={step.n}>
+                <span>{step.n}</span>
+                <strong>{step.title}</strong>
+                <p>{step.text}</p>
+              </li>
+            ))}
+          </ol>
+          <p className="ed-enroll-note">
+            This is a $5 one-time conversation with a DCredit care coordinator.
+            It is not a diagnosis, clinical evaluation or medical-record review.
+            Please do not send MRI scans, prescriptions or other sensitive
+            records on this page.
           </p>
         </div>
         <EnrollForm

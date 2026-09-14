@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { PatientStoriesGrid } from "@/components/PatientStoriesGrid";
+import { FeedbackSlider } from "@/components/editorial/FeedbackSlider";
 import { DISCLAIMER } from "@/lib/contact";
-import { publishedStories } from "@/lib/patient-stories";
+import { STORY_CONSENT_COPY, publishedStories } from "@/lib/patient-stories";
 
 export const metadata = { title: "Patient stories | Doctor's Credit" };
 
@@ -23,7 +24,7 @@ export default function StoriesPage() {
             <p className="section-lede">
               {hasStories
                 ? "Patient stories, shared with permission."
-                : "We are building this section from real patient experiences. Verified stories will appear here as patients choose to share them."}
+                : STORY_CONSENT_COPY}
             </p>
             <p>
               Real experiences, shared by patients. DCredit does not invent
@@ -35,7 +36,11 @@ export default function StoriesPage() {
               </Link>
             </p>
           </div>
-          <PatientStoriesGrid stories={stories} />
+          {hasStories ? (
+            <PatientStoriesGrid stories={stories} />
+          ) : (
+            <FeedbackSlider variant="panel" />
+          )}
         </div>
       </section>
 

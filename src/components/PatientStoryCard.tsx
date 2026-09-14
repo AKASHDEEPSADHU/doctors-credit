@@ -47,7 +47,10 @@ export function ReservedStoryCard({ index }: { index: number }) {
         alt={visual.alt}
         style={{ objectPosition: visual.position }}
       />
-      <div className="patient-story-body" aria-hidden="true" />
+      <div className="patient-story-body">
+        <p className="patient-story-label">{visual.label}</p>
+        <p>{visual.text}</p>
+      </div>
     </article>
   );
 }

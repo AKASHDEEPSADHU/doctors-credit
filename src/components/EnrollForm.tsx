@@ -35,19 +35,17 @@ export default function EnrollForm({
   if (!patient) {
     return (
       <div className="gate">
+        <p className="ed-label">Start here</p>
+        <h2>Sign in to open your conversation.</h2>
         {error ? <p className="enroll-error">{error}</p> : null}
         <p className="gate-copy">
-          Sign in with Google before any money moves. This conversation is
-          with a DCredit care coordinator. It is not a medical diagnosis or
-          clinical evaluation. The hospital bill never passes through this
-          account.
+          Sign in with Google before any money moves. The hospital bill never
+          passes through this account.
         </p>
-        <GoogleButton next="/enroll" label="Continue with Google" />
+        <GoogleButton next="/enroll" label="Sign in with Google" />
         <p className="fine">
           We receive your name and email from Google. The form then collects
-          only what a coordinator needs to open the conversation, not a full
-          medical history. Please do not send medical records, imaging,
-          prescriptions or diagnoses.
+          only what a coordinator needs to open the conversation.
         </p>
       </div>
     );
