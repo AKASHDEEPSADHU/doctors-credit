@@ -1,11 +1,12 @@
 import { Suspense } from "react";
 import AccountClient from "@/components/AccountClient";
+import { turnstileSiteKey } from "@/lib/turnstile";
 
 export default function AccountPage() {
   return (
     <main id="main" className="account-wrap">
       <Suspense fallback={<p className="account-muted">Opening your file…</p>}>
-        <AccountClient />
+        <AccountClient siteKey={turnstileSiteKey()} />
       </Suspense>
     </main>
   );

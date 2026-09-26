@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SITE, whatsappEnabled, whatsappHref } from "@/lib/contact";
 import ContactForm from "@/components/ContactForm";
+import { turnstileSiteKey } from "@/lib/turnstile";
 
 export const metadata = { title: "Contact | Doctor's Credit" };
 
@@ -31,7 +32,7 @@ export default function ContactPage() {
           Talk to a care coordinator
         </Link>
       </p>
-      <ContactForm />
+      <ContactForm siteKey={turnstileSiteKey()} />
       {whatsappEnabled() ? (
         <>
           <p>

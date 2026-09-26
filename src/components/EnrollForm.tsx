@@ -8,6 +8,7 @@ import {
   splitName,
 } from "@/lib/application-fields";
 import type { SlotCalendar } from "@/lib/appointment-slots";
+import { turnstileSiteKey } from "@/lib/turnstile";
 import { CURRENT_SKU, currentPackage } from "@/lib/packages";
 import { US_STATES } from "@/lib/us-states";
 import Link from "next/link";
@@ -32,6 +33,7 @@ export default function EnrollForm({
   justSignedIn?: boolean;
 }) {
   const assessment = currentPackage();
+  const siteKey = turnstileSiteKey();
   if (!patient) {
     return (
       <div className="gate">
@@ -42,7 +44,7 @@ export default function EnrollForm({
           Sign in with Google before any money moves. The hospital bill never
           passes through this account.
         </p>
-        <GoogleButton next="/enroll" label="Sign in with Google" />
+        <GoogleButton next="/enroll" label="Sign in with Google" siteKey={siteKey} />
         <p className="fine">
           We receive your name and email from Google. The form then collects
           only what a coordinator needs to open the conversation.
@@ -172,7 +174,7 @@ export default function EnrollForm({
         </label>
         <AppointmentSlotPicker calendar={calendar} />
       </div>
-      <TurnstileField />
+      <TurnstileField siteKey={siteKey} />
       <button className="btn-solid" type="submit">
         Continue to $5 checkout
       </button>

@@ -22,6 +22,11 @@ export async function verifyTurnstile(token: string | null | undefined, ip?: str
   return data.success === true;
 }
 
+/** Public widget key. Read on the server and passed into the browser as a prop. */
+export function turnstileSiteKey() {
+  return process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "";
+}
+
 export function clientIp(headers: Headers) {
   return (
     headers.get("cf-connecting-ip") ||

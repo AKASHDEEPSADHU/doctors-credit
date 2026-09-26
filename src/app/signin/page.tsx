@@ -1,6 +1,7 @@
 import GoogleButton from "@/components/GoogleButton";
 import TurnstileField from "@/components/TurnstileField";
 import { demoGoogleAllowed, googleConfigured } from "@/lib/google";
+import { turnstileSiteKey } from "@/lib/turnstile";
 import { safeNext } from "@/lib/origin";
 import { getSession } from "@/lib/session";
 import { getPatientById } from "@/lib/store";
@@ -15,6 +16,7 @@ export default async function SignInPage({
   const next = safeNext(q.next);
   const demo = demoGoogleAllowed();
   const live = googleConfigured();
+  const siteKey = turnstileSiteKey();
   const session = await getSession();
   const patient = session ? await getPatientById(session.patientId) : null;
 
@@ -63,7 +65,7 @@ export default async function SignInPage({
       </p>
       {message ? <p className="enroll-error">{message}</p> : null}
       {live ? (
-        <GoogleButton next={next} />
+        <GoogleButton next={next} siteKey={siteKey} />
       ) : demo ? (
         <form className="demo-google" action="/api/auth/google/demo" method="post">
           <input type="hidden" name="next" value={next} />
@@ -71,7 +73,7 @@ export default async function SignInPage({
             This preview has no Google Cloud client yet. Continue as a labelled
             demo Google account, not a real Google login.
           </p>
-          <TurnstileField />
+          <TurnstileField siteKey={siteKey} />
           <button className="btn-solid" type="submit">
             Continue with demo Google
           </button>

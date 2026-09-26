@@ -1,4 +1,5 @@
 import VerifyForm from "@/app/verify/VerifyForm";
+import { turnstileSiteKey } from "@/lib/turnstile";
 
 export const metadata = { title: "Verify a DCredit communication | Doctor's Credit" };
 
@@ -12,7 +13,7 @@ export default function VerifyPage() {
         CALL-48291. Enter it here. The page will only say whether that ID is
         valid. It will not display any application details.
       </p>
-      <VerifyForm />
+      <VerifyForm siteKey={turnstileSiteKey()} />
       <h2>If DCredit calls you</h2>
       <p>
         A coordinator should introduce themselves by name, then ask for your

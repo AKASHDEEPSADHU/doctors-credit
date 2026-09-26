@@ -3,7 +3,7 @@
 import { useState } from "react";
 import TurnstileField from "@/components/TurnstileField";
 
-export default function ContactForm() {
+export default function ContactForm({ siteKey }: { siteKey?: string }) {
   const [status, setStatus] = useState<"idle" | "ok" | "err">("idle");
   const [message, setMessage] = useState("");
 
@@ -37,7 +37,7 @@ export default function ContactForm() {
         How can we help?
         <textarea name="message" required rows={5} maxLength={2000} />
       </label>
-      <TurnstileField />
+      <TurnstileField siteKey={siteKey} />
       <button className="btn-solid" type="submit">
         Send
       </button>

@@ -26,14 +26,16 @@ export function GoogleMark() {
 export default function GoogleButton({
   next = "/enroll",
   label = "Sign in with Google",
+  siteKey,
 }: {
   next?: string;
   label?: string;
+  siteKey?: string;
 }) {
   return (
     <form className="google-form" action="/api/auth/google" method="post">
       <input type="hidden" name="next" value={next} />
-      <TurnstileField />
+      <TurnstileField siteKey={siteKey} />
       <button className="btn-google" type="submit">
         <GoogleMark />
         {label}

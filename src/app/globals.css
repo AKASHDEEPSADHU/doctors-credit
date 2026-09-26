@@ -1450,7 +1450,13 @@ h2 {
 }
 
 .turnstile {
-  margin: 1rem 0;
+  min-height: 4.6rem;
+  margin: 0.85rem 0 1rem;
+}
+
+.turnstile iframe {
+  display: block;
+  max-width: 100%;
 }
 
 .confirm-page .codes strong {

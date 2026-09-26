@@ -35,7 +35,7 @@ function ConversationBlock({
   );
 }
 
-export default function AccountClient() {
+export default function AccountClient({ siteKey }: { siteKey?: string }) {
   const params = useSearchParams();
   const [data, setData] = useState<AccountView | null>(null);
   const [missing, setMissing] = useState(false);
@@ -72,7 +72,7 @@ export default function AccountClient() {
           and Zoom join details after payment is confirmed. It is not a medical
           record.
         </p>
-        <GoogleButton next="/account" label="Continue with Google" />
+        <GoogleButton next="/account" label="Continue with Google" siteKey={siteKey} />
         <p className="fine">
           No conversation yet? <Link href="/enroll">Talk to a care coordinator</Link>
         </p>

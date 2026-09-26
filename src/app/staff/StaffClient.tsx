@@ -31,7 +31,15 @@ const QUEUES = [
   "VERIFICATION REQUESTS",
 ];
 
-export default function StaffClient({ signedIn, error }: { signedIn: boolean; error?: string }) {
+export default function StaffClient({
+  signedIn,
+  error,
+  siteKey,
+}: {
+  signedIn: boolean;
+  error?: string;
+  siteKey?: string;
+}) {
   const router = useRouter();
   const [found, setFound] = useState<Found | null>(null);
   const [callId, setCallId] = useState("");
@@ -79,7 +87,7 @@ export default function StaffClient({ signedIn, error }: { signedIn: boolean; er
           Staff secret
           <input name="secret" type="password" required autoComplete="current-password" />
         </label>
-        <TurnstileField />
+        <TurnstileField siteKey={siteKey} />
         <button className="btn-solid" type="submit">
           Open coordinator desk
         </button>

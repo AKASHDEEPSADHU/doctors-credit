@@ -1,4 +1,5 @@
 import StaffClient from "@/app/staff/StaffClient";
+import { turnstileSiteKey } from "@/lib/turnstile";
 import { staffAuthenticated, staffConfigured } from "@/lib/staff-session";
 
 export const metadata = {
@@ -31,7 +32,11 @@ export default async function StaffPage({
       {!staffConfigured() ? (
         <p className="enroll-error">Staff access is not configured in this environment.</p>
       ) : (
-        <StaffClient signedIn={signedIn} error={q.error ? errors[q.error] || q.error : undefined} />
+        <StaffClient
+          signedIn={signedIn}
+          siteKey={turnstileSiteKey()}
+          error={q.error ? errors[q.error] || q.error : undefined}
+        />
       )}
     </main>
   );

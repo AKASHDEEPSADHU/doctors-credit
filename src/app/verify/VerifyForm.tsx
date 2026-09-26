@@ -3,7 +3,7 @@
 import { useState } from "react";
 import TurnstileField from "@/components/TurnstileField";
 
-export default function VerifyForm() {
+export default function VerifyForm({ siteKey }: { siteKey?: string }) {
   const [result, setResult] = useState<"idle" | "ok" | "no">("idle");
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -26,7 +26,7 @@ export default function VerifyForm() {
           placeholder="CALL-7K4P9"
         />
       </label>
-      <TurnstileField />
+      <TurnstileField siteKey={siteKey} />
       <button className="btn-solid" type="submit">
         Verify this communication
       </button>
