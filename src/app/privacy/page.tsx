@@ -31,9 +31,10 @@ export default function PrivacyPage() {
       </p>
       <h2>Healthcare privacy laws</h2>
       <p>
-        For example, in the United States, this website does not claim HIPAA
-        compliance. We do not claim a medical-record security program that is
-        not in place.
+        Health-privacy rules differ by country. This website does not claim
+        compliance with any one of them. For example, in the United States we
+        do not claim HIPAA compliance. We do not claim a medical-record
+        security program that is not in place.
       </p>
       <h2>Your file</h2>
       <p>

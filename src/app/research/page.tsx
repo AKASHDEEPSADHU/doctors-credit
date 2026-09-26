@@ -25,12 +25,12 @@ export default function ResearchPage() {
 
       <h2>People already travel abroad for medical care</h2>
       <p>
-        For example, in the United States, CDC background material on medical
-        tourism describes residents traveling internationally for care, including
-        lower cost, procedures not available at home, dental, fertility, cancer
-        and cosmetic care. It also describes infection, continuity-of-care,
-        post-return complications, insurance and legal-difference risks. Those
-        motivations are not unique to one country.
+        Patients in many countries already travel for planned care. One documented
+        example is the United States, where CDC background material on medical
+        tourism describes people traveling for lower cost, procedures not available
+        at home, dental, fertility, cancer and cosmetic care. It also describes
+        infection, continuity-of-care, post-return complications, insurance and
+        legal-difference risks. Those motivations are not unique to one country.
       </p>
       <p className="source">
         Source: {SOURCES.cdcMedicalTourism.publisher}. {SOURCES.cdcMedicalTourism.url}.
@@ -47,8 +47,9 @@ export default function ResearchPage() {
         DCredit compares likely patient responsibility, not sticker prices.
       </p>
       <p>
-        The on-site calculator includes a United States plan-math example. That
-        example is labeled as such. It does not apply to every visitor.
+        The on-site calculator includes one plan-math example, the kind used where
+        deductibles and out-of-pocket limits apply. That example is labeled as
+        such. It does not describe every health system.
       </p>
       <p className="source">
         Methodology: illustrative plan-math in the on-site calculator. Label:

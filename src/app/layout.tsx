@@ -43,8 +43,8 @@ export default async function RootLayout({
     <html lang="en">
       <body id="top" className={`${sans.variable} ${display.variable} ${script.variable}`}>
         <p className="emergency-bar">
-          DCredit does not handle medical emergencies. If you are in the United
-          States, call 911. Otherwise seek immediate local emergency care.
+          DCredit does not handle medical emergencies. Use your local emergency
+          number. In the United States, call 911.
         </p>
         <Nav signedIn={!!session} />
         {children}

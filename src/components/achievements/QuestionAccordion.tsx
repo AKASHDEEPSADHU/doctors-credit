@@ -11,7 +11,7 @@ export function QuestionAccordion() {
     <section className="ma-questions" id="questions-worth-asking">
       <div className="shell">
         <p className="ed-label">What this means</p>
-        <h2>What should an international patient actually investigate?</h2>
+        <h2>What should a patient anywhere in the world actually investigate?</h2>
         <p className="section-lede">
           These questions are the practical next step after reading a national
           record of capability.

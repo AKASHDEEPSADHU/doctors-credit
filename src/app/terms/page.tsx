@@ -27,8 +27,8 @@ export default function TermsPage() {
       </p>
       <h2>Emergencies</h2>
       <p>
-        If you are in danger, use local emergency services. If you are in the
-        United States, call 911.
+        If you are in danger, use the emergency number where you are. In the
+        United States that number is 911.
       </p>
     </main>
   );

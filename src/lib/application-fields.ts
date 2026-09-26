@@ -1,15 +1,22 @@
 import { parseSelectedSlot, type OccupiedSlot } from "@/lib/appointment-slots";
+import { isHomeCountry } from "@/lib/home-countries";
 import { CATEGORIES } from "@/lib/treatments";
 import { US_STATES } from "@/lib/us-states";
 
 export const INSURANCE_STATUSES = [
   "Private insurance",
+  "Public or national health cover",
+  "Employer or workplace plan",
+  "Paying myself",
+  "Unsure",
+  "Prefer not to say",
+] as const;
+
+const LEGACY_INSURANCE_STATUSES = [
   "Medicare",
   "Medicaid",
   "Uninsured",
   "HSA / high-deductible",
-  "Unsure",
-  "Prefer not to say",
 ] as const;
 
 export const TIMELINES = [
@@ -22,7 +29,8 @@ export const TIMELINES = [
 
 export const PROCEDURE_CATEGORIES = [...CATEGORIES, "Other / not listed"];
 
-const STATE_CODES = new Set(US_STATES.map((s) => s.code));
+const STATE_CODES = new Set(US_STATES.filter((s) => s.code !== "OUT").map((s) => s.code));
+const INSURANCE_CODES = new Set<string>([...INSURANCE_STATUSES, ...LEGACY_INSURANCE_STATUSES]);
 
 export type ApplicationInput = {
   firstName: string;
@@ -62,8 +70,8 @@ export function parseApplicationInput(
     firstName: clean(raw.firstName, 80),
     lastName: clean(raw.lastName, 80),
     phone: clean(raw.phone, 40),
-    usState: clean(raw.usState, 8).toUpperCase(),
-    country: clean(raw.country, 80) || "United States",
+    usState: clean(raw.usState, 80),
+    country: clean(raw.country, 80),
     procedureCategory: clean(raw.procedureCategory, 80),
     procedure: clean(raw.procedure, 120),
     insuranceStatus: clean(raw.insuranceStatus, 80),
@@ -79,13 +87,20 @@ export function parseApplicationInput(
   if (value.firstName.length < 1) errors.firstName = "Enter your first name.";
   if (value.lastName.length < 1) errors.lastName = "Enter your last name.";
   if (value.phone.length < 7) errors.phone = "Enter a phone number we can reach.";
-  if (!STATE_CODES.has(value.usState)) errors.usState = "Select the US state you live in.";
-  if (value.country.length < 2) errors.country = "Enter your country.";
+  if (!isHomeCountry(value.country)) {
+    errors.country = "Select the country you live in.";
+  }
+  if (value.country === "United States") {
+    value.usState = value.usState.toUpperCase();
+    if (!STATE_CODES.has(value.usState)) errors.usState = "Select the state you live in.";
+  } else if (value.usState.length < 2) {
+    errors.usState = "Enter your state, province or region.";
+  }
   if (!PROCEDURE_CATEGORIES.includes(value.procedureCategory)) {
     errors.procedureCategory = "Choose a procedure category.";
   }
   if (value.procedure.length < 2) errors.procedure = "Name the procedure you are considering.";
-  if (!INSURANCE_STATUSES.includes(value.insuranceStatus as (typeof INSURANCE_STATUSES)[number])) {
+  if (!INSURANCE_CODES.has(value.insuranceStatus)) {
     errors.insuranceStatus = "Select your insurance status.";
   }
   if (value.estimatedUsOop.length < 1) {

@@ -85,7 +85,7 @@ export async function upsertCrmRow(app: Application) {
   const index = ids.findIndex((id, i) => i > 0 && id === app.applicationId);
   if (index === -1) {
     if (ids[0] !== CRM_HEADERS[0]) {
-      await sheets(`/values/${encodeURIComponent(`${SHEET}!A1:Y1`)}?valueInputOption=RAW`, {
+      await sheets(`/values/${encodeURIComponent(`${SHEET}!A1:Z1`)}?valueInputOption=RAW`, {
         method: "PUT",
         body: JSON.stringify({ values: [CRM_HEADERS] }),
       });
@@ -96,7 +96,7 @@ export async function upsertCrmRow(app: Application) {
     });
     return;
   }
-  const range = `${SHEET}!A${index + 1}:Y${index + 1}`;
+  const range = `${SHEET}!A${index + 1}:Z${index + 1}`;
   await sheets(`/values/${encodeURIComponent(range)}?valueInputOption=RAW`, {
     method: "PUT",
     body: JSON.stringify({ values: [row] }),

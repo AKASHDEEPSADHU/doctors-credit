@@ -16,11 +16,11 @@ export const FAQS: [string, string][] = [
     "That depends on your home-country system: private, public or self-funded care. Many plans do not routinely cover planned elective treatment abroad. Some have limited overseas emergency clauses that do not apply to planned care. Confirm coverage in writing with your insurer or funding body. DCredit does not verify insurance. The $5 Initial Assessment may discuss your general coverage or funding situation so you can compare what you may need to pay yourself.",
   ],
   [
-    "Can Medicare pay for treatment in India?",
+    "If I live in the United States, can Medicare pay for treatment in India?",
     "This question is specific to the United States. Medicare generally does not pay for items or services outside the United States, with narrow exceptions that typically do not include planned elective care abroad. Confirm with Medicare or your plan. Source: Medicare.gov / CMS rules on services outside the US.",
   ],
   [
-    "Can Medicaid pay for treatment in India?",
+    "If I live in the United States, can Medicaid pay for treatment in India?",
     "This question is specific to the United States. Medicaid coverage is state-specific and generally does not pay for planned international treatment. Confirm with your state program. Do not assume India care will be reimbursed.",
   ],
   [
@@ -61,7 +61,7 @@ export const FAQS: [string, string][] = [
   ],
   [
     "What happens if something goes wrong?",
-    "Complications can occur in any country. If you later proceed with treatment, your plan should include hospital emergency capability, a named contact, warning signs, and how you will seek care after you return home. DCredit is not an emergency medical service. If you are in the United States, call 911. Otherwise seek immediate local emergency care.",
+    "Complications can occur in any country. If you later proceed with treatment, your plan should include hospital emergency capability, a named contact, warning signs, and how you will seek care after you return home. DCredit is not an emergency medical service. Use the emergency number where you are. In the United States, call 911.",
   ],
   [
     "What happens after I return home?",
@@ -121,7 +121,7 @@ export const FAQS: [string, string][] = [
   ],
   [
     "Is my medical information secure?",
-    "The website uses encrypted transport (HTTPS) and a signed-in file for operational application details (name, contact, procedure category, coverage or funding status, timeline). We do not currently operate a medical-record vault. For example, in the United States, we do not claim HIPAA compliance. Please do not send imaging, prescriptions or detailed diagnoses through this site, the contact form or WhatsApp.",
+    "The website uses encrypted transport (HTTPS) and a signed-in file for operational application details (name, contact, procedure category, coverage or funding status, timeline). We do not currently operate a medical-record vault. Health-privacy rules differ by country. For example, in the United States, we do not claim HIPAA compliance. Please do not send imaging, prescriptions or detailed diagnoses through this site, the contact form or WhatsApp.",
   ],
   [
     "Can I cancel my treatment?",
@@ -129,6 +129,6 @@ export const FAQS: [string, string][] = [
   ],
   [
     "What happens in an emergency?",
-    "DCredit does not handle medical emergencies. If you are in the United States and experiencing an emergency, call 911 or seek immediate local emergency care. If you are elsewhere, use local emergency services. If you are already in hospital care, use that hospital’s emergency procedures.",
+    "DCredit does not handle medical emergencies. Use the emergency number where you are. In the United States, call 911. If you are already in hospital care, use that hospital’s emergency procedures.",
   ],
 ];

@@ -16,8 +16,9 @@ export default function CostPage() {
         costs, time away, recovery and possible follow-up.
       </p>
       <p>
-        The calculator can use a United States plan-math example when that is
-        the relevant starting point. It is not a global insurance model.
+        The comparison is for patients wherever they live. When a plan uses
+        deductibles and an out-of-pocket limit, the calculator can show that
+        style of math. It is one example, not a model of every health system.
         Sometimes India may offer strong value. Sometimes it may not. Potential
         savings are not guaranteed. This calculator is an estimate only, not a
         quote, not insurance verification and not medical advice.

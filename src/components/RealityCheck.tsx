@@ -93,7 +93,7 @@ export default function RealityCheck() {
       {tone === "RED" ? (
         <p className="verdict">
           {urgency === "emergency"
-            ? "DCredit does not handle emergencies. If you are in the United States, call 911. Otherwise seek immediate local care."
+            ? "DCredit does not handle emergencies. Use the emergency number where you are. In the United States, call 911."
             : "Based on the information provided, this pathway may not be the better option to explore right now. Speak with your own healthcare professionals before making a treatment decision."}
         </p>
       ) : null}

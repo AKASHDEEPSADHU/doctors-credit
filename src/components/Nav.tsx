@@ -39,7 +39,7 @@ export default function Nav({ signedIn }: { signedIn: boolean }) {
   }, [open]);
 
   return (
-    <header className={scrolled ? "nav is-scrolled" : "nav"}>
+    <header className={["nav", scrolled ? "is-scrolled" : "", open ? "is-open" : ""].filter(Boolean).join(" ")}>
       <a className="skip" href="#main">
         Skip to content
       </a>

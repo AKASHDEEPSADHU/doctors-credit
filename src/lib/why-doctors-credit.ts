@@ -16,11 +16,11 @@ export const WHY_DOCTORS_CREDIT: WhyQuestion[] = [
   },
   {
     number: "02",
-    question: "Is DCredit only for patients from the United States?",
+    question: "Who is DCredit for?",
     answer: [
-      "No. DCredit is for international patients considering planned care in India.",
-      "That includes people from the United States, Canada, Europe, the United Kingdom, Australia, New Zealand, Africa, the Middle East, Asia and elsewhere.",
-      "When an example is genuinely about one country, we label it as such.",
+      "DCredit is for patients anywhere in the world who are considering planned care in India.",
+      "Wherever you live, the question is the same: whether expertise, quality, access, travel and total cost make India worth investigating for you.",
+      "When an example is about one country, we label it as such.",
     ],
   },
   {

@@ -59,7 +59,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "POSSIBLY",
     why: "Only after careful clinical review. Unstable cardiac disease is not a medical-travel case.",
     summary: "Coronary artery bypass grafting is major surgery. Fitness to travel and postoperative monitoring are decisive.",
-    usNotes: "Billed charges can be very large. People with coverage may still face substantial deductibles or out-of-network costs. For example, in the United States, plan design often decides the real number.",
+    usNotes: "Billed charges can be very large. What you pay yourself still depends on the health system and plan where you live.",
     indiaNotes: "DCredit will not recommend travel simply because a quote is lower. Clinical safety comes first.",
   },
   {
@@ -79,7 +79,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "NOT GENERALLY",
     why: "Often time-sensitive. Acute coronary syndromes require immediate local emergency care.",
     summary: "Catheter-based treatment of coronary artery disease. Emergencies are not DCredit cases.",
-    usNotes: "If you have chest pain or a suspected heart attack, seek local emergency care. In the United States, call 911.",
+    usNotes: "If you have chest pain or a suspected heart attack, use the emergency number where you are.",
     indiaNotes: "Elective, stable cases still require individual review by a qualified clinician before any travel discussion.",
   },
   {
@@ -209,7 +209,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "YES",
     why: "Typically planned. Postoperative drop regimens and follow-up must be workable after return.",
     summary: "Lens replacement for cataract. Not an emergency pathway.",
-    usNotes: "For example, in the United States, Medicare and commercial coverage can change what you pay substantially.",
+    usNotes: "Public and private coverage where you live can change what you pay substantially.",
     indiaNotes: "India may not be cheaper after insurance. That is a reason to compare real exposure.",
   },
   {
@@ -279,7 +279,7 @@ export const TREATMENTS: Treatment[] = [
     suitability: "NOT GENERALLY",
     why: "Transplant involves organ-allocation, legal, ethical and long-term immunosuppression issues that are not a simple price comparison.",
     summary: "DCredit does not market transplant as a packaged medical-tourism product.",
-    usNotes: "Transplant is highly regulated in many countries, including the United States. Travel for transplant requires specialist legal and clinical advice.",
+    usNotes: "Transplant is highly regulated in many countries. Travel for transplant requires specialist legal and clinical advice.",
     indiaNotes: "Organ transplantation is subject to Indian law. We will not imply that travel is automatically appropriate.",
   },
   {

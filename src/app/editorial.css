@@ -18,7 +18,7 @@
 .ed-hero-grid,
 .ed-home-grid {
   display: grid;
-  grid-template-columns: minmax(30rem, 46vw) minmax(0, 1fr);
+  grid-template-columns: minmax(22rem, 38rem) minmax(0, 1fr);
   gap: 0;
   align-items: stretch;
   min-height: 36rem;
@@ -28,12 +28,13 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  width: 100%;
+  max-width: none;
   min-height: 36rem;
-  padding: 5rem 2.6rem 3.2rem max(2rem, calc((100vw - 1320px) / 2 + 3vw));
+  padding: 4.6rem 2.4rem 3.2rem 5vw;
 }
 
 .ed-hero-copy {
-  max-width: 40.5rem;
   animation: ed-rise 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -46,8 +47,8 @@
 }
 
 .ed-home-hero h1 {
-  max-width: min(18ch, 38rem);
-  font-size: clamp(3.1rem, 4.2vw, 4.75rem);
+  max-width: 11.5em;
+  font-size: clamp(2.8rem, 3.2vw, 4.15rem);
 }
 
 .ed-home-hero h1 em,
@@ -57,9 +58,9 @@
 }
 
 .ed-lede {
-  max-width: 34rem;
+  max-width: 28rem;
   margin: 0 0 1.4rem;
-  font-size: 1.08rem;
+  font-size: 1.05rem;
   line-height: 1.65;
   color: var(--muted);
 }
@@ -763,6 +764,14 @@
   }
 }
 
+@media (min-width: 1600px) {
+  .ed-hero-bleed,
+  .ed-hero-grid,
+  .ed-home-grid {
+    grid-template-columns: minmax(26rem, 42rem) minmax(0, 1fr);
+  }
+}
+
 @media (max-width: 1100px) {
   .ed-mosaic,
   .ed-story-grid,
@@ -805,6 +814,9 @@
   }
 
   .ed-hero-bleed .ed-hero-copy {
+    width: 100%;
+    max-width: none;
+    min-height: 0;
     padding: 2.2rem 6vw 1.4rem;
   }
 

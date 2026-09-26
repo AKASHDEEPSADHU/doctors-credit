@@ -182,6 +182,7 @@ export type CrmRow = {
   notes: string;
   createdAt: string;
   updatedAt: string;
+  billingCurrency: string;
 };
 
 export const CRM_HEADERS = [
@@ -191,12 +192,12 @@ export const CRM_HEADERS = [
   "Patient Last Name",
   "Email",
   "Phone",
-  "US State",
+  "State or region",
   "Country",
   "Procedure Category",
   "Procedure",
   "Insurance Status",
-  "Estimated US Out-of-Pocket",
+  "Estimated cost at home",
   "Preferred Treatment Timeline",
   "Preferred Consultation Date",
   "Payment Status",
@@ -210,6 +211,7 @@ export const CRM_HEADERS = [
   "Notes",
   "Created At",
   "Updated At",
+  "Billing Currency",
 ] as const;
 
 export function applicationToCrmRow(app: Application): CrmRow {
@@ -239,6 +241,7 @@ export function applicationToCrmRow(app: Application): CrmRow {
     notes: app.notes,
     createdAt: app.createdAt,
     updatedAt: app.updatedAt,
+    billingCurrency: (app.currency || "usd").toUpperCase(),
   };
 }
 
@@ -269,6 +272,7 @@ export function crmRowValues(row: CrmRow): string[] {
     row.notes,
     row.createdAt,
     row.updatedAt,
+    row.billingCurrency,
   ];
 }
 

@@ -209,10 +209,10 @@ export default function Home() {
               India is a global destination for <em>life-changing care.</em>
             </h1>
             <p className="ed-lede">
-              People from around the world choose India for advanced medical
+              Patients anywhere in the world explore India for advanced medical
               expertise, modern hospitals, compassionate care and outstanding
-              value. We help you explore whether India is the right choice for
-              your treatment journey.
+              value. We help you decide whether that journey is the right choice
+              for the care you are considering.
             </p>
             <div className="hero-actions">
               <Link className="btn-solid" href="/enroll">

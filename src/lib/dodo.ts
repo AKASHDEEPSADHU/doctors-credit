@@ -1,4 +1,5 @@
 import DodoPayments from "dodopayments";
+import type { Currency } from "dodopayments/resources/misc";
 import { appEnv } from "@/lib/env";
 
 export const PAYMENT_PROVIDER = "dodo" as const;
@@ -47,9 +48,11 @@ export function buildCheckoutSessionRequest(opts: {
   sku: string;
   applicationId: string;
   productId: string;
+  billingCurrency?: string;
 }) {
   return {
     product_cart: [{ product_id: opts.productId, quantity: 1 }],
+    billing_currency: (opts.billingCurrency || "USD") as Currency,
     customer: {
       email: opts.email,
       name: opts.name,
@@ -59,6 +62,7 @@ export function buildCheckoutSessionRequest(opts: {
     metadata: serverCheckoutMetadata(opts.applicationId, opts.sku),
     feature_flags: {
       redirect_immediately: true,
+      allow_currency_selection: true,
     },
   };
 }
@@ -88,6 +92,7 @@ export async function createCheckout(
     name: string;
     sku: string;
     applicationId: string;
+    billingCurrency?: string;
   },
   client: CheckoutSessionClient | null = getDodoClient()
 ) {

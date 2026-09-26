@@ -1,5 +1,6 @@
 import AppointmentSlotPicker from "@/components/AppointmentSlotPicker";
 import GoogleButton from "@/components/GoogleButton";
+import HomeCountryFields from "@/components/HomeCountryFields";
 import TurnstileField from "@/components/TurnstileField";
 import {
   INSURANCE_STATUSES,
@@ -10,7 +11,6 @@ import {
 import type { SlotCalendar } from "@/lib/appointment-slots";
 import { turnstileSiteKey } from "@/lib/turnstile";
 import { CURRENT_SKU, currentPackage } from "@/lib/packages";
-import { US_STATES } from "@/lib/us-states";
 import Link from "next/link";
 
 type PatientLite = {
@@ -93,33 +93,11 @@ export default function EnrollForm({
           Last name
           <input name="lastName" required defaultValue={names.lastName} autoComplete="family-name" />
         </label>
-        <label>
+        <label className="enroll-span">
           Phone
           <input name="phone" type="tel" required defaultValue={patient.phone} autoComplete="tel" />
         </label>
-        <label>
-          US state
-          <select name="usState" required defaultValue="">
-            <option value="" disabled>
-              Select
-            </option>
-            {US_STATES.map((s) => (
-              <option key={s.code} value={s.code}>
-                {s.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Country
-          <input
-            name="country"
-            type="text"
-            required
-            defaultValue={patient.country || "United States"}
-            autoComplete="country-name"
-          />
-        </label>
+        <HomeCountryFields defaultCountry={patient.country} />
         <label>
           Procedure category
           <select name="procedureCategory" required defaultValue="">
@@ -156,7 +134,7 @@ export default function EnrollForm({
           </select>
         </label>
         <label>
-          Estimated cost you may pay at home
+          Estimated cost you may pay where you live
           <input name="estimatedUsOop" required placeholder="e.g. $8,000 or unknown" />
         </label>
         <label>
@@ -176,13 +154,14 @@ export default function EnrollForm({
       </div>
       <TurnstileField siteKey={siteKey} />
       <button className="btn-solid" type="submit">
-        Continue to $5 checkout
+        Continue to checkout
       </button>
       <p className="fine">
-        Payment is confirmed on our servers before the application is marked paid.
-        We do not store card numbers, CVV or banking passwords. Please do not send
-        MRI scans, prescriptions, diagnoses or other sensitive medical records on
-        this form.
+        The conversation fee is $5. Checkout shows that amount in the currency you
+        choose, wherever you live. Payment is confirmed
+        on our servers before the application is marked paid. We do not store card
+        numbers, CVV or banking passwords. Please do not send MRI scans,
+        prescriptions, diagnoses or other sensitive medical records on this form.
       </p>
     </form>
   );

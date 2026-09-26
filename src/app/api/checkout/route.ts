@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { firstError, parseApplicationInput } from "@/lib/application-fields";
+import { normalizeBillingCurrency } from "@/lib/checkout-currency";
 import { scheduleTimezone } from "@/lib/appointment-slots";
 import { fulfillPaidApplication } from "@/lib/fulfillment";
 import { secureCookiesEnabled } from "@/lib/env";
@@ -37,6 +38,7 @@ function readFields(source: FormData | Record<string, unknown>) {
     preferredConsultationDate: get("preferredConsultationDate"),
     appointmentTime: get("appointmentTime"),
     sku: get("sku") || "orientation",
+    billingCurrency: get("billingCurrency"),
     turnstile: get("cf-turnstile-response") || get("turnstileToken"),
   };
 }
@@ -91,6 +93,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: firstError(parsed.errors), fields: parsed.errors }, { status: 400 });
   }
 
+  const billingCurrency = normalizeBillingCurrency(fields.billingCurrency);
+  if (!billingCurrency) {
+    if (asForm) return failForm(origin, "Choose the currency you will pay in.");
+    return NextResponse.json({ error: "Choose the currency you will pay in." }, { status: 400 });
+  }
+
   const pkg = resolveCheckoutProduct({ sku: parsed.value.sku });
   if (!pkg.ok) {
     if (asForm) return failForm(origin, "That service is not available.");
@@ -123,6 +131,7 @@ export async function POST(req: NextRequest) {
     appointmentTimezone: scheduleTimezone(),
     sku: pkg.sku,
     amountCents: pkg.amountCents,
+    currency: billingCurrency,
     source: "dcredit.in/enroll",
   });
 
@@ -170,6 +179,7 @@ export async function POST(req: NextRequest) {
       name: identity.name,
       sku: pkg.sku,
       applicationId: application.applicationId,
+      billingCurrency,
     });
   } catch {
     checkout = null;

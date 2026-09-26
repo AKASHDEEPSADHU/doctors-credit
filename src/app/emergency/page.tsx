@@ -6,10 +6,9 @@ export default function EmergencyPage() {
       <p className="eyebrow">Emergency</p>
       <h1>DCredit is not an emergency medical service.</h1>
       <p>
-        If you are in the United States and experiencing a medical emergency,
-        call 911 or seek immediate local emergency care. If you are elsewhere,
-        use local emergency services. Do not wait for a coordinator. Do not
-        board a flight instead of emergency care.
+        If you are experiencing a medical emergency, use the emergency number
+        where you are. In the United States that number is 911. Do not wait
+        for a coordinator. Do not board a flight instead of emergency care.
       </p>
     </main>
   );

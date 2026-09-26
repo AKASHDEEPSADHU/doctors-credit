@@ -7,8 +7,8 @@ export function InternationalPatientFramework() {
     <section className="ma-international" id="international-patients">
       <div className="shell ma-international-grid">
         <div>
-          <SectionLabel>For international patients</SectionLabel>
-          <h2>What matters when considering care abroad?</h2>
+          <SectionLabel>For patients anywhere</SectionLabel>
+          <h2>What matters when you are considering care in India?</h2>
           <p>
             India&apos;s medical achievements do not automatically mean that
             treatment in India is the right choice. They do mean there is a

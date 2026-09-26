@@ -55,7 +55,7 @@ export default function CostCalculator() {
       <h3>Compare the total cost of the journey</h3>
       <p className="muted">
         Compare expected costs at home with a complete India journey. The
-        deductible and out-of-pocket fields are a United States plan example.
+        deductible and out-of-pocket fields are one example of how some health plans work. They do not describe every country.
         India figures are journey estimates, not quotes.
       </p>
       <div className="calc-grid">
@@ -78,7 +78,7 @@ export default function CostCalculator() {
         <label>
           Coverage or funding
           <select value={insured} onChange={(e) => setInsured(e.target.value)}>
-            <option value="insured">Has coverage (United States plan example)</option>
+            <option value="insured">Has coverage (plan-math example)</option>
             <option value="uninsured">Paying yourself / cash</option>
           </select>
         </label>

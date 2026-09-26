@@ -48,8 +48,8 @@ export default function ContactPage() {
       ) : null}
       <p>
         DCredit is not an emergency medical service. If you are experiencing an
-        emergency and you are in the United States, call 911. Otherwise seek
-        immediate local emergency care.
+        emergency, use the emergency number where you are. In the United States
+        that number is 911.
       </p>
     </main>
   );

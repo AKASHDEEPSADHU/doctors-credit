@@ -9,7 +9,7 @@ export default function AboutPage() {
       <h1>Could India be the right place for the care you are considering?</h1>
       <p>
         DCredit is an international planned-care decision and coordination
-        platform. We help people considering planned care across borders
+        platform for patients anywhere in the world. We help people considering planned care in India
         understand whether India is worth investigating for their particular
         situation. We are not a hospital. We are not a doctor. We are not an
         insurer, an emergency service or a diagnostic service. We do not
