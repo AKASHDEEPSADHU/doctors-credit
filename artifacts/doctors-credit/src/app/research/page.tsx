@@ -1,0 +1,65 @@
+import Link from "next/link";
+import { INDIA_STATS, SOURCES } from "@/lib/sources";
+
+export const metadata = { title: "Research | Doctor's Credit" };
+
+export default function ResearchPage() {
+  return (
+    <main id="main" className="legal">
+      <p className="eyebrow">Medical travel intelligence</p>
+      <h1>Estimates are labeled. Counts have sources.</h1>
+
+      <h2>India medical-purpose arrivals, 2025</h2>
+      <p>
+        India recorded {INDIA_STATS.medicalPurpose2025} foreign medical-purpose
+        arrivals in 2025, about {INDIA_STATS.medicalShare} of {INDIA_STATS.fta2025}{" "}
+        foreign tourist arrivals. Top source: {INDIA_STATS.topSource}. Other
+        significant markets included {INDIA_STATS.otherSources.join(", ")}.
+      </p>
+      <p>{INDIA_STATS.caveat}</p>
+      <p className="source">
+        Source: {SOURCES.indiaMedicalArrivals2025.publisher}.{" "}
+        {SOURCES.indiaMedicalArrivals2025.url}. Last verified{" "}
+        {SOURCES.indiaMedicalArrivals2025.verified}. Label: VERIFIED.
+      </p>
+
+      <h2>People already travel abroad for medical care</h2>
+      <p>
+        Patients in many countries already travel for planned care. One documented
+        example is the United States, where CDC background material on medical
+        tourism describes people traveling for lower cost, procedures not available
+        at home, dental, fertility, cancer and cosmetic care. It also describes
+        infection, continuity-of-care, post-return complications, insurance and
+        legal-difference risks. Those motivations are not unique to one country.
+      </p>
+      <p className="source">
+        Source: {SOURCES.cdcMedicalTourism.publisher}. {SOURCES.cdcMedicalTourism.url}.
+        Last verified {SOURCES.cdcMedicalTourism.verified}. Label: VERIFIED
+        (agency background, not a DCredit patient count).
+      </p>
+
+      <h2>Coverage at home changes the math</h2>
+      <p>
+        A large hospital bill at home does not necessarily mean you pay that
+        amount. Healthcare coverage or funding, remaining deductible where that
+        applies, coinsurance, copay, out-of-pocket maximum, approved-provider
+        rules and prior authorization decide what you may need to pay yourself.
+        DCredit compares likely patient responsibility, not sticker prices.
+      </p>
+      <p>
+        The on-site calculator includes one plan-math example, the kind used where
+        deductibles and out-of-pocket limits apply. That example is labeled as
+        such. It does not describe every health system.
+      </p>
+      <p className="source">
+        Methodology: illustrative plan-math in the on-site calculator. Label:
+        ESTIMATE. Limitations: not your plan; not a quote.
+      </p>
+      <p>
+        <Link className="btn-solid" href="/enroll">
+          Talk to a care coordinator
+        </Link>
+      </p>
+    </main>
+  );
+}

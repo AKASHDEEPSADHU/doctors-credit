@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "DCredit"
+description = "Explore medical care in India, compare treatment and journey costs, book an orientation conversation, and manage patient applications."
+version = "1.0.0"
+id = "artifacts/doctors-credit"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19359
+
+[services.development]
+run = "pnpm --filter @workspace/doctors-credit run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/doctors-credit", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/doctors-credit/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19359"
+BASE_PATH = "/"
