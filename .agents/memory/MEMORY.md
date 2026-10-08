@@ -1,2 +1,3 @@
 - [DCREDIT product direction](dcredit-product-direction.md) — Phase 1 ₹999/USD 15; Cashfree requested after Dodo denied onboarding; no Dodo testing; live checkout awaits policy approval.
 - [Next.js preview constraints](next-preview.md) — preserve the imported backend; scaffold API routing and artifact-local commands can otherwise break the preview.
+- [Cashfree payment semantics](cashfree-payment-semantics.md) — failed attempts do not terminate an active order; pin sandbox API/webhook versions instead of copying mixed examples.

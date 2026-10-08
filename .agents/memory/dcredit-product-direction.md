@@ -21,8 +21,8 @@ Live paid checkout must remain disabled until the user supplies and approves rev
 
 **How to apply:** Sandbox development and testing may continue, but policy approval must precede live payment activation. Preserve historical $5 terms and transactions independently.
 
-Dodo denied DCREDIT payment-service onboarding. Do not request Dodo credentials or continue Dodo sandbox testing. The user has an approved Cashfree account and wants Cashfree for new Phase 1 assessment payments, with a clean provider abstraction and no broad payment-system rewrite.
+Dodo denied DCREDIT payment-service onboarding. Do not request Dodo credentials or continue Dodo sandbox testing. Cashfree is the provider the user is permitted/approved to use for DCREDIT. Use Cashfree for new Phase 1 assessment payments through a clean provider abstraction, without a broad payment-system rewrite. Do not implement Stripe or Whop, or change application code, schema or payment records merely to accommodate a payment-connector limitation.
 
-**Why:** the user explicitly changed the provider after Dodo's onboarding denial.
+**Why:** the user explicitly changed the provider after Dodo's onboarding denial and reiterated that connector availability must not change the provider choice or drive application/data changes.
 
 **How to apply:** Preserve all historical Dodo/$5 transactions and their legacy handling. Use only sandbox credentials for new testing; never request or enable live Cashfree credentials/payments. Confirm that the user's Cashfree merchant account supports exactly USD 15 before enabling the international test flow; otherwise stop that flow and report the limitation, without converting it to INR.
