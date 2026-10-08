@@ -7,4 +7,16 @@ Use a proper publicly reachable HTTPS staging deployment for Cashfree Sandbox; p
 
 **Why:** The user confirmed the Replit Shield diagnosis and requested separate public staging rather than an access workaround.
 
-**How to apply:** Preserve Next.js, existing authentication, Cashfree signature verification, and the existing database architecture. Do not change payment logic merely to solve hosting, touch production, alter payment/historical Dodo records, or enable live payments. Explain the deployment choice, database implications and DNS before changing configuration. Confirm public endpoint reachability before changing the Cashfree TEST webhook. Staging preparation does not authorize a ₹999 payment test.
+**How to apply:** Preserve Next.js, existing authentication, Cashfree signature verification, and the existing database architecture. Do not change payment logic merely to solve hosting, touch production, alter payment/historical Dodo records, or enable live payments. Explain the deployment choice, database implications and DNS before changing configuration. After public HTTPS reachability is verified, stop for the user's staging review: do not update the Cashfree TEST webhook or initiate a ₹999 payment test in the staging-preparation task.
+
+Use the existing Cloudflare Workers/OpenNext staging path, not Replit Autoscale, for this public staging environment.
+
+**Why:** The user selected Cloudflare staging to preserve the application's native D1 binding architecture instead of changing persistence to accommodate Replit hosting.
+
+**How to apply:** Keep Replit as the protected development workspace. Scope Cloudflare infrastructure, domain and secret configuration to staging; do not select another hosting runtime without a new user decision.
+
+Use an isolated, empty Cloudflare D1 staging database initialized with the existing migrations.
+
+**Why:** The user explicitly required an empty staging database and preservation of production and historical payments.
+
+**How to apply:** Do not copy patient/payment data, clear an existing database, or reuse a populated database for this staging task. Confirm the staging binding differs from production before initializing it.

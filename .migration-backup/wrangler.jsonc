@@ -28,10 +28,20 @@
   "env": {
     "staging": {
       "name": "dcredit-staging",
+      "workers_dev": true,
+      "preview_urls": false,
       "vars": {
         "APP_ENV": "staging",
-        "DODO_PAYMENTS_ENVIRONMENT": "test_mode"
+        "DODO_PAYMENTS_ENVIRONMENT": "test_mode",
+        "DEMO_PAYMENTS": "false",
+        "CASHFREE_ENVIRONMENT": "sandbox",
+        "CASHFREE_API_VERSION": "2026-01-01",
+        "CASHFREE_PUBLIC_ORIGIN": "https://staging.dcredit.in",
+        "CASHFREE_USD_SANDBOX_VERIFIED": "false"
       },
+      "routes": [
+        { "pattern": "staging.dcredit.in", "custom_domain": true }
+      ],
       "services": [
         {
           "binding": "WORKER_SELF_REFERENCE",
