@@ -28,3 +28,9 @@ Inspect credential existence using secret-only metadata or explicitly filtered b
 **Why:** credential-named entries can be stored as ordinary environment variables; the settings tool then returns their values unmasked even when the user calls them Secrets.
 
 **How to apply:** Request secret-only metadata first. If checking ordinary settings is necessary, output presence flags only and never dump values or the full response. Use the protected Secrets flow to correct misclassified credential entries.
+
+Do not assume browser-style globals are available in the impure network-probe sandbox simply because `fetch` is available.
+
+**Why:** a webhook reachability probe failed with `AbortSignal is not defined`; this sandbox does not expose the complete browser/Node global set.
+
+**How to apply:** Use documented runtime capabilities and a tool with timeout support for bounded HTTP probes.
