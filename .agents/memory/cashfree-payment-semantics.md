@@ -22,3 +22,9 @@ Keep Cashfree payment references as lossless strings, including when an API resp
 **Why:** payment references can exceed JavaScript's safe-integer range; normal number parsing followed by string conversion can corrupt reconciliation and duplicate detection.
 
 **How to apply:** Preserve original numeric tokens before storing references. Reject unsafe already-parsed numbers rather than treating rounded values as authoritative identifiers.
+
+Inspect credential existence using secret-only metadata or explicitly filtered booleans, never a full environment-settings response.
+
+**Why:** credential-named entries can be stored as ordinary environment variables; the settings tool then returns their values unmasked even when the user calls them Secrets.
+
+**How to apply:** Request secret-only metadata first. If checking ordinary settings is necessary, output presence flags only and never dump values or the full response. Use the protected Secrets flow to correct misclassified credential entries.
