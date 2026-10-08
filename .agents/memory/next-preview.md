@@ -3,7 +3,7 @@ name: Imported Next.js preview constraints
 description: Why DCREDIT preserves its Next.js backend and how Replit's scaffolds can conflict with it.
 ---
 
-Keep DCREDIT's imported Next.js app, Google OAuth, Dodo and Cloudflare D1 architecture. The separate Vite/Express scaffold is not the application source of truth.
+Keep DCREDIT's imported Next.js app, Google OAuth and Cloudflare D1 architecture. Preserve Dodo only for historical payments; the user requested Cashfree for new Phase 1 payments after Dodo denied onboarding. The separate Vite/Express scaffold is not the application source of truth.
 
 **Why:** the user explicitly required existing Next.js as the source of truth and prohibited architecture replacement for Phase 1.
 
