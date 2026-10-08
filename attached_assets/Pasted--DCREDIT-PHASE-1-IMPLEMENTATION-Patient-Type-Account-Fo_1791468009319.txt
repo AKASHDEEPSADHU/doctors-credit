@@ -1,0 +1,838 @@
+# DCREDIT — PHASE 1 IMPLEMENTATION
+## Patient Type + Account Foundation + Initial Assessment Payment
+
+You are working on the existing DCREDIT / Doctors Credit application.
+
+**IMPORTANT: This is PHASE 1 ONLY.**
+
+Do not implement, partially implement, scaffold, redesign, or modify functionality belonging to later phases unless a small database/API foundation is strictly required for Phase 1 compatibility.
+
+The objective is to safely implement the first production-grade step of the finalized DCREDIT patient journey:
+
+> Patient identifies as Domestic or International → signs in → starts Initial Patient Assessment → sees the correct server-controlled price → completes secure payment → payment is verified server-side → account/payment state is persisted.
+
+---
+
+# 1. FIRST: AUDIT THE EXISTING APPLICATION
+
+Before changing anything:
+
+1. Inspect the complete existing application architecture.
+2. Identify:
+   - Next.js version
+   - TypeScript structure
+   - database technology and schema
+   - existing authentication
+   - existing Google OAuth implementation
+   - existing payment provider and payment integration
+   - existing API/server routes
+   - existing payment/order tables
+   - existing user/account tables
+   - existing historical payment records
+   - existing Dodo Payments implementation
+   - existing environment variables
+   - existing tests
+3. Determine how the current payment flow works.
+4. Determine how existing `$5` historical transactions are stored.
+5. Do NOT delete, migrate destructively, rewrite, or invalidate historical payment data.
+6. Do NOT replace the current architecture merely because another architecture may be preferable.
+
+### Architecture preservation rule
+
+The existing application uses:
+
+- Next.js
+- TypeScript
+- Cloudflare D1 / existing database architecture
+- existing API/repository structure
+- existing Google OAuth
+- existing Dodo Payments integration
+
+**Preserve these unless the audit proves a specific change is technically required for Phase 1.**
+
+Do NOT:
+
+- migrate to PostgreSQL
+- introduce a separate Express backend
+- migrate to Vite
+- replace Next.js
+- replace D1
+- replace Google OAuth
+- replace Dodo Payments merely for preference
+
+If the existing Dodo integration can support the required INR/USD flow, extend it rather than replacing it.
+
+---
+
+# 2. PHASE 1 SCOPE
+
+Phase 1 includes ONLY:
+
+### A. Patient type
+The user must be able to identify as:
+
+- Domestic Patient
+- International Patient
+
+This selection must be persisted against the authenticated account/session/case context as appropriate.
+
+### B. Authentication
+Use the existing Google OAuth.
+
+After successful Google authentication:
+
+- create or retrieve the persistent application account
+- use Google's stable provider/user ID rather than relying on display name
+- persist verified email
+- do not create a separate password system
+- do not store OAuth passwords
+
+The same Google account must retrieve the same application account on future logins.
+
+### C. Initial Patient Assessment payment
+
+The initial service is:
+
+**Initial Patient Assessment / Initial Patient Assistance & Medical Coordination Fee**
+
+Pricing:
+
+| Patient Type | Amount | Currency |
+|---|---:|---|
+| Domestic | ₹999 | INR |
+| International | $15 | USD |
+
+The patient must NOT be able to modify the amount or currency.
+
+The browser/client must never be considered the authority for:
+
+- amount
+- currency
+- patient type
+- payment status
+
+The server must determine and validate these values.
+
+---
+
+# 3. IMPORTANT PAYMENT POSITIONING
+
+Do not describe the ₹999 / USD 15 payment as merely a:
+
+> Doctor Registration Fee
+
+The service should be positioned as an initial:
+
+**Patient Assessment / Patient Assistance & Medical Coordination Fee**
+
+The payment is for coordination and treatment-planning assistance.
+
+It is NOT payment for medical treatment.
+
+Do not imply that DCREDIT itself provides diagnosis or medical treatment.
+
+Medical decisions, diagnosis, treatment recommendations and procedures remain with qualified healthcare professionals.
+
+---
+
+# 4. WHAT THE INITIAL PAYMENT REPRESENTS
+
+The Phase 1 payment should be presented as covering the beginning of DCREDIT's coordination process.
+
+The service can be described using language such as:
+
+- Doctor & Hospital Coordination
+- Medical Document Assistance
+- Pre-Treatment Consultation Coordination
+- Treatment Planning Assistance
+- Procedure / Surgery Date Coordination, subject to availability
+- Patient Journey Support
+
+Do not promise:
+
+- best doctor
+- best hospital
+- guaranteed treatment
+- guaranteed appointment
+- guaranteed surgery date
+- guaranteed medical outcome
+
+Use language such as:
+
+- suitable doctor/hospital
+- based on patient requirements
+- subject to availability
+- coordination assistance
+
+---
+
+# 5. PAYMENT EXCLUSIONS
+
+Before checkout, clearly communicate that the initial fee does NOT include:
+
+- doctor consultation fees
+- hospital charges
+- diagnostic tests
+- medicines
+- surgery/procedure costs
+- accommodation
+- travel
+- food
+- local transportation
+- visa charges
+- third-party fees
+- optional post-assessment support packages
+
+Do not make the payment screen excessively complicated.
+
+The user should understand the essential information within approximately 10–15 seconds.
+
+---
+
+# 6. DOMESTIC VS INTERNATIONAL PAYMENT
+
+The server must determine pricing based on patient type.
+
+### Domestic
+
+Domestic patient:
+
+```text
+Amount: 999
+Currency: INR
+```
+
+### International
+
+International patient:
+
+```text
+Amount: 15
+Currency: USD
+```
+
+Do NOT display both prices in a confusing manner during checkout.
+
+For example, a domestic patient should primarily see:
+
+> Initial Patient Assessment  
+> ₹999 INR
+
+An international patient should primarily see:
+
+> Initial Patient Assessment  
+> USD 15
+
+International card issuers may independently convert USD into the cardholder's local currency.
+
+Do not promise a particular local-currency amount.
+
+---
+
+# 7. SERVER-SIDE PRICE ENFORCEMENT
+
+Implement a single server-side source of truth for Phase 1 pricing.
+
+Conceptually:
+
+```text
+DOMESTIC → INR 999
+INTERNATIONAL → USD 15
+```
+
+The server must validate:
+
+1. authenticated account
+2. patient type
+3. requested service
+4. expected currency
+5. expected amount
+6. existing payment status
+7. payment/order state
+
+Never trust:
+
+```text
+amount
+currency
+patientType
+paymentStatus
+```
+
+from the browser.
+
+If the client sends an amount, treat it only as a request and independently calculate the authoritative value on the server.
+
+---
+
+# 8. PAYMENT FLOW
+
+Implement this sequence:
+
+```text
+Google Login
+      ↓
+Account Created / Retrieved
+      ↓
+Patient Type Selected
+      ↓
+Initial Assessment Selected
+      ↓
+Server Calculates Price
+      ↓
+Checkout Summary
+      ↓
+Payment Order Created Server-Side
+      ↓
+Hosted/Secure Payment Checkout
+      ↓
+Payment Provider Processes Payment
+      ↓
+Provider Webhook / Server Verification
+      ↓
+Server Confirms Payment
+      ↓
+Payment Record Updated
+      ↓
+Initial Assessment Payment Activated
+      ↓
+Confirmation Screen
+```
+
+### Critical rule
+
+A redirect back from the payment provider is NOT proof of successful payment.
+
+Only:
+
+- verified provider response
+- webhook
+- or equivalent server-side verification
+
+may mark a payment as successful.
+
+---
+
+# 9. PAYMENT STATES
+
+Support appropriate payment states, at minimum:
+
+```text
+pending
+successful
+failed
+```
+
+Structure the implementation so future states can be added safely, including:
+
+- refunded
+- partially_refunded
+- chargeback
+- cancelled
+
+Do not implement a complete refund/chargeback administration system in Phase 1.
+
+---
+
+# 10. DUPLICATE PAYMENT PREVENTION
+
+A patient/account must not accidentally pay the same Initial Patient Assessment twice.
+
+Before creating a new checkout:
+
+1. Check whether the account already has a confirmed Initial Patient Assessment payment.
+2. If yes:
+   - do not create another assessment payment
+   - show that the assessment payment has already been completed
+3. If an earlier payment is only `pending` or `failed`, handle it safely according to the existing payment architecture.
+
+The webhook must also be idempotent.
+
+If the same webhook is received multiple times:
+
+- do not create duplicate payment records
+- do not activate the assessment multiple times
+- do not create duplicate downstream records
+
+---
+
+# 11. ORDER / PAYMENT IDENTIFIERS
+
+Use the existing payment/order identifier architecture if present.
+
+Every payment attempt must have a unique server-generated order/payment reference.
+
+Do NOT implement the finalized seven-digit DCREDIT Transaction ID yet.
+
+That belongs to a later payment-infrastructure phase.
+
+However, structure the database so that adding the seven-digit DCREDIT Transaction ID later does not require destructive migration.
+
+The provider's transaction ID and DCREDIT's future transaction ID must remain conceptually separate.
+
+---
+
+# 12. EXISTING $5 HISTORICAL TRANSACTIONS
+
+This is extremely important.
+
+There are existing historical `$5` transactions/payment records in the application.
+
+### Do NOT:
+
+- delete them
+- rewrite them to ₹999
+- rewrite them to USD 15
+- change their historical amount
+- change their currency
+- mark them as new Phase 1 payments
+- break their historical reporting
+
+They must remain historically accurate.
+
+Phase 1 applies the new pricing only to new Initial Patient Assessment payments.
+
+If the current schema needs a service/type field to distinguish old transactions from new assessment payments, add this safely without modifying historical financial values.
+
+---
+
+# 13. RECEIPT / CONFIRMATION
+
+After verified successful payment, show a clear confirmation.
+
+For example:
+
+> Payment Successful  
+> Initial Patient Assessment  
+> ₹999 INR
+
+or:
+
+> Payment Successful  
+> Initial Patient Assessment  
+> USD 15
+
+The confirmation should clearly indicate that payment has been confirmed.
+
+If the existing payment provider already supports receipt/invoice generation, integrate with that existing capability where appropriate.
+
+Do not build a full invoice-management system in Phase 1.
+
+The receipt/payment record must use the actual confirmed currency and amount.
+
+---
+
+# 14. MINIMAL ACCOUNT STATE
+
+Phase 1 should create the minimum persistent state necessary for the subsequent phases.
+
+At minimum, persist:
+
+### Account
+
+- internal account ID
+- Google provider ID
+- verified email
+- created timestamp
+- updated timestamp
+
+### Patient type
+
+- domestic/international
+- associated with the account or initial assessment context
+
+### Initial assessment payment
+
+- service/type
+- account ID
+- amount
+- currency
+- payment status
+- internal order/payment ID
+- provider/payment gateway reference where available
+- created timestamp
+- updated timestamp
+- confirmed timestamp where applicable
+
+Do not create the complete patient/case/medical-record system yet.
+
+---
+
+# 15. DO NOT IMPLEMENT THESE IN PHASE 1
+
+This is a strict boundary.
+
+DO NOT implement:
+
+### Phase 2
+- complete patient profile system
+- account holder vs patient profile system
+- family-member patient management
+- full assessment/case workflow
+- complete patient intake form
+- case lifecycle
+
+### Phase 3
+- medical document upload
+- medical record storage
+- secure medical-document vault
+- document review workflow
+
+### Phase 4
+- coordinator workspace
+- coordinator assignment
+- Google Sheets CRM integration
+- patient code generation
+- Google Sheets sync/retry system
+
+### Phase 5
+- doctor research workflow
+- hospital research workflow
+- doctor/hospital options
+- appointment coordination
+- treatment-date coordination workflow
+
+### Phase 6
+- full patient dashboard
+- full journey timeline
+- notifications
+- complete support workspace
+
+### Phase 7
+- custom payments
+- "Make Another Payment"
+- seven-digit DCREDIT Transaction ID
+- Payments Google Sheet tab
+- reconciliation dashboard
+- complete refund/chargeback administration
+- payment analytics dashboard
+
+### Phase 8
+- travel planning
+- accommodation
+- airport pickup
+- local transportation
+- interpreter coordination
+- travel packages
+
+### Phase 9
+- international concierge package
+- Bengali domestic journey
+- West Bengal-specific experience
+
+### Phase 10
+- complete website redesign
+- major animation system
+- SEO overhaul
+- new imagery system
+- full public-page redesign
+
+Do not create placeholder implementations of these features merely to claim they are prepared.
+
+---
+
+# 16. UI REQUIREMENTS FOR PHASE 1
+
+Do not redesign the website.
+
+Use the existing DCREDIT visual language/components wherever possible.
+
+Only modify the screens necessary for the Phase 1 journey.
+
+The flow should feel trustworthy and professional.
+
+The payment section should communicate:
+
+### What the patient is paying for
+
+Initial Patient Assessment / Patient Assistance & Medical Coordination.
+
+### What happens after payment
+
+DCREDIT begins the coordination process.
+
+### Important disclaimer
+
+This payment does not constitute medical treatment or medical advice.
+
+### Exclusions
+
+Clearly state major third-party/medical costs are separate.
+
+### Trust
+
+Include appropriate privacy, consent, cancellation/refund and terms links if those already exist.
+
+Do not invent legal claims or certifications.
+
+---
+
+# 17. CONSENT / TERMS
+
+Before payment, require appropriate confirmation that the user:
+
+- understands the service
+- accepts applicable terms
+- acknowledges the relevant privacy/consent information
+- understands the payment/refund/cancellation policy
+
+Use the existing legal pages if available.
+
+Do not invent detailed legal language if the application's legal policies already exist.
+
+---
+
+# 18. DATABASE MIGRATION RULES
+
+Any schema changes must be:
+
+- additive
+- backward-compatible
+- migration-based
+- safe for existing production/historical data
+
+Do NOT:
+
+- drop existing payment tables
+- rewrite migration history
+- delete columns containing historical data
+- truncate tables
+- reset the database
+- recreate the database from scratch
+
+Before migration, inspect the existing schema.
+
+After migration, verify that existing records remain intact.
+
+---
+
+# 19. SECURITY REQUIREMENTS
+
+Ensure:
+
+- payment secrets remain server-side
+- payment credentials are never exposed to the browser
+- no card numbers are stored
+- no CVV is stored
+- no bank passwords are stored
+- no UPI credentials are stored
+- webhook signatures are verified where supported
+- authentication is enforced for payment creation
+- users cannot manipulate amount/currency through browser requests
+- server validates account ownership
+- duplicate webhook processing is prevented
+- duplicate checkout is prevented
+- sensitive environment variables are not committed to Git
+- no secrets appear in client-side bundles
+
+---
+
+# 20. TESTING
+
+Add/update tests for at least:
+
+### Domestic
+
+```text
+Domestic patient
+→ server calculates ₹999 INR
+→ checkout created with INR
+→ successful verified payment
+→ payment stored as successful
+```
+
+### International
+
+```text
+International patient
+→ server calculates USD 15
+→ checkout created with USD
+→ successful verified payment
+→ payment stored as successful
+```
+
+### Manipulation
+
+Test that a user cannot change:
+
+```text
+₹999 → ₹1
+₹999 → ₹100
+INR → USD
+USD 15 → USD 1
+```
+
+through client-side requests.
+
+### Duplicate payment
+
+Test that a confirmed assessment cannot be paid twice.
+
+### Webhook idempotency
+
+Send/process the same webhook more than once and confirm that:
+
+- only one successful payment is recorded
+- assessment activation happens once
+
+### Failed payment
+
+Confirm failed payment does not activate the assessment.
+
+### Pending payment
+
+Confirm pending payment does not activate the assessment.
+
+### Historical data
+
+Confirm existing `$5` transactions remain unchanged.
+
+### Authentication
+
+Confirm unauthenticated users cannot create authenticated payment orders.
+
+---
+
+# 21. MANUAL PAYMENT TESTING
+
+After implementation, explain exactly how I can manually test:
+
+### Domestic
+
+```text
+Google login
+→ Domestic
+→ Initial Assessment
+→ ₹999
+→ checkout
+→ test payment
+→ return
+→ webhook/server verification
+→ successful confirmation
+```
+
+### International
+
+```text
+Google login
+→ International
+→ Initial Assessment
+→ USD 15
+→ checkout
+→ test payment
+→ return
+→ webhook/server verification
+→ successful confirmation
+```
+
+If the payment provider requires dashboard configuration, test credentials, webhook URLs, or environment variables, clearly identify them.
+
+Do not assume those configurations are complete.
+
+---
+
+# 22. ENVIRONMENT VARIABLES
+
+Audit existing environment variables first.
+
+Do not create duplicate or conflicting environment-variable names if equivalent variables already exist.
+
+If new variables are required, report:
+
+```text
+Variable
+Purpose
+Required for local development?
+Required for production?
+Where it is configured
+```
+
+Never print secret values in your response.
+
+---
+
+# 23. FINAL IMPLEMENTATION REPORT
+
+When Phase 1 is complete, STOP.
+
+Do not continue automatically to Phase 2.
+
+Return a structured report with exactly these sections:
+
+## 1. Audit Findings
+What already existed before your changes.
+
+## 2. Implemented
+Exactly what you changed for Phase 1.
+
+## 3. Files Changed
+List every changed/created/deleted file and explain why.
+
+## 4. Database Changes
+List migrations/schema changes.
+
+## 5. Authentication Flow
+Explain Google OAuth/account persistence.
+
+## 6. Payment Flow
+Explain:
+
+- domestic pricing
+- international pricing
+- order creation
+- checkout
+- webhook
+- server verification
+- idempotency
+- duplicate prevention
+
+## 7. Historical Data
+Explicitly confirm that existing `$5` transactions were not modified.
+
+## 8. Security
+Explain the security protections implemented.
+
+## 9. Tests
+List tests executed and results.
+
+## 10. Manual Configuration Required
+Anything I still need to configure manually.
+
+## 11. Known Limitations
+Only Phase 1 limitations.
+
+## 12. Explicitly Deferred
+Confirm that the following remain untouched:
+
+- patient profile/case system
+- medical documents
+- coordinator workspace
+- Google Sheets
+- doctor/hospital workflow
+- full dashboard
+- custom payments
+- seven-digit transaction ID
+- travel support
+- international concierge
+- Bengali flow
+- full website redesign
+
+---
+
+# 24. MOST IMPORTANT RULE
+
+**DO NOT MOVE TO PHASE 2.**
+
+Do not implement future requirements because they appear in the broader specification.
+
+Do not redesign unrelated pages.
+
+Do not replace existing architecture.
+
+Do not replace the current payment provider without a demonstrated technical necessity.
+
+Do not modify historical `$5` payment records.
+
+Do not claim a payment is successful based solely on frontend redirect.
+
+Complete **PHASE 1 ONLY**, test it thoroughly, report exactly what was changed, and stop.
