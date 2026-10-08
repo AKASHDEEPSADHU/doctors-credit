@@ -38,3 +38,9 @@ A Turnstile hostname allowlist entry also authorizes all of that hostname's subd
 **Why:** Cloudflare's hostname-management documentation confirms this inheritance. An exact-match-only inspection incorrectly classifies a root-domain widget as unable to serve staging.
 
 **How to apply:** Evaluate inherited hostname coverage before reporting a blocker. Recommend a separate staging widget for credential isolation, but do not edit the production widget or claim a new widget is technically required solely because staging is absent from the explicit hostname list.
+
+Absence from Replit's secret-name catalog does not by itself prove a running application lacks the corresponding environment variables.
+
+**Why:** Catalog inspection across shared, development and production reported no Cashfree credential entries, while the existing development webhook returned its configured-but-unsigned rejection, proving nonempty credential variables were available to that process.
+
+**How to apply:** Distinguish catalog presence, runtime availability, credential validity and external Worker configuration. Use existing fail-closed responses or non-sensitive configuration flags for presence checks; do not read values, invent a debug bypass, rotate credentials or assert a deletion merely to reconcile metadata. If injection provenance is unavailable, report it as unresolved.
