@@ -34,3 +34,9 @@ Do not assume browser-style globals are available in the impure network-probe sa
 **Why:** a webhook reachability probe failed with `AbortSignal is not defined`; this sandbox does not expose the complete browser/Node global set.
 
 **How to apply:** Use documented runtime capabilities and a tool with timeout support for bounded HTTP probes.
+
+Cashfree Payment Gateway's dashboard Test action is a synthetic URL-responsiveness check, not an order/payment event. An empty payment-webhook delivery log alone does not prove whether that check sent a request.
+
+**Why:** Cashfree's public merchant dashboard sends a synthetic `test_object` to its own test service, while its documentation says actual payment notifications follow payment events. Treating "No webhooks found" as proof of a routing or signature failure would be premature.
+
+**How to apply:** Compare the saved endpoint URL and the Test action's returned status/subcode with sanitized server arrival logs. Do not fabricate a paid event or relax authentication to make the URL check pass.
