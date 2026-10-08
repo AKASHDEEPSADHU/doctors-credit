@@ -16,6 +16,7 @@ export async function applyAssessmentEvent(
     if (details.orderId) throw new Error("Unknown assessment order.");
     return false; // Historical conversation webhook, handled by the legacy path.
   }
+  if (order.paymentProvider === "cashfree") throw new Error("Dodo cannot process a Cashfree assessment.");
   if (!assessmentCheckoutAllowed(environment, providerEnvironment)) {
     throw new Error("Assessment payment activation is disabled pending policy approval.");
   }

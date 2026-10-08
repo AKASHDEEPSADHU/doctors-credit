@@ -26,3 +26,9 @@ Dodo denied DCREDIT payment-service onboarding. Do not request Dodo credentials 
 **Why:** the user explicitly changed the provider after Dodo's onboarding denial and reiterated that connector availability must not change the provider choice or drive application/data changes.
 
 **How to apply:** Preserve all historical Dodo/$5 transactions and their legacy handling. Use only sandbox credentials for new testing; never request or enable live Cashfree credentials/payments. Confirm that the user's Cashfree merchant account supports exactly USD 15 before enabling the international test flow; otherwise stop that flow and report the limitation, without converting it to INR.
+
+The Cashfree merchant dashboard already has a Payment Gateway `NOTIFY_URL` webhook with version `2023-08-01` and success-payment events. Do not modify, delete or reuse it.
+
+**Why:** the user explicitly protected this existing merchant configuration.
+
+**How to apply:** New Phase 1 orders must not supply `notify_url` and thereby invoke that old configuration. Prepare a separate Cashfree endpoint; stop before dashboard webhook configuration until the user authorizes that step.

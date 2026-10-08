@@ -30,6 +30,7 @@ export type AccountView = {
   assessment: AccountAssessment | null;
   initialAssessment?: {
     status: string; amountMinor: number; currency: string; confirmedAt?: string; testPayment: boolean;
+    lastAttemptStatus?: string; review?: boolean;
   } | null;
 };
 
@@ -73,6 +74,7 @@ export function toAccountView(input: {
     status: order.status, amountMinor: order.confirmedAmountMinor ?? order.amountMinor,
     currency: order.confirmedCurrency || order.currency, confirmedAt: order.confirmedAt,
     testPayment: order.providerEnvironment === "test_mode",
+    lastAttemptStatus: order.paymentAttempts?.at(-1)?.status, review: Boolean(order.reviewReason),
   } : null;
   if (!app) {
     return {

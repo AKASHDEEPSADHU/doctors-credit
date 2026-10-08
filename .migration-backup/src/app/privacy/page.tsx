@@ -14,6 +14,14 @@ export default function PrivacyPage() {
       </p>
       <h2>What we collect</h2>
       <p>
+        New Initial Patient Assessment sandbox payments use Cashfree. We provide
+        billing contact details to the gateway and retain order references,
+        payment attempts, verified amounts and currencies for your account.
+        We do not collect card numbers or CVV. Historical $5 Dodo records remain
+        separate. New assessment payments are not sent to the legacy Sheets or
+        meeting-creation workflow. Live payments and revised refund terms remain pending.
+      </p>
+      <p>
         Google sign-in (name and email), the $5 Initial Assessment payment
         processed by Dodo Payments (we never store card numbers, CVV or banking
         passwords), application status, and messages you send. Payment is marked

@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { ASSESSMENT_CONSENT_VERSION, ASSESSMENT_SERVICE, assessmentPrice, type PatientType } from "@/lib/assessment";
 import type { D1Like } from "./d1";
+import type { PaymentAttempt } from "../payment-providers/types";
 
 export type AssessmentStatus = "PENDING" | "PAID" | "FAILED" | "REVIEW_REQUIRED";
 export type AssessmentOrder = {
@@ -12,6 +13,8 @@ export type AssessmentOrder = {
   currency: string;
   status: AssessmentStatus;
   providerEnvironment: "test_mode" | "live_mode";
+  paymentProvider?: "dodo" | "cashfree";
+  paymentAttempts?: PaymentAttempt[];
   checkoutId?: string;
   checkoutUrl?: string;
   paymentId?: string;
@@ -35,10 +38,13 @@ export type AssessmentRepository = {
   list(identityId: string): Promise<AssessmentOrder[]>;
   get(id: string): Promise<AssessmentOrder | null>;
   byCheckout(checkoutId: string): Promise<AssessmentOrder | null>;
-  create(identityId: string, patientType: PatientType): Promise<AssessmentOrder>;
+  create(identityId: string, patientType: PatientType, provider?: "dodo" | "cashfree"): Promise<AssessmentOrder>;
   initiate(id: string, checkoutId: string, checkoutUrl: string): Promise<void>;
   fail(id: string): Promise<void>;
   confirm(input: AssessmentConfirmation): Promise<AssessmentOrder>;
+  attempts(id: string): Promise<PaymentAttempt[]>;
+  recordAttempt(id: string, attempt: PaymentAttempt): Promise<void>;
+  review(id: string, reason: string): Promise<void>;
 };
 
 export function activeAssessment(orders: AssessmentOrder[]) {
@@ -48,13 +54,13 @@ export function activeAssessment(orders: AssessmentOrder[]) {
     || null;
 }
 
-function newOrder(identityId: string, patientType: PatientType): AssessmentOrder {
+function newOrder(identityId: string, patientType: PatientType, provider: "dodo" | "cashfree" = "dodo"): AssessmentOrder {
   const price = assessmentPrice(patientType);
   const createdAt = new Date().toISOString();
   return {
     id: randomUUID(), identityId, patientType, service: ASSESSMENT_SERVICE,
     amountMinor: price.amountMinor, currency: price.currency, status: "PENDING",
-    providerEnvironment: "test_mode", consentVersion: ASSESSMENT_CONSENT_VERSION,
+    providerEnvironment: "test_mode", paymentProvider: provider, consentVersion: ASSESSMENT_CONSENT_VERSION,
     consentAt: createdAt, createdAt, updatedAt: createdAt,
   };
 }
@@ -82,11 +88,11 @@ export function createJsonAssessmentRepository(
     },
     async get(id) { return read().find((order) => order.id === id) || null; },
     async byCheckout(id) { return read().find((order) => order.checkoutId === id) || null; },
-    async create(identityId, patientType) {
+    async create(identityId, patientType, provider) {
       const orders = read();
       if (patientTypeFor(identityId) !== patientType) throw new Error("Patient type changed. Review checkout again.");
       if (activeAssessment(orders.filter((order) => order.identityId === identityId))) throw new Error("Assessment already exists.");
-      const order = newOrder(identityId, patientType);
+      const order = newOrder(identityId, patientType, provider);
       orders.push(order);
       write(orders);
       return order;
@@ -107,6 +113,29 @@ export function createJsonAssessmentRepository(
         order.status = "FAILED";
         order.updatedAt = new Date().toISOString();
       }
+      write(orders);
+    },
+    async attempts(id) { return (read().find((row) => row.id === id)?.paymentAttempts || [])
+      .sort((a, b) => (a.occurredAt || "").localeCompare(b.occurredAt || "")); },
+    async recordAttempt(id, attempt) {
+      const orders = read();
+      const order = orders.find((row) => row.id === id);
+      if (order?.paymentProvider !== "cashfree") throw new Error("Invalid payment provider.");
+      if (orders.some((row) => row.id !== id && row.paymentAttempts?.some((a) => a.paymentId === attempt.paymentId))) {
+        throw new Error("Payment belongs to another order.");
+      }
+      order.paymentAttempts ||= [];
+      const index = order.paymentAttempts.findIndex((a) => a.paymentId === attempt.paymentId);
+      if (index < 0) order.paymentAttempts.push(attempt);
+      else if (order.paymentAttempts[index].status !== "SUCCESS") order.paymentAttempts[index] = attempt;
+      write(orders);
+    },
+    async review(id, reason) {
+      const orders = read();
+      const order = orders.find((row) => row.id === id);
+      if (!order) throw new Error("Assessment not found.");
+      if (order.status !== "PAID") order.status = "REVIEW_REQUIRED";
+      order.reviewReason = reason;
       write(orders);
     },
     async confirm(input) {
@@ -140,6 +169,7 @@ function fromRow(row: Record<string, unknown> | null): AssessmentOrder | null {
     id: String(row.id), identityId: String(row.identity_id), patientType: row.patient_type as PatientType,
     service: ASSESSMENT_SERVICE, amountMinor: Number(row.amount_minor), currency: String(row.currency),
     status: row.status as AssessmentStatus, providerEnvironment: row.provider_environment as AssessmentOrder["providerEnvironment"],
+    paymentProvider: (row.payment_provider || "dodo") as AssessmentOrder["paymentProvider"],
     checkoutId: row.provider_checkout_id ? String(row.provider_checkout_id) : undefined,
     checkoutUrl: row.provider_checkout_url ? String(row.provider_checkout_url) : undefined,
     paymentId: row.provider_payment_id ? String(row.provider_payment_id) : undefined,
@@ -163,14 +193,14 @@ export function createD1AssessmentRepository(db: D1Like): AssessmentRepository {
     async byCheckout(id) {
       return fromRow(await db.prepare("SELECT * FROM assessment_orders WHERE provider_checkout_id = ?").bind(id).first());
     },
-    async create(identityId, patientType) {
+    async create(identityId, patientType, provider) {
       if (activeAssessment(await list(identityId))) throw new Error("Assessment already exists.");
-      const order = newOrder(identityId, patientType);
+      const order = newOrder(identityId, patientType, provider);
       await db.prepare(`INSERT INTO assessment_orders
-        (id, identity_id, patient_type, service, amount_minor, currency, status, provider_environment, consent_version, consent_at, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+        (id, identity_id, patient_type, service, amount_minor, currency, status, provider_environment, consent_version, consent_at, created_at, updated_at, payment_provider)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
         .bind(order.id, identityId, patientType, order.service, order.amountMinor, order.currency, order.status,
-          order.providerEnvironment, order.consentVersion, order.consentAt, order.createdAt, order.updatedAt).run();
+          order.providerEnvironment, order.consentVersion, order.consentAt, order.createdAt, order.updatedAt, order.paymentProvider).run();
       return order;
     },
     async initiate(id, checkoutId, checkoutUrl) {
@@ -182,6 +212,33 @@ export function createD1AssessmentRepository(db: D1Like): AssessmentRepository {
     },
     async fail(id) {
       await db.prepare("UPDATE assessment_orders SET status = 'FAILED', updated_at = ? WHERE id = ? AND status = 'PENDING'").bind(new Date().toISOString(), id).run();
+    },
+    async attempts(id) {
+      const { results } = await db.prepare("SELECT * FROM assessment_payment_attempts WHERE assessment_order_id = ? ORDER BY COALESCE(occurred_at, updated_at)").bind(id).all();
+      return results.map((row) => ({
+        paymentId: String(row.provider_payment_id), status: String(row.status),
+        amountMinor: Number(row.amount_minor), currency: String(row.currency),
+        captured: Boolean(row.captured), adjusted: Boolean(row.adjusted),
+        occurredAt: row.occurred_at ? String(row.occurred_at) : undefined,
+      }));
+    },
+    async recordAttempt(id, attempt) {
+      if ((await get(id))?.paymentProvider !== "cashfree") throw new Error("Invalid payment provider.");
+      await db.prepare(`INSERT INTO assessment_payment_attempts
+        (payment_provider, provider_payment_id, assessment_order_id, status, amount_minor, currency, captured, adjusted, updated_at, occurred_at)
+        VALUES ('cashfree', ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(payment_provider, provider_payment_id) DO UPDATE SET
+        status=excluded.status, amount_minor=excluded.amount_minor, currency=excluded.currency,
+        captured=excluded.captured, adjusted=excluded.adjusted, updated_at=excluded.updated_at, occurred_at=excluded.occurred_at
+        WHERE assessment_payment_attempts.assessment_order_id=excluded.assessment_order_id AND assessment_payment_attempts.status <> 'SUCCESS'`)
+        .bind(attempt.paymentId, id, attempt.status, attempt.amountMinor, attempt.currency,
+          Number(attempt.captured), Number(attempt.adjusted), new Date().toISOString(), attempt.occurredAt || null).run();
+      const saved = await db.prepare("SELECT assessment_order_id FROM assessment_payment_attempts WHERE payment_provider='cashfree' AND provider_payment_id=?").bind(attempt.paymentId).first();
+      if (saved?.assessment_order_id !== id) throw new Error("Payment belongs to another order.");
+    },
+    async review(id, reason) {
+      await db.prepare(`UPDATE assessment_orders SET status=CASE WHEN status='PAID' THEN status ELSE 'REVIEW_REQUIRED' END,
+        review_reason=?, updated_at=? WHERE id=?`).bind(reason, new Date().toISOString(), id).run();
     },
     async confirm(input) {
       const order = await get(input.id);

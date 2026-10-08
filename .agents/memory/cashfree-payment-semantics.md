@@ -16,3 +16,9 @@ Pin and test Cashfree API and webhook versions explicitly; do not copy mode/vers
 **How to apply:** Refresh the official documentation before implementation, choose consistent supported versions, and explicitly use sandbox endpoints and browser SDK mode. Never copy production defaults into Phase 1.
 
 Sources: https://www.cashfree.com/docs/api-reference/payments/latest/webhooks/idempotency and https://www.cashfree.com/docs/payments/online/web/redirect
+
+Keep Cashfree payment references as lossless strings, including when an API response encodes them as numeric JSON tokens.
+
+**Why:** payment references can exceed JavaScript's safe-integer range; normal number parsing followed by string conversion can corrupt reconciliation and duplicate detection.
+
+**How to apply:** Preserve original numeric tokens before storing references. Reject unsafe already-parsed numbers rather than treating rounded values as authoritative identifiers.

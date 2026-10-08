@@ -14,7 +14,11 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   agentRules: false,
-  allowedDevOrigins: ["127.0.0.1", "localhost", "*.replit.dev", "*.replit.app"],
+  allowedDevOrigins: [
+    "127.0.0.1", "localhost", "*.replit.dev", "*.replit.app",
+    // The proxied preview hostname can contain more than one subdomain level.
+    ...(process.env.REPLIT_DEV_DOMAIN ? [process.env.REPLIT_DEV_DOMAIN] : []),
+  ],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

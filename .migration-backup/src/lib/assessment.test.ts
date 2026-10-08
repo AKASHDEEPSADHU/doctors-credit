@@ -30,7 +30,7 @@ function fixture(kind: "json" | "d1", includeAssessmentMigration = true) {
   }
   const sqlite = new DatabaseSync(":memory:");
   sqlite.exec("PRAGMA foreign_keys=ON");
-  for (const name of ["0001_init.sql", "0002_payment_provider.sql", "0003_appointment_meeting.sql", ...(includeAssessmentMigration ? ["0004_initial_assessment.sql"] : [])]) {
+  for (const name of ["0001_init.sql", "0002_payment_provider.sql", "0003_appointment_meeting.sql", ...(includeAssessmentMigration ? ["0004_initial_assessment.sql", "0005_cashfree_assessment.sql"] : [])]) {
     sqlite.exec(readFileSync(path.join(process.cwd(), "migrations", name), "utf8"));
   }
   const db: D1Like = {
@@ -212,6 +212,7 @@ describe("Phase 1 provider/account boundaries", () => {
     const beforeApplication = await repo.getApplicationById(legacy.id);
     const beforePayments = await repo.listPayments(legacy.id);
     sqlite!.exec(readFileSync(path.join(process.cwd(), "migrations/0004_initial_assessment.sql"), "utf8"));
+    sqlite!.exec(readFileSync(path.join(process.cwd(), "migrations/0005_cashfree_assessment.sql"), "utf8"));
     await repo.setPatientType("historical-test", "DOMESTIC");
     const order = await repo.assessments.create("historical-test", "DOMESTIC");
     assert.ok(order.updatedAt);

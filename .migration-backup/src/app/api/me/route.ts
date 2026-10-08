@@ -15,8 +15,11 @@ export async function GET() {
   }
   const ledger = await patientLedger(patient.id);
   const repo = await getRepository();
+  const orders = await repo.assessments.list(patient.id);
+  const assessmentOrders = await Promise.all(orders.map(async (order) => order.paymentProvider === "cashfree"
+    ? { ...order, paymentAttempts: await repo.assessments.attempts(order.id) } : order));
   return NextResponse.json(toAccountView({
     patient, applications: ledger.applications, payments: ledger.payments,
-    assessmentOrders: await repo.assessments.list(patient.id),
+    assessmentOrders,
   }), { headers: { "Cache-Control": "private, no-store" } });
 }

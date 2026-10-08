@@ -4,26 +4,31 @@ import { getRepository } from "@/lib/repo";
 import { getSession } from "@/lib/session";
 import { loadConfirmedApplication } from "@/lib/success-state";
 import { formatAssessmentAmount } from "@/lib/assessment";
+import AssessmentPaymentStatus from "@/components/AssessmentPaymentStatus";
 
-export default async function SuccessPage({ searchParams }: { searchParams: Promise<{ assessment?: string }> }) {
+export default async function SuccessPage({ searchParams }: { searchParams: Promise<{ assessment?: string; order_id?: string }> }) {
   const repo = await getRepository();
   const jar = await cookies();
   const pendingId = jar.get("dc_application")?.value;
   const session = await getSession();
   const assessmentId = jar.get("dc_assessment_order")?.value;
-  if ((await searchParams).assessment === "1") {
-    const order = session && assessmentId ? await repo.assessments.get(assessmentId) : null;
+  const query = await searchParams;
+  if (query.assessment === "1") {
+    const returnedId = query.order_id?.startsWith("ipa_") ? query.order_id.slice(4) : assessmentId;
+    const order = session && returnedId ? await repo.assessments.get(returnedId) : null;
     if (!order || order.identityId !== session?.patientId) return <Pending assessment copy="Open My Account to view your payment status. No payment is confirmed by this browser return." />;
-    if (order.status !== "PAID") return <Pending assessment copy={order.status === "FAILED"
+    if (order.status !== "PAID") return <><Pending assessment copy={order.status === "FAILED"
       ? "Your payment failed or was declined. Open My Account before starting a new test attempt."
       : order.status === "REVIEW_REQUIRED" ? "Your payment requires manual review. Do not pay again. Contact DCREDIT."
-      : "Your payment is pending server confirmation. Do not pay again. Refresh this page or open My Account."} />;
+      : "Your payment is pending server confirmation. Do not pay again. Refresh this page or open My Account."} />
+      {order.status === "PENDING" && order.paymentProvider === "cashfree" ? <div className="legal"><AssessmentPaymentStatus orderId={order.id} /></div> : null}</>;
     return (
       <main id="main" className="legal confirm-page">
         <p className="eyebrow">Initial Patient Assessment</p>
         <h1>Test payment confirmed.</h1>
         <p>{formatAssessmentAmount(order.confirmedAmountMinor!, order.confirmedCurrency!)} {order.confirmedCurrency}</p>
-        <p>This is a Dodo test-mode payment, not a live charge. Live assessment activation remains disabled pending approval of the cancellation/refund policy.</p>
+        <p>This is a {order.paymentProvider === "cashfree" ? "Cashfree sandbox" : "historical Dodo test-mode"} payment, not a live charge. Live assessment activation remains disabled pending approval of the cancellation/refund policy.</p>
+        {order.reviewReason ? <p role="alert">An additional payment discrepancy requires manual review. Do not pay again.</p> : null}
         <p>The Initial Patient Assessment is a coordination and assistance fee, not medical treatment or medical advice.</p>
         <a href="/account">Open My Account</a>
       </main>

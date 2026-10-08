@@ -2,7 +2,7 @@ import AssessmentForm from "@/components/AssessmentForm";
 import { SectionLabel } from "@/components/editorial/SectionLabel";
 import { assessmentCheckoutAllowed } from "@/lib/assessment";
 import { appEnv } from "@/lib/env";
-import { dodoEnvironment } from "@/lib/dodo";
+import { cashfreeEnvironment, cashfreeConfigured, cashfreeUsdAllowed } from "@/lib/payment-providers/cashfree";
 import { activeAssessment } from "@/lib/repo/assessments";
 import { getRepository } from "@/lib/repo";
 import { getSession } from "@/lib/session";
@@ -61,7 +61,9 @@ export default async function EnrollPage({
           patient={patient}
           error={first(q.enrollError)}
           order={order}
-          testCheckoutAllowed={assessmentCheckoutAllowed(appEnv(), dodoEnvironment())}
+          testCheckoutAllowed={assessmentCheckoutAllowed(appEnv(), cashfreeEnvironment())}
+          sandboxConfigured={cashfreeConfigured()}
+          usdAllowed={cashfreeUsdAllowed()}
         />
       </div>
     </main>

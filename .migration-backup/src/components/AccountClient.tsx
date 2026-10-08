@@ -121,6 +121,8 @@ export default function AccountClient({ siteKey }: { siteKey?: string }) {
         <h2 id="initial-assessment-heading">Initial Patient Assessment</h2>
         <p>Patient type: {data.patient.patientType === "DOMESTIC" ? "Domestic Patient" : data.patient.patientType === "INTERNATIONAL" ? "International Patient" : "Not selected"}</p>
         <p>Status: {data.initialAssessment?.status || "Not started"}</p>
+        {data.initialAssessment?.lastAttemptStatus ? <p>Last payment attempt: {data.initialAssessment.lastAttemptStatus}. A failed or abandoned attempt does not close an active order.</p> : null}
+        {data.initialAssessment?.review ? <p role="alert">Payment discrepancy requires manual review. Do not pay again.</p> : null}
         {data.initialAssessment ? <p>{formatAssessmentAmount(data.initialAssessment.amountMinor, data.initialAssessment.currency)} {data.initialAssessment.currency} {data.initialAssessment.testPayment ? "— TEST payment, not a live charge" : ""}</p> : null}
         {data.initialAssessment?.confirmedAt ? <p>Provider confirmation: {new Date(data.initialAssessment.confirmedAt).toLocaleString()}</p> : null}
         <p>Cancellation/refund policy pending approval. Live checkout is disabled.</p>

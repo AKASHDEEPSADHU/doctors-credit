@@ -20,3 +20,9 @@ Disabling Next.js agent-rule generation removes its managed instruction block; i
 **Why:** disabling automatic generation unexpectedly deleted the imported app's instruction file because it contained only the managed block.
 
 **How to apply:** Preserve custom/imported agent instructions outside Next's managed markers when disabling generation.
+
+Next.js development-origin wildcards may reject Replit preview hosts with nested subdomains. A blocked HMR connection can prevent client hydration, leaving account loading screens indefinitely even when JavaScript assets return HTTP 200.
+
+**Why:** the proxied hostname was rejected despite the wildcard allowlist; admitting the exact runtime development hostname restored hydration and account API requests.
+
+**How to apply:** When protected pages remain loading without calling their APIs, check development-origin rejection logs before changing authentication or persistence. Explicitly allow the current development hostname without weakening production headers.

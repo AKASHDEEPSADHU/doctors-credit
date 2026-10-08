@@ -11,9 +11,16 @@ SESSION_SECRET=dev-doctors-credit-preview
 # DODO_PAYMENTS_ENVIRONMENT=test_mode
 # DODO_PAYMENTS_RETURN_URL=http://127.0.0.1:3100/success
 # DODO_PRODUCT_ID_ORIENTATION=
-# DODO_PRODUCT_ID_INITIAL_ASSESSMENT_INR=
-# DODO_PRODUCT_ID_INITIAL_ASSESSMENT_USD=
-# Assessment checkout: test_mode only; revised refund/cancellation policy pending.
+# Historical Dodo configuration only. No new Dodo assessment checkout.
+# New Phase 1: Cashfree sandbox credentials belong in secrets, not this file.
+# CASHFREE_CLIENT_ID=
+# CASHFREE_CLIENT_SECRET=
+# CASHFREE_ENVIRONMENT=sandbox
+# CASHFREE_API_VERSION=2026-01-01
+# CASHFREE_PUBLIC_ORIGIN=https://your-development-domain
+# CASHFREE_USD_SANDBOX_VERIFIED=false
+# New custom webhook: /api/webhook/cashfree, version 2026-01-01.
+# Existing NOTIFY_URL / 2023-08-01 webhook must remain untouched.
 
 # V1 published conversation timezone (placeholders only)
 # DCREDIT_SCHEDULE_TIMEZONE=America/New_York
