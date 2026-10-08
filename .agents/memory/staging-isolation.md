@@ -62,3 +62,9 @@ An empty Worker management record is not a configured runtime: application varia
 **Why:** The native Worker resource can exist independently of versions; its preview-template settings do not configure the actual application runtime.
 
 **How to apply:** Prepare local binding declarations and secret names without values when version creation is unapproved. Stop before remote runtime configuration; request approval for an actual application version and private secret-entry flow separately from publishing. Do not claim local declarations or preview templates are installed runtime bindings.
+
+For an initial version with required secrets, Cloudflare supports uploading code and encrypted secret bindings together through `wrangler versions upload --secrets-file`.
+
+**Why:** The installed Wrangler adds the supplied secret bindings before validating required-secret inheritance. This avoids assuming secrets can be inherited from a nonexistent earlier version. OpenNext's upload wrapper also runs remote cache population, which is an additional side effect beyond uploading a version.
+
+**How to apply:** Plan private operator-owned secret input outside the repository, never values in MCP code or chat. Prefer the direct version-only upload for a narrowly scoped no-database-write step, with automatic provisioning disabled. If the empty Worker is not recognized or binding validation demands a deployment, stop rather than following a deploy-first suggestion.
