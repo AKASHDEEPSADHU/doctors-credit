@@ -40,3 +40,9 @@ Cashfree Payment Gateway's dashboard Test action is a synthetic URL-responsivene
 **Why:** Cashfree's public merchant dashboard sends a synthetic `test_object` to its own test service, while its documentation says actual payment notifications follow payment events. Treating "No webhooks found" as proof of a routing or signature failure would be premature.
 
 **How to apply:** Compare the saved endpoint URL and the Test action's returned status/subcode with sanitized server arrival logs. Do not fabricate a paid event or relax authentication to make the URL check pass.
+
+Do not proceed to the real ₹999 payment until the webhook test returns successfully.
+
+**Why:** the user explicitly required this gate during Cashfree webhook debugging.
+
+**How to apply:** A Cashfree dashboard HTTP 200 or outer `status: SUCCESS` is not sufficient when its endpoint-test result still reports an error. Isolated fixture tests do not constitute a real merchant payment test.
