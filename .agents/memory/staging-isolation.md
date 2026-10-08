@@ -26,3 +26,9 @@ Cloudflare account membership permissions and delegated MCP write permissions ar
 **Why:** Resource GETs and membership inspection succeeded through the managed connection, but both user- and account-token verification endpoints rejected its credential. Account-level administrator rights alone did not expose the delegated token's exact grants.
 
 **How to apply:** Report verified read access separately from account-level rights and unverified integration write access. Do not infer that the connection is broken or request new credentials solely from a token-introspection error when resource reads work. Never test writes during a read-only audit.
+
+When executing existing D1 migrations through the managed Cloudflare API, retain Wrangler-compatible migration history without editing the migration files.
+
+**Why:** The migrations include non-idempotent column additions. Untracked SQL would let a later Wrangler migration run attempt to apply those changes again.
+
+**How to apply:** Use the existing SQL unchanged and record each completed migration in the same SQL batch using Wrangler's migration journal format. Inspect recorded migrations before any subsequent application; target only the explicitly approved staging database.

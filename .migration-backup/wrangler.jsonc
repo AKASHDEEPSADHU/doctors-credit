@@ -52,7 +52,7 @@
         {
           "binding": "DB",
           "database_name": "dcredit-staging",
-          "database_id": "00000000-0000-0000-0000-000000000001", // replace before staging deploy
+          "database_id": "559e4c25-35c7-4c43-bd20-023722c53440",
           "migrations_dir": "migrations"
         }
       ]
