@@ -26,3 +26,9 @@ Next.js development-origin wildcards may reject Replit preview hosts with nested
 **Why:** the proxied hostname was rejected despite the wildcard allowlist; admitting the exact runtime development hostname restored hydration and account API requests.
 
 **How to apply:** When protected pages remain loading without calling their APIs, check development-origin rejection logs before changing authentication or persistence. Explicitly allow the current development hostname without weakening production headers.
+
+Agent-side development-domain probes can use internal DNS routing and therefore do not establish public webhook reachability.
+
+**Why:** Cashfree diagnostics reached the Next.js handler through an internal address, while the actual public ingress redirected to organization Replit Shield and denied unauthenticated access before Next.js. The earlier probes concealed the public access restriction.
+
+**How to apply:** Compare workspace DNS with public DNS and verify the public ingress while preserving hostname and TLS validation. Inspect redirects without printing authentication query values. Keep signature verification intact; changes to hosting or authorized external access require approval.
