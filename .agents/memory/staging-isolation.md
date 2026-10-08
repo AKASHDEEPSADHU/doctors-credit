@@ -44,3 +44,9 @@ Absence from Replit's secret-name catalog does not by itself prove a running app
 **Why:** Catalog inspection across shared, development and production reported no Cashfree credential entries, while the existing development webhook returned its configured-but-unsigned rejection, proving nonempty credential variables were available to that process.
 
 **How to apply:** Distinguish catalog presence, runtime availability, credential validity and external Worker configuration. Use existing fail-closed responses or non-sensitive configuration flags for presence checks; do not read values, invent a debug bypass, rotate credentials or assert a deletion merely to reconcile metadata. If injection provenance is unavailable, report it as unresolved.
+
+Treat Cloudflare secret updates as potentially publishing operations, not harmless configuration-only writes.
+
+**Why:** Ordinary `wrangler secret put` immediately deploys a version, and dashboard secret changes use a Deploy action. Replit's secure secret-input form does not transfer values into Cloudflare.
+
+**How to apply:** Under a no-publishing boundary, prepare only explicitly approved unpublished Worker/version resources and use version-only secret operations through private operator input. Do not auto-create a deployed placeholder, paste credentials into MCP code, or infer that draft secrets are installed on a serving deployment.

@@ -17,8 +17,9 @@ Do not start a ₹999 payment test or change Cashfree webhook settings in this s
 ## Account and database prerequisites
 
 Use the Cloudflare account that controls the `dcredit.in` zone.
-The staging `DB` binding still has a deliberately unusable placeholder ID.
-Do not deploy until an isolated staging database has been identified or created.
+The staging `DB` binding has been set to the isolated `dcredit-staging` database,
+and the existing migrations have been applied. The setup steps below are
+reference instructions, not instructions to recreate or reset that database.
 
 1. Check whether `dcredit-staging` already exists. Do not delete, overwrite or
    reset an existing database. Confirm its purpose and emptiness before reusing
@@ -64,8 +65,21 @@ Wrangler `vars`, command arguments, logs, or this document:
 - `SESSION_SECRET`: a strong, staging-specific secret satisfying existing checks.
 
 Replit Secrets are not automatically copied to Cloudflare. An authorized operator
-must configure the staging secrets securely through Cloudflare or an interactive
-`wrangler secret put <NAME> --env staging` prompt. Never paste values in chat.
+must enter staging credentials privately. Never paste values in chat or MCP
+execution code, and never extract them from the running development process.
+
+**No-publishing boundary:** ordinary `wrangler secret put` deploys a Worker
+version immediately; the dashboard's **Deploy** action also publishes changes.
+Do not use those actions while publishing remains unapproved. Once an existing
+staging Worker/version prerequisite is satisfied, use an interactive
+`pnpm exec wrangler versions secret put <NAME> --env staging` prompt to prepare
+an unpublished version. This does not install secrets on a serving deployment.
+Do not run `versions deploy` or attach public routes until separately approved.
+
+If the staging Worker does not exist, obtain approval for an unpublished
+Worker/version setup rather than allowing a command to create and deploy a
+placeholder automatically. Replit's secure-input form only stores Replit
+Secrets; it is not a Cloudflare secret-transfer mechanism.
 
 For functional patient sign-in, configure the existing Google OAuth and Turnstile
 settings for the staging hostname, using staging settings and secrets. Do not
