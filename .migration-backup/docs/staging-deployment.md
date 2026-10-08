@@ -45,6 +45,34 @@ pnpm exec wrangler d1 migrations apply dcredit-staging --env staging --remote
 
 ## Staging settings and secrets
 
+### Local preparation versus remote configuration
+
+The staging profile is prepared locally with public `workers.dev` and preview
+URLs disabled and `routes: []`. The preferred hostname is not attached; the
+`CASHFREE_PUBLIC_ORIGIN` value is only a configuration string, not DNS or routing.
+Do not add a custom-domain route until domain attachment is explicitly approved.
+
+The profile explicitly declares:
+
+- `DB`: isolated `dcredit-staging` D1, ID
+  `559e4c25-35c7-4c43-bd20-023722c53440`.
+- `ASSETS`: `.open-next/assets`, using the existing OpenNext build output.
+- `WORKER_SELF_REFERENCE`: `dcredit-staging`, never production.
+- `secrets.required`: the six staging credential names listed below. Names are
+  validation declarations only; no values or encrypted bindings are installed.
+
+Cloudflare runtime bindings and assets belong to a Worker version. The empty,
+undeployed management record has no version on which to configure them. Local
+preparation does not attach D1, upload assets, configure remote variables or
+install secrets. Do not substitute preview-template bindings for runtime
+bindings, create dummy code, or use auto-deploying commands to bootstrap it.
+
+First-version preparation requires separate approval and an explicit,
+non-deploying upload/creation flow for the actual Next.js/OpenNext application.
+Private staging credential entry must be planned with that flow: Wrangler
+validates declared required secrets during version upload, so a credential-free
+upload must not be assumed to pass. Publication remains a separate approval.
+
 Non-secret staging variables are defined under `env.staging.vars`:
 
 | Variable | Value |
@@ -63,6 +91,9 @@ Wrangler `vars`, command arguments, logs, or this document:
 - `CASHFREE_CLIENT_ID`: Cashfree TEST credential only.
 - `CASHFREE_CLIENT_SECRET`: Cashfree TEST credential only.
 - `SESSION_SECRET`: a strong, staging-specific secret satisfying existing checks.
+- `GOOGLE_CLIENT_ID`: staging OAuth client identifier.
+- `GOOGLE_CLIENT_SECRET`: staging OAuth client secret.
+- `TURNSTILE_SECRET_KEY`: staging widget secret.
 
 Replit Secrets are not automatically copied to Cloudflare. An authorized operator
 must enter staging credentials privately. Never paste values in chat or MCP

@@ -56,3 +56,9 @@ Cloudflare can create an empty Worker management record independently of uploadi
 **Why:** This separates staging resource preparation from publishing approval and avoids deploying a placeholder just to reserve the Worker name.
 
 **How to apply:** Use the documented native Create Worker API only when resource creation is approved; disable public subdomain and preview URLs explicitly. Verify that deployment time is null and the version list is empty before describing the record as unpublished.
+
+An empty Worker management record is not a configured runtime: application variables, D1, static assets and service bindings belong to a Worker version.
+
+**Why:** The native Worker resource can exist independently of versions; its preview-template settings do not configure the actual application runtime.
+
+**How to apply:** Prepare local binding declarations and secret names without values when version creation is unapproved. Stop before remote runtime configuration; request approval for an actual application version and private secret-entry flow separately from publishing. Do not claim local declarations or preview templates are installed runtime bindings.
