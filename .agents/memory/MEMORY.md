@@ -1,1 +1,2 @@
-- [DCREDIT product direction](dcredit-product-direction.md) — target is a ₹999 medical-tourism coordination platform, replacing the $5 Initial Care Conversation.
+- [DCREDIT product direction](dcredit-product-direction.md) — ₹999/USD 15 coordination assessment; live checkout blocked until revised policy approval; Phase 1 only.
+- [Next.js preview constraints](next-preview.md) — preserve the imported backend; scaffold API routing and artifact-local commands can otherwise break the preview.

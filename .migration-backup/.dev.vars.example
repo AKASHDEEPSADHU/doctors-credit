@@ -11,6 +11,9 @@ SESSION_SECRET=dev-doctors-credit-preview
 # DODO_PAYMENTS_ENVIRONMENT=test_mode
 # DODO_PAYMENTS_RETURN_URL=http://127.0.0.1:3100/success
 # DODO_PRODUCT_ID_ORIENTATION=
+# DODO_PRODUCT_ID_INITIAL_ASSESSMENT_INR=
+# DODO_PRODUCT_ID_INITIAL_ASSESSMENT_USD=
+# Assessment checkout: test_mode only; revised refund/cancellation policy pending.
 
 # V1 published conversation timezone (placeholders only)
 # DCREDIT_SCHEDULE_TIMEZONE=America/New_York

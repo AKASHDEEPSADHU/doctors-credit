@@ -1,4 +1,5 @@
 import { Webhooks } from "@dodopayments/nextjs";
+import { applyAssessmentEvent } from "@/lib/assessment-events";
 import { NextRequest, NextResponse } from "next/server";
 import { dodoWebhookKey } from "@/lib/dodo";
 import { fulfillPaidApplication, type FulfillmentDeps } from "@/lib/fulfillment";
@@ -49,10 +50,17 @@ export function createDodoWebhookPost(deps: WebhookDeps = defaultDeps) {
       webhookKey,
       onPaymentSucceeded: async (payload) => {
         const repo = await deps.getRepository();
+        if (await applyAssessmentEvent(repo, payload, true)) return;
         await confirmAndFulfill(repo, payload, deps);
       },
       onPaymentFailed: async (payload) => {
         const repo = await deps.getRepository();
+        if (await applyAssessmentEvent(repo, payload, false)) return;
+        await applyPaymentFailed(repo, payload);
+      },
+      onPaymentCancelled: async (payload) => {
+        const repo = await deps.getRepository();
+        if (await applyAssessmentEvent(repo, payload, false)) return;
         await applyPaymentFailed(repo, payload);
       },
     });

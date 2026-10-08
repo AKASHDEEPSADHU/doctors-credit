@@ -5,6 +5,8 @@ import {
   newInternalId,
   normalizePublicId,
 } from "@/lib/ids";
+import { activeAssessment, createD1AssessmentRepository } from "./assessments";
+import { isPatientType } from "@/lib/assessment";
 import type { ApplicationFulfillmentPatch, ApplicationRepository } from "@/lib/repo/interface";
 import type {
   Application,
@@ -41,7 +43,9 @@ function identityFrom(row: Record<string, unknown> | null): Identity | null {
     phone: String(row.phone || ""),
     country: String(row.country || ""),
     createdAt: String(row.created_at),
+    updatedAt: String(row.updated_at || row.created_at),
     googleSub: row.google_sub ? String(row.google_sub) : undefined,
+    patientType: isPatientType(row.patient_type) ? row.patient_type : undefined,
   };
 }
 
@@ -133,14 +137,23 @@ export function createD1Repository(db: D1Like, onPersist?: (app: Application) =>
   }
 
   return {
+    assessments: createD1AssessmentRepository(db),
+    async setPatientType(id, patientType) {
+      if (activeAssessment(await createD1AssessmentRepository(db).list(id))) return null;
+      await db.prepare(`UPDATE identities SET patient_type = ?, updated_at = ? WHERE id = ? AND NOT EXISTS (
+        SELECT 1 FROM assessment_orders WHERE identity_id = ? AND status IN ('PENDING', 'PAID', 'REVIEW_REQUIRED'))`)
+        .bind(patientType, now(), id, id).run();
+      const saved = identityFrom(await db.prepare("SELECT * FROM identities WHERE id = ?").bind(id).first());
+      return saved?.patientType === patientType ? saved : null;
+    },
     async upsertIdentity(input) {
       const email = input.email.trim().toLowerCase();
-      let row = identityFrom(
-        await db
-          .prepare("SELECT * FROM identities WHERE email = ? OR (? IS NOT NULL AND google_sub = ?) LIMIT 1")
-          .bind(email, input.googleSub || null, input.googleSub || null)
-          .first()
-      );
+      let row = input.googleSub ? identityFrom(await db.prepare("SELECT * FROM identities WHERE google_sub = ?").bind(input.googleSub).first()) : null;
+      const byEmail = identityFrom(await db.prepare("SELECT * FROM identities WHERE email = ?").bind(email).first());
+      if (input.googleSub && byEmail?.googleSub && byEmail.googleSub !== input.googleSub) {
+        throw new Error("Email is linked to another Google account.");
+      }
+      row ||= byEmail;
       if (!row) {
         row = {
           id: newInternalId(),
@@ -151,11 +164,12 @@ export function createD1Repository(db: D1Like, onPersist?: (app: Application) =>
           createdAt: now(),
           googleSub: input.googleSub,
         };
+        row.updatedAt = row.createdAt;
         await db
           .prepare(
-            "INSERT INTO identities (id, email, name, phone, country, google_sub, stripe_customer_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+            "INSERT INTO identities (id, email, name, phone, country, google_sub, stripe_customer_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
           )
-          .bind(row.id, row.email, row.name, row.phone, row.country, row.googleSub || null, null, row.createdAt)
+          .bind(row.id, row.email, row.name, row.phone, row.country, row.googleSub || null, null, row.createdAt, row.updatedAt)
           .run();
         return row;
       }
@@ -164,11 +178,12 @@ export function createD1Repository(db: D1Like, onPersist?: (app: Application) =>
       if (input.phone) row.phone = input.phone.trim();
       if (input.country) row.country = input.country.trim();
       if (input.googleSub) row.googleSub = input.googleSub;
+      row.updatedAt = now();
       await db
         .prepare(
-          "UPDATE identities SET email = ?, name = ?, phone = ?, country = ?, google_sub = ? WHERE id = ?"
+          "UPDATE identities SET email = ?, name = ?, phone = ?, country = ?, google_sub = ?, updated_at = ? WHERE id = ?"
         )
-        .bind(row.email, row.name, row.phone, row.country, row.googleSub || null, row.id)
+        .bind(row.email, row.name, row.phone, row.country, row.googleSub || null, row.updatedAt, row.id)
         .run();
       return row;
     },

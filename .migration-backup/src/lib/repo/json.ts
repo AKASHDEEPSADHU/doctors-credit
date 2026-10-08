@@ -1,5 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
+import { activeAssessment, createJsonAssessmentRepository, type AssessmentOrder } from "./assessments";
 import {
   formatApplicationId,
   newCallVerificationId,
@@ -29,6 +30,7 @@ type DB = {
   calls: CallVerification[];
   contacts: ContactMessage[];
   counter: number;
+  assessmentOrders: AssessmentOrder[];
 };
 
 const EMPTY: DB = {
@@ -39,6 +41,7 @@ const EMPTY: DB = {
   calls: [],
   contacts: [],
   counter: 0,
+  assessmentOrders: [],
 };
 
 function now() {
@@ -66,12 +69,12 @@ export function createJsonRepository(filePath: string, onPersist?: (app: Applica
     : path.join(/* turbopackIgnore: true */ process.cwd(), filePath);
   function load(): DB {
     try {
-      if (!existsSync(resolved)) return { ...EMPTY, identities: [], applications: [], payments: [], audit: [], calls: [], contacts: [] };
+      if (!existsSync(resolved)) return { ...EMPTY, identities: [], applications: [], payments: [], audit: [], calls: [], contacts: [], assessmentOrders: [] };
       const parsed = { ...EMPTY, ...JSON.parse(readFileSync(resolved, "utf8")) };
       parsed.applications = parsed.applications.map(withAppointmentDefaults);
       return parsed;
-    } catch {
-      return { ...EMPTY, identities: [], applications: [], payments: [], audit: [], calls: [], contacts: [] };
+    } catch (error) {
+      throw new Error("The local store could not be read; refusing to overwrite existing data.", { cause: error });
     }
   }
 
@@ -95,12 +98,29 @@ export function createJsonRepository(filePath: string, onPersist?: (app: Applica
   }
 
   return {
+    assessments: createJsonAssessmentRepository(
+      () => load().assessmentOrders,
+      (orders) => { const db = load(); db.assessmentOrders = orders; save(db); },
+      (id) => load().identities.find((identity) => identity.id === id)?.patientType,
+    ),
+    async setPatientType(id, patientType) {
+      const db = load();
+      const identity = db.identities.find((row) => row.id === id);
+      if (!identity || activeAssessment(db.assessmentOrders.filter((order) => order.identityId === id))) return null;
+      identity.patientType = patientType;
+      identity.updatedAt = now();
+      save(db);
+      return identity;
+    },
     async upsertIdentity(input) {
       const db = load();
       const email = input.email.trim().toLowerCase();
-      let identity = db.identities.find(
-        (p) => p.email === email || (input.googleSub && p.googleSub === input.googleSub)
-      );
+      let identity = input.googleSub ? db.identities.find((p) => p.googleSub === input.googleSub) : undefined;
+      const emailIdentity = db.identities.find((p) => p.email === email);
+      if (input.googleSub && emailIdentity?.googleSub && emailIdentity.googleSub !== input.googleSub) {
+        throw new Error("Email is linked to another Google account.");
+      }
+      identity ||= emailIdentity;
       if (!identity) {
         identity = {
           id: newInternalId(),
@@ -119,6 +139,7 @@ export function createJsonRepository(filePath: string, onPersist?: (app: Applica
         if (input.country) identity.country = input.country.trim();
         if (input.googleSub) identity.googleSub = input.googleSub;
       }
+      identity.updatedAt = now();
       save(db);
       return identity;
     },

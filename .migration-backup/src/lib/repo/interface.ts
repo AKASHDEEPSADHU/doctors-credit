@@ -1,3 +1,5 @@
+import type { PatientType } from "@/lib/assessment";
+import type { AssessmentRepository } from "./assessments";
 import type {
   Application,
   AuditEvent,
@@ -32,6 +34,8 @@ export type ApplicationFulfillmentPatch = {
 };
 
 export type ApplicationRepository = {
+  assessments: AssessmentRepository;
+  setPatientType(id: string, patientType: PatientType): Promise<Identity | null>;
   upsertIdentity(input: {
     email: string;
     name: string;

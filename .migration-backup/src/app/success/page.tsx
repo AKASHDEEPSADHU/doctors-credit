@@ -3,12 +3,32 @@ import { confirmationAppointment } from "@/lib/confirmation-copy";
 import { getRepository } from "@/lib/repo";
 import { getSession } from "@/lib/session";
 import { loadConfirmedApplication } from "@/lib/success-state";
+import { formatAssessmentAmount } from "@/lib/assessment";
 
-export default async function SuccessPage() {
+export default async function SuccessPage({ searchParams }: { searchParams: Promise<{ assessment?: string }> }) {
   const repo = await getRepository();
   const jar = await cookies();
   const pendingId = jar.get("dc_application")?.value;
   const session = await getSession();
+  const assessmentId = jar.get("dc_assessment_order")?.value;
+  if ((await searchParams).assessment === "1") {
+    const order = session && assessmentId ? await repo.assessments.get(assessmentId) : null;
+    if (!order || order.identityId !== session?.patientId) return <Pending assessment copy="Open My Account to view your payment status. No payment is confirmed by this browser return." />;
+    if (order.status !== "PAID") return <Pending assessment copy={order.status === "FAILED"
+      ? "Your payment failed or was declined. Open My Account before starting a new test attempt."
+      : order.status === "REVIEW_REQUIRED" ? "Your payment requires manual review. Do not pay again. Contact DCREDIT."
+      : "Your payment is pending server confirmation. Do not pay again. Refresh this page or open My Account."} />;
+    return (
+      <main id="main" className="legal confirm-page">
+        <p className="eyebrow">Initial Patient Assessment</p>
+        <h1>Test payment confirmed.</h1>
+        <p>{formatAssessmentAmount(order.confirmedAmountMinor!, order.confirmedCurrency!)} {order.confirmedCurrency}</p>
+        <p>This is a Dodo test-mode payment, not a live charge. Live assessment activation remains disabled pending approval of the cancellation/refund policy.</p>
+        <p>The Initial Patient Assessment is a coordination and assistance fee, not medical treatment or medical advice.</p>
+        <a href="/account">Open My Account</a>
+      </main>
+    );
+  }
   const paid = await loadConfirmedApplication(repo, { pendingId, session });
 
   if (!paid || paid.paymentStatus !== "PAID") {
@@ -75,12 +95,13 @@ export default async function SuccessPage() {
   );
 }
 
-function Pending({ copy }: { copy: string }) {
+function Pending({ copy, assessment = false }: { copy: string; assessment?: boolean }) {
   return (
     <main id="main" className="legal confirm-page">
       <p className="eyebrow">Payment</p>
-      <h1>We are confirming your application.</h1>
+      <h1>Check your payment status.</h1>
       <p>{copy}</p>
+      <p><a href="/account">Open My Account</a> · <a href={assessment ? "/signin?next=%2Fsuccess%3Fassessment%3D1" : "/signin?next=/success"}>Sign in</a></p>
       <p className="fine">
         DCredit will never ask for your password, banking PIN, card CVV or
         one-time authentication code.

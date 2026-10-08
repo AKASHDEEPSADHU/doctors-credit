@@ -1,5 +1,7 @@
 import { formatAppointmentDate, formatTimeLabel, scheduleTimezoneLabel } from "@/lib/appointment-slots";
 import type { Application, Identity, PaymentRecord } from "@/lib/repo/types";
+import { activeAssessment, type AssessmentOrder } from "./repo/assessments";
+import type { PatientType } from "./assessment";
 
 export type AccountAssessment = {
   paymentStatus: string;
@@ -23,8 +25,12 @@ export type AccountView = {
   patient: {
     name: string;
     email: string;
+    patientType?: PatientType;
   };
   assessment: AccountAssessment | null;
+  initialAssessment?: {
+    status: string; amountMinor: number; currency: string; confirmedAt?: string; testPayment: boolean;
+  } | null;
 };
 
 function latestApplication(apps: Application[]) {
@@ -57,18 +63,28 @@ export function toAccountView(input: {
   patient: Identity;
   applications: Application[];
   payments?: PaymentRecord[];
+  assessmentOrders?: AssessmentOrder[];
 }): AccountView {
   void input.payments;
   const app = latestApplication(input.applications);
+  const mine = (input.assessmentOrders || []).filter((order) => order.identityId === input.patient.id);
+  const order = activeAssessment(mine) || mine[0];
+  const initialAssessment = order ? {
+    status: order.status, amountMinor: order.confirmedAmountMinor ?? order.amountMinor,
+    currency: order.confirmedCurrency || order.currency, confirmedAt: order.confirmedAt,
+    testPayment: order.providerEnvironment === "test_mode",
+  } : null;
   if (!app) {
     return {
-      patient: { name: input.patient.name, email: input.patient.email },
+      patient: { name: input.patient.name, email: input.patient.email, patientType: input.patient.patientType },
       assessment: null,
+      initialAssessment,
     };
   }
   const paid = app.paymentStatus === "PAID";
   return {
-    patient: { name: input.patient.name, email: input.patient.email },
+    patient: { name: input.patient.name, email: input.patient.email, patientType: input.patient.patientType },
+    initialAssessment,
     assessment: {
       paymentStatus: app.paymentStatus,
       paymentLabel: paid ? "PAID" : "Assessment not yet paid",

@@ -38,11 +38,16 @@ export async function GET(req: NextRequest) {
   });
   if (!google) return fail("google_failed");
 
-  const patient = await upsertPatient({
-    email: google.email,
-    name: google.name,
-    googleSub: google.sub,
-  });
+  let patient;
+  try {
+    patient = await upsertPatient({
+      email: google.email,
+      name: google.name,
+      googleSub: google.sub,
+    });
+  } catch {
+    return fail("account_conflict");
+  }
 
   const dest = new URL(safeNext(oauth.next), origin);
   dest.searchParams.set("signedIn", "1");

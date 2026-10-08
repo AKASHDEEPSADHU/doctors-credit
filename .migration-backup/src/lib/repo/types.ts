@@ -1,3 +1,5 @@
+import type { PatientType } from "@/lib/assessment";
+
 export const PIPELINE_STATUSES = [
   "PAYMENT_PENDING",
   "PAID: CONSULTATION PENDING",
@@ -31,7 +33,9 @@ export type Identity = {
   phone: string;
   country: string;
   createdAt: string;
+  updatedAt?: string;
   googleSub?: string;
+  patientType?: PatientType;
 };
 
 export type Application = {

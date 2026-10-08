@@ -45,6 +45,7 @@ export default async function SignInPage({
     google_unconfigured:
       "Google Sign-In is not configured yet. Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.",
     google_failed: "Google could not complete sign-in. Try again.",
+    account_conflict: "This email is already linked to another Google account. Please contact DCredit.",
     bad_state: "That sign-in expired. Start again.",
     missing_code: "Google returned without a code. Start again.",
     demo_disabled: "Demo Google is off because a real Google client is configured.",
@@ -59,8 +60,8 @@ export default async function SignInPage({
       <p className="eyebrow">Your file</p>
       <h1>Sign in before any money moves.</h1>
       <p className="lede">
-        Google opens your file. Your first step is a conversation with a
-        DCredit care coordinator. It is not a clinical evaluation. The
+        Google opens your account. Your first step is an Initial Patient
+        Assessment for coordination and assistance. It is not a clinical evaluation. The
         hospital bill never passes through this ledger.
       </p>
       {message ? <p className="enroll-error">{message}</p> : null}

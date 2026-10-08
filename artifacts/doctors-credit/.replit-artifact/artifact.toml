@@ -1,7 +1,7 @@
 kind = "web"
 previewPath = "/"
 title = "DCredit"
-description = "Explore medical care in India, compare treatment and journey costs, book an orientation conversation, and manage patient applications."
+description = "DCREDIT's existing Next.js website with Phase 1 patient-type and test-only Initial Patient Assessment checkout. Live payment is disabled pending policy approval."
 version = "1.0.0"
 id = "artifacts/doctors-credit"
 router = "path"
@@ -12,7 +12,7 @@ paths = [ "/" ]
 localPort = 19359
 
 [services.development]
-run = "pnpm --filter @workspace/doctors-credit run dev"
+run = "pnpm --dir ../../.migration-backup run dev"
 
 [services.production]
 build = [ "pnpm", "--filter", "@workspace/doctors-credit", "run", "build" ]

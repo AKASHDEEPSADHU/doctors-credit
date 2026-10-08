@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import GoogleButton from "@/components/GoogleButton";
 import type { AccountView } from "@/lib/account-view";
+import { formatAssessmentAmount } from "@/lib/assessment";
 
 function StatusValue({ children }: { children: string }) {
   return <p className="account-status-value">{children}</p>;
@@ -39,17 +40,25 @@ export default function AccountClient({ siteKey }: { siteKey?: string }) {
   const params = useSearchParams();
   const [data, setData] = useState<AccountView | null>(null);
   const [missing, setMissing] = useState(false);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     async function load() {
-      const res = await fetch("/api/me");
-      if (cancelled) return;
-      if (res.ok) {
-        setData(await res.json());
-        setMissing(false);
-      } else {
-        setMissing(true);
+      try {
+        const res = await fetch("/api/me", { cache: "no-store" });
+        if (cancelled) return;
+        if (res.ok) {
+          const account = await res.json();
+          if (!cancelled) setData(account);
+          setMissing(false);
+        } else if (res.status === 401) {
+          setMissing(true);
+        } else {
+          setLoadError(true);
+        }
+      } catch {
+        if (!cancelled) setLoadError(true);
       }
     }
     load();
@@ -58,6 +67,7 @@ export default function AccountClient({ siteKey }: { siteKey?: string }) {
     };
   }, []);
 
+  if (loadError) return <p role="alert">Your account could not be loaded. <button onClick={() => window.location.reload()}>Try again</button></p>;
   if (!data && !missing) {
     return <p className="account-muted">Opening your account…</p>;
   }
@@ -68,9 +78,7 @@ export default function AccountClient({ siteKey }: { siteKey?: string }) {
         <p className="eyebrow">My Account</p>
         <h1>Sign in with Google to open your account.</h1>
         <p className="lede">
-          This page shows your care conversation, selected conversation time,
-          and Zoom join details after payment is confirmed. It is not a medical
-          record.
+          This page shows your saved patient type and Initial Patient Assessment payment state. It is not a medical record.
         </p>
         <GoogleButton next="/account" label="Continue with Google" siteKey={siteKey} />
         <p className="fine">
@@ -109,9 +117,20 @@ export default function AccountClient({ siteKey }: { siteKey?: string }) {
         </form>
       </header>
 
+      <section className="account-card account-card-primary" aria-labelledby="initial-assessment-heading">
+        <h2 id="initial-assessment-heading">Initial Patient Assessment</h2>
+        <p>Patient type: {data.patient.patientType === "DOMESTIC" ? "Domestic Patient" : data.patient.patientType === "INTERNATIONAL" ? "International Patient" : "Not selected"}</p>
+        <p>Status: {data.initialAssessment?.status || "Not started"}</p>
+        {data.initialAssessment ? <p>{formatAssessmentAmount(data.initialAssessment.amountMinor, data.initialAssessment.currency)} {data.initialAssessment.currency} {data.initialAssessment.testPayment ? "— TEST payment, not a live charge" : ""}</p> : null}
+        {data.initialAssessment?.confirmedAt ? <p>Provider confirmation: {new Date(data.initialAssessment.confirmedAt).toLocaleString()}</p> : null}
+        <p>Cancellation/refund policy pending approval. Live checkout is disabled.</p>
+        {data.initialAssessment?.status !== "PAID" ? <Link className="btn-solid" href="/enroll">Review assessment</Link> : <p>Payment confirmed by the server. Do not pay again.</p>}
+      </section>
+
+      {assessment ? <>
       <section className="account-card account-card-primary" aria-labelledby="assessment-heading">
         <h2 id="assessment-heading" className="account-card-title">
-          Your care conversation
+          Previous care conversation
         </h2>
 
         <div className="account-field">
@@ -172,6 +191,7 @@ export default function AccountClient({ siteKey }: { siteKey?: string }) {
           </dl>
         </section>
       ) : null}
+      </> : null}
 
       <section className="account-card" aria-labelledby="details-heading">
         <h2 id="details-heading" className="account-card-title">

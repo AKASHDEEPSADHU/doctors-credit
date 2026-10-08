@@ -118,7 +118,7 @@ export async function exchangeGoogleCode(opts: {
     email_verified?: boolean;
     name?: string;
   };
-  if (!user.email || !user.sub) return null;
+  if (!user.email || !user.sub || user.email_verified !== true) return null;
   return {
     sub: user.sub,
     email: user.email,

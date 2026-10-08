@@ -16,6 +16,7 @@ export async function loadConfirmedApplication(
   }
 ): Promise<Application | null> {
   void input.returnQuery;
+  if (!input.session) return null;
   let app = input.pendingId ? await repo.getApplicationById(input.pendingId) : null;
   if (app && input.session && app.identityId !== input.session.patientId) {
     app = null;
