@@ -1,0 +1,759 @@
+You are auditing the existing DCREDIT website strictly in **READ-ONLY / ANALYSIS MODE**.
+
+IMPORTANT:
+- Do NOT modify any files.
+- Do NOT create any files.
+- Do NOT delete or rename anything.
+- Do NOT install, upgrade, downgrade, or remove packages.
+- Do NOT run migrations.
+- Do NOT change environment variables or secrets.
+- Do NOT change deployment configuration.
+- Do NOT convert Next.js to Vite.
+- Do NOT migrate the application to the Replit API server.
+- Do NOT refactor or rewrite code.
+- Do NOT "fix" anything you discover.
+- Do NOT make assumptions where the repository can be inspected.
+- Do NOT consume work/implementation credits unnecessarily.
+- Your job is ONLY to inspect, understand, document, and report.
+
+I am currently planning further development of the DCREDIT website and want to fully understand the existing architecture before making ANY changes.
+
+The previous audit indicated that the original application exists primarily under:
+
+.migration-backup/src/
+
+while Replit has also created:
+
+artifacts/doctors-credit/
+artifacts/api-server/
+artifacts/mockup-sandbox/
+lib/api-spec/
+lib/api-client-react/
+lib/api-zod/
+lib/db/
+
+The previous audit also indicated that the existing application uses Next.js and that the current payment implementation appears to use Dodo Payments rather than Cashfree.
+
+I now want you to perform a COMPLETE READ-ONLY technical and business-logic audit.
+
+==================================================
+1. COMPLETE PROJECT STRUCTURE
+==================================================
+
+First, inspect the repository and provide a clean directory tree.
+
+Separate the results into:
+
+A. EXISTING DCREDIT APPLICATION
+B. REPLIT-GENERATED SCAFFOLD
+C. CONFIGURATION
+D. DATABASE / MIGRATIONS
+E. PUBLIC ASSETS
+F. THIRD-PARTY INTEGRATIONS
+G. TESTS
+
+Only show files/directories that are materially relevant to the application.
+
+For every major folder, explain its purpose in one sentence.
+
+Clearly identify which files appear to be:
+- Core application files
+- Legacy files
+- Replit-generated files
+- Configuration files
+- Potentially unused files
+
+==================================================
+2. DETERMINE THE REAL APPLICATION ENTRY POINT
+==================================================
+
+Determine exactly which application is currently the real DCREDIT website.
+
+Answer:
+
+- Which package.json is actually associated with the original DCREDIT application?
+- Is it Next.js?
+- What is the Next.js version?
+- What command starts the original application?
+- What command builds it?
+- What command runs tests?
+- What directory should theoretically be treated as the source of truth?
+- Is artifacts/doctors-credit currently functional or merely a Replit-generated copy/scaffold?
+- Is artifacts/api-server actually connected to DCREDIT?
+- Is lib/db actually being used?
+- Is the original `.migration-backup` application currently self-contained?
+
+Do not change anything while determining this.
+
+==================================================
+3. COMPLETE WEBSITE PAGE MAP
+==================================================
+
+Find every user-facing route/page in the original DCREDIT application.
+
+Create a table:
+
+| Route | File | Purpose | User Type | Important Components | Backend/API Dependency |
+
+Include:
+
+- Homepage
+- Treatment pages
+- Patient story pages
+- Doctor/hospital pages if present
+- Registration pages
+- Booking pages
+- Payment pages
+- Success/failure pages
+- Login/account pages
+- Staff/admin pages
+- Contact pages
+- Any legal/privacy/terms pages
+- Any other public routes
+
+Also identify dynamic routes such as:
+
+/treatments/[slug]
+/stories/[slug]
+
+and explain how their content is generated.
+
+==================================================
+4. COMPONENT MAP
+==================================================
+
+Inspect the main components directory.
+
+Group components into:
+
+A. Navigation / Header / Footer
+B. Homepage / Marketing
+C. Treatment / Hospital / Doctor content
+D. Patient stories
+E. Registration
+F. Booking
+G. Payment
+H. Authentication
+I. Account
+J. Staff/Admin
+K. Contact
+L. WhatsApp / communication
+M. Cookie / privacy
+N. Other
+
+For every important component, provide:
+
+- File path
+- What it does
+- Which page uses it
+- Which API it calls
+- Whether it contains important business logic
+
+Pay particular attention to:
+
+EnrollForm.tsx
+
+and any component involved in the ₹999/₹1,000 initial payment journey.
+
+==================================================
+5. COMPLETE API INVENTORY
+==================================================
+
+Inspect:
+
+src/app/api/
+
+List EVERY API route.
+
+Create a table:
+
+| API Route | HTTP Method | Purpose | Authentication | Input | Output | Database/External Service |
+
+Do not merely list filenames.
+
+Trace the actual implementation.
+
+Pay particular attention to:
+
+- checkout
+- payment
+- webhook
+- authentication
+- Google OAuth
+- contact
+- verification
+- staff login
+- staff search
+- staff call
+- staff fulfillment
+- account/me
+- logout
+- any registration/application endpoint
+
+Identify which APIs are critical to the business.
+
+==================================================
+6. ₹999 / ₹1,000 CUSTOMER PAYMENT FLOW
+==================================================
+
+This is extremely important.
+
+Trace the entire customer journey from:
+
+LANDING ON WEBSITE
+→ selecting service/treatment
+→ entering information
+→ registration/application
+→ appointment information
+→ ₹999/₹1,000 payment
+→ payment provider
+→ payment confirmation
+→ webhook
+→ database update
+→ Google Sheets update
+→ email/notification
+→ staff/coordinator fulfillment
+→ appointment/consultation
+
+Explain this as a numbered sequence.
+
+For each step, provide:
+
+1. Frontend file
+2. API route
+3. Backend function
+4. Database interaction
+5. External service
+6. What data is passed
+7. What happens if the step fails
+
+Explicitly determine:
+
+- Is the amount actually ₹999 or ₹1,000 in code?
+- Where is the amount defined?
+- Is it hard-coded or configurable?
+- Where is the payment provider configured?
+- Is it Dodo, Cashfree, Stripe, Razorpay, or another provider?
+- What exact evidence in the code establishes the provider?
+- Is the browser success/return URL treated as proof of payment?
+- Is webhook confirmation required?
+- What happens after successful payment?
+- What happens after failed payment?
+- Can a customer accidentally pay twice?
+- Is there any idempotency protection?
+- Is the payment tied to a specific application/customer?
+- Is there any payment status stored in the database?
+- Is there any payment record sent to Google Sheets?
+
+DO NOT change the payment implementation.
+
+==================================================
+7. PAYMENT PROVIDER VERIFICATION
+==================================================
+
+The previous audit said:
+
+"The source uses Dodo Payments, not Cashfree."
+
+Verify this directly by inspecting the code.
+
+Search the entire repository for:
+
+- dodo
+- cashfree
+- stripe
+- razorpay
+- payment
+- checkout
+- webhook
+- payment_id
+- order_id
+- transaction_id
+- subscription
+
+Report:
+
+A. Current provider actually implemented
+B. Any old/legacy providers
+C. Any references that appear unused
+D. Payment-related environment variables
+E. Payment webhook routes
+F. Payment status handling
+
+If Cashfree is NOT implemented, explicitly say:
+
+"CASHFREE IS NOT CURRENTLY IMPLEMENTED IN THE INSPECTED APPLICATION."
+
+Do not infer Cashfree merely from documentation or comments.
+
+==================================================
+8. DATABASE ARCHITECTURE
+==================================================
+
+Inspect:
+
+- src/lib/repo/
+- migrations/
+- schema files
+- database adapters
+- D1 configuration
+- any JSON fallback
+- Replit database scaffold
+
+Determine:
+
+- What database the original application actually uses
+- What tables exist
+- What each table stores
+- Primary relationships
+- Customer/application structure
+- Payment structure
+- Appointment structure
+- Staff structure
+- Authentication/session structure
+- Contact/lead structure
+
+Create a simplified logical data model.
+
+For example:
+
+Customer
+   ↓
+Application
+   ↓
+Appointment
+   ↓
+Payment
+   ↓
+Fulfillment
+
+Only use relationships actually supported by the code/schema.
+
+Clearly distinguish:
+
+CURRENTLY USED DATABASE
+
+from
+
+REPLIT DATABASE SCAFFOLD
+
+==================================================
+9. GOOGLE SHEETS / CRM INTEGRATION
+==================================================
+
+Inspect all Google Sheets-related code.
+
+Determine:
+
+- Which file handles Google Sheets
+- What triggers a Sheets update
+- What data is sent
+- Which columns/fields are written
+- Whether payment information is included
+- Whether customer information is included
+- Whether updates happen on registration or payment
+- Whether updates happen after webhook confirmation
+- Whether duplicate rows are possible
+- What happens if Google Sheets is unavailable
+- Required environment variables
+
+Create a simple data flow:
+
+Website
+→ API
+→ Database
+→ Google Sheets
+
+if that is actually what happens.
+
+Do not modify anything.
+
+==================================================
+10. AUTHENTICATION
+==================================================
+
+Map the complete authentication system.
+
+Determine:
+
+- Google OAuth implementation
+- Callback route
+- Session implementation
+- Cookies/tokens
+- Account endpoint
+- Logout
+- Demo authentication if present
+- Staff authentication
+
+Explain:
+
+Customer authentication flow
+
+and separately:
+
+Staff authentication flow
+
+Identify any security-sensitive areas that should eventually be reviewed.
+
+DO NOT fix them yet.
+
+==================================================
+11. STAFF / ADMIN OPERATIONS
+==================================================
+
+Map the staff dashboard.
+
+Determine:
+
+- Staff login
+- Search
+- Customer/application lookup
+- Calling functionality
+- Fulfillment
+- Logout
+- What information staff can see
+- What information staff can modify
+- How fulfillment status is stored
+- Whether staff actions update the database
+- Whether staff actions update Google Sheets
+- Any external systems involved
+
+Create:
+
+CUSTOMER JOURNEY
+
+and
+
+STAFF JOURNEY
+
+as two separate flows.
+
+==================================================
+12. THIRD-PARTY INTEGRATIONS
+==================================================
+
+Find every external service used by the application.
+
+Potential examples include:
+
+- Dodo Payments
+- Cashfree
+- Stripe
+- Google OAuth
+- Google Sheets
+- Cloudflare
+- Cloudflare D1
+- Turnstile
+- Resend
+- Zoom
+- WhatsApp
+- Any analytics
+- Any CRM
+- Any email provider
+- Any SMS provider
+- Any other API
+
+Create a table:
+
+| Service | Purpose | File | Environment Variables | Criticality | Current Status |
+
+Classify each as:
+
+CRITICAL
+IMPORTANT
+OPTIONAL
+LEGACY/UNUSED
+
+==================================================
+13. ENVIRONMENT VARIABLES
+==================================================
+
+Inspect the code and configuration to identify all environment variables required.
+
+Do NOT reveal secret values.
+
+Only report variable NAMES.
+
+Group them:
+
+PAYMENTS
+DATABASE
+AUTH
+EMAIL
+GOOGLE
+CLOUDFLARE
+ZOOM
+OTHER
+
+For each variable explain:
+
+- What it appears to control
+- Which file uses it
+- Whether it is required in production
+- Whether it appears optional
+
+Never print actual secret values.
+
+==================================================
+14. ERROR HANDLING
+==================================================
+
+For the most important customer flows, determine what happens when something fails.
+
+At minimum inspect:
+
+- Registration failure
+- Payment initiation failure
+- Payment webhook failure
+- Database failure
+- Google Sheets failure
+- Email failure
+- Authentication failure
+- Staff fulfillment failure
+
+Identify whether failures are:
+
+- handled gracefully
+- retried
+- logged
+- silently ignored
+- likely to create inconsistent data
+
+Do NOT modify anything.
+
+==================================================
+15. SECURITY AUDIT — READ ONLY
+==================================================
+
+Perform a high-level security review only.
+
+Look for:
+
+- Authentication gaps
+- Authorization issues
+- Exposed secrets
+- Client-side sensitive data
+- Insecure API routes
+- Missing webhook verification
+- Payment manipulation possibilities
+- SQL injection risks
+- XSS risks
+- CSRF concerns
+- Excessive staff permissions
+- Sensitive information exposed to browser
+- Unsafe file handling
+- Insecure session handling
+
+Do NOT exploit anything.
+
+Do NOT attempt penetration testing.
+
+Just identify potential areas requiring later review.
+
+Rate each:
+
+LOW
+MEDIUM
+HIGH
+CRITICAL
+
+and explain why.
+
+==================================================
+16. CURRENT VS REPLIT ARCHITECTURE
+==================================================
+
+This section is extremely important.
+
+Compare:
+
+A. ORIGINAL DCREDIT NEXT.JS APPLICATION
+
+against
+
+B. REPLIT-GENERATED VITE + API SERVER ARCHITECTURE
+
+Create:
+
+| Capability | Original App | Replit Scaffold | Currently Connected? |
+
+Include:
+
+- Frontend
+- Backend
+- Database
+- Authentication
+- Payments
+- Webhooks
+- Google Sheets
+- Staff dashboard
+- Email
+- Zoom
+- Cloudflare
+- Deployment
+
+Then answer:
+
+1. Is the Replit scaffold currently serving the real DCREDIT application?
+2. Is the original Next.js application still the real source of truth?
+3. Would migrating to Vite/API require significant rewriting?
+4. What functionality would need to be recreated?
+5. What integrations would need to be reconnected?
+6. Is there any reason to migrate at this stage?
+7. Could we continue developing the existing Next.js application instead?
+
+Do NOT perform the migration.
+
+==================================================
+17. DEPLOYMENT ARCHITECTURE
+==================================================
+
+Inspect deployment configuration.
+
+Determine:
+
+- Current hosting assumptions
+- Next.js deployment requirements
+- Cloudflare configuration
+- D1 configuration
+- Domain assumptions
+- Environment variables
+- Build command
+- Start command
+- Any Replit deployment configuration
+
+Clearly distinguish:
+
+CURRENT DEPLOYMENT
+
+from
+
+POTENTIAL REPLIT DEPLOYMENT
+
+Do not change deployment settings.
+
+==================================================
+18. TEST COVERAGE
+==================================================
+
+Find all tests.
+
+Summarize:
+
+- What is tested
+- Payment tests
+- Authentication tests
+- Database tests
+- API tests
+- UI tests
+- Staff tests
+- Integration tests
+
+Identify important business flows that currently appear untested.
+
+Do not write new tests.
+
+==================================================
+19. BUSINESS LOGIC MAP
+==================================================
+
+Summarize the actual DCREDIT business logic encoded in the application.
+
+Specifically identify:
+
+- What customer information is collected
+- What services are being sold
+- What the initial ₹999/₹1,000 payment represents
+- What happens after payment
+- How doctor registration/selection works
+- How hospital selection works
+- Appointment booking
+- Pretreatment document consultation
+- Procedure/date selection
+- Staff coordination
+- Fulfillment
+- Communication
+
+Separate:
+
+WHAT THE CODE CURRENTLY DOES
+
+from
+
+WHAT THE WEBSITE COPY CLAIMS IT DOES
+
+If there is a mismatch, identify it.
+
+==================================================
+20. FINAL SOURCE-OF-TRUTH REPORT
+==================================================
+
+At the end, provide a concise final report containing:
+
+### A. SOURCE OF TRUTH
+
+Exactly which files/directories currently contain the real DCREDIT application.
+
+### B. DO NOT TOUCH
+
+Files/directories that should NOT be modified during future development unless specifically required.
+
+### C. SAFE DEVELOPMENT AREA
+
+Where you recommend making future website changes.
+
+### D. CRITICAL BUSINESS FLOWS
+
+List the 5–10 flows that must not be accidentally broken.
+
+### E. CRITICAL INTEGRATIONS
+
+List the integrations that must be preserved.
+
+### F. CURRENT TECHNICAL DEBT
+
+List important architectural issues discovered.
+
+### G. MIGRATION RISK
+
+Rate the risk of migrating the existing Next.js application into the Replit Vite/API architecture:
+
+LOW / MEDIUM / HIGH / VERY HIGH
+
+Explain the rating.
+
+### H. RECOMMENDED DEVELOPMENT STRATEGY
+
+Without making any changes, recommend one of:
+
+OPTION 1 — Continue developing the existing Next.js application
+
+OPTION 2 — Migrate the application to the Replit Vite/API architecture
+
+OPTION 3 — Hybrid approach
+
+Choose the option based ONLY on what you actually find in the repository.
+
+==================================================
+FINAL RULE
+==================================================
+
+This is an AUDIT ONLY.
+
+Do not modify anything.
+
+Do not create anything.
+
+Do not migrate anything.
+
+Do not install anything.
+
+Do not rewrite anything.
+
+Do not fix anything.
+
+Do not make speculative assumptions.
+
+At the very end explicitly confirm:
+
+"READ-ONLY AUDIT COMPLETE — NO APPLICATION FILES WERE MODIFIED."
