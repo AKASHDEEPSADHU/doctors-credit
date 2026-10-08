@@ -68,3 +68,9 @@ For an initial version with required secrets, Cloudflare supports uploading code
 **Why:** The installed Wrangler adds the supplied secret bindings before validating required-secret inheritance. This avoids assuming secrets can be inherited from a nonexistent earlier version. OpenNext's upload wrapper also runs remote cache population, which is an additional side effect beyond uploading a version.
 
 **How to apply:** Plan private operator-owned secret input outside the repository, never values in MCP code or chat. Prefer the direct version-only upload for a narrowly scoped no-database-write step, with automatic provisioning disabled. If the empty Worker is not recognized or binding validation demands a deployment, stop rather than following a deploy-first suggestion.
+
+Keep the staging Turnstile public key consistent between the staging build invocation and staging runtime variables, without changing shared development or production variables.
+
+**Why:** Next.js uses `NEXT_PUBLIC_*` values at build time. Runtime-only configuration cannot be assumed to supply the local build, while a shared override could select the wrong widget in another environment.
+
+**How to apply:** Scope the public-key assignment to the staging build command and update the matching staging runtime declaration together. Never substitute the private Turnstile secret for the public key or store that secret in source.

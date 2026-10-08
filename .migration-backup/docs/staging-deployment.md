@@ -79,6 +79,7 @@ Non-secret staging variables are defined under `env.staging.vars`:
 | --- | --- |
 | `APP_ENV` | `staging` |
 | `DEMO_PAYMENTS` | `false` |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | `0x4AAAAAAFRp7EEi8lzZ2lI0` (public staging widget key) |
 | `DODO_PAYMENTS_ENVIRONMENT` | `test_mode` (legacy code only) |
 | `CASHFREE_ENVIRONMENT` | `sandbox` |
 | `CASHFREE_API_VERSION` | `2026-01-01` |
@@ -129,6 +130,75 @@ Authentication configuration:
 
 Use separate staging OAuth/widget configuration rather than modifying production
 clients or weakening existing checks. Keep all secret values out of source.
+
+### Public key and private operator input
+
+The staging build command explicitly supplies the public site key from the
+table above to Next.js. The same public key is declared in staging runtime
+variables. Keep these values in sync if the staging widget is replaced.
+These are local preparations, not evidence that a build or remote
+configuration has occurred. No private secret belongs in either location.
+
+For `TURNSTILE_SECRET_KEY`, an authorized operator opens Cloudflare >
+Turnstile > **DCREDIT Staging** and obtains its secret privately. Confirm the
+widget's public site key matches the value above; do not use the production
+widget's secret.
+
+The other five secrets are:
+
+- `SESSION_SECRET`: newly generated exclusively for staging.
+- `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`: staging OAuth client with
+  `https://staging.dcredit.in/api/auth/google/callback` authorized.
+- `CASHFREE_CLIENT_ID` and `CASHFREE_CLIENT_SECRET`: Cashfree TEST environment only.
+
+An operator may prepare the JSON file on their own trusted private Linux/macOS
+workstation, outside the repository, using hidden terminal prompts. Do not run
+this through Agent/MCP tools or a recorded/shared terminal. The input file is
+temporarily plaintext, protected by a private directory and file permissions;
+Cloudflare encrypts the bindings when a separately approved upload occurs.
+
+The following is an operator-only procedure, not an Agent-executed command:
+
+```sh
+python3 - <<'PY'
+import getpass
+import json
+import os
+import secrets
+import tempfile
+import warnings
+
+# Abort instead of falling back to visible input when echo cannot be disabled.
+warnings.simplefilter("error", getpass.GetPassWarning)
+values = {"SESSION_SECRET": secrets.token_hex(32)}
+for name in (
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    "TURNSTILE_SECRET_KEY",
+    "CASHFREE_CLIENT_ID",
+    "CASHFREE_CLIENT_SECRET",
+):
+    value = getpass.getpass(name + ": ")
+    if not value or value != value.strip():
+        raise SystemExit("Input missing or contains surrounding whitespace; no file written.")
+    values[name] = value
+
+directory = tempfile.mkdtemp(prefix="dcredit-staging-secrets-", dir="/tmp")
+os.chmod(directory, 0o700)
+path = os.path.join(directory, "secrets.json")
+fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+with os.fdopen(fd, "w") as output:
+    json.dump(values, output)
+print("Private secret-file path:", path)
+PY
+```
+
+Only the path is printed, never values. Do not `cat` the file, send it to Agent,
+attach it, commit it, or include values in shell arguments or logs. The private
+operator supplies only this path through `--secrets-file` when version upload
+is separately approved. Remove the file and its temporary directory afterward
+(or immediately if the upload is abandoned); never fall back to deploying.
+Do not create the file or enter credentials through Agent during preparation.
 
 ## Build and operator publishing
 

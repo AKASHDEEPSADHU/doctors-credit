@@ -48,6 +48,7 @@
         "APP_ENV": "staging",
         "DODO_PAYMENTS_ENVIRONMENT": "test_mode",
         "DEMO_PAYMENTS": "false",
+        "NEXT_PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAFRp7EEi8lzZ2lI0",
         "CASHFREE_ENVIRONMENT": "sandbox",
         "CASHFREE_API_VERSION": "2026-01-01",
         "CASHFREE_PUBLIC_ORIGIN": "https://staging.dcredit.in",
