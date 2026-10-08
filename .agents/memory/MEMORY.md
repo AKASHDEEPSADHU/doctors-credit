@@ -1,0 +1,1 @@
+- [DCREDIT product direction](dcredit-product-direction.md) — target is a ₹999 medical-tourism coordination platform, replacing the $5 Initial Care Conversation.
