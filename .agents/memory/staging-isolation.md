@@ -32,3 +32,9 @@ When executing existing D1 migrations through the managed Cloudflare API, retain
 **Why:** The migrations include non-idempotent column additions. Untracked SQL would let a later Wrangler migration run attempt to apply those changes again.
 
 **How to apply:** Use the existing SQL unchanged and record each completed migration in the same SQL batch using Wrangler's migration journal format. Inspect recorded migrations before any subsequent application; target only the explicitly approved staging database.
+
+A Turnstile hostname allowlist entry also authorizes all of that hostname's subdomains; a literal staging entry is not required when the root domain is listed.
+
+**Why:** Cloudflare's hostname-management documentation confirms this inheritance. An exact-match-only inspection incorrectly classifies a root-domain widget as unable to serve staging.
+
+**How to apply:** Evaluate inherited hostname coverage before reporting a blocker. Recommend a separate staging widget for credential isolation, but do not edit the production widget or claim a new widget is technically required solely because staging is absent from the explicit hostname list.
