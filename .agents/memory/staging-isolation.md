@@ -20,3 +20,9 @@ Use an isolated, empty Cloudflare D1 staging database initialized with the exist
 **Why:** The user explicitly required an empty staging database and preservation of production and historical payments.
 
 **How to apply:** Do not copy patient/payment data, clear an existing database, or reuse a populated database for this staging task. Confirm the staging binding differs from production before initializing it.
+
+Cloudflare account membership permissions and delegated MCP write permissions are not interchangeable.
+
+**Why:** Resource GETs and membership inspection succeeded through the managed connection, but both user- and account-token verification endpoints rejected its credential. Account-level administrator rights alone did not expose the delegated token's exact grants.
+
+**How to apply:** Report verified read access separately from account-level rights and unverified integration write access. Do not infer that the connection is broken or request new credentials solely from a token-introspection error when resource reads work. Never test writes during a read-only audit.
