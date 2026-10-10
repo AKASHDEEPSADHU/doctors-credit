@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import CostCalculator from "@/components/CostCalculator";
 import { IndiaDecisionMap } from "@/components/IndiaDecisionMap";
@@ -8,6 +9,7 @@ import { FAQS } from "@/lib/faq";
 import { JOURNEY } from "@/lib/journey";
 import { STORY_CONSENT_COPY, publishedStories } from "@/lib/patient-stories";
 import { SUITABILITY_LABEL, TREATMENTS, suitabilityClass } from "@/lib/treatments";
+import { getPages } from "@/lib/i18n/server";
 
 const featured = TREATMENTS.filter((t) =>
   ["knee-replacement", "ivf", "dental-implants", "cabg", "cataract", "hip-replacement"].includes(
@@ -42,93 +44,40 @@ const TREAT_VISUAL: Record<string, { src: string; position: string }> = {
   },
 };
 
-const CAPABILITIES = [
-  {
-    title: "World-class",
-    line: "Specialists",
-    text: "Renowned doctors and centres of excellence",
-    icon: "expertise",
-  },
-  {
-    title: "Modern",
-    line: "Hospitals",
-    text: "Advanced technology and global standards",
-    icon: "hospital",
-  },
-  {
-    title: "Compassionate",
-    line: "Care",
-    text: "Patients are treated with respect and warmth",
-    icon: "care",
-  },
-  {
-    title: "Greater",
-    line: "Value",
-    text: "High-quality care with significant cost advantages",
-    icon: "value",
-  },
-  {
-    title: "A smoother",
-    line: "Journey",
-    text: "Support from planning to your return home",
-    icon: "journey",
-  },
-  {
-    title: "Better",
-    line: "Tomorrows",
-    text: "People return to their lives with renewed hope",
-    icon: "people",
-  },
+// Icons stay here; every visible string comes from lib/i18n/pages.ts (same order).
+const CAPABILITY_ICONS = [
+  "expertise",
+  "hospital",
+  "care",
+  "value",
+  "journey",
+  "people",
 ] as const;
 
-const VALUE_LENSES = [
-  "Expertise",
-  "Quality",
-  "Technology",
-  "Access",
-  "Value",
-  "Continuity",
+const QUALITY_ICONS = [
+  "hospital",
+  "expertise",
+  "tech",
+  "value",
+  "care",
+  "journey",
 ] as const;
 
-const QUALITY_LENSES = [
-  { title: "Accreditation", icon: "hospital" },
-  { title: "Specialist experience", icon: "expertise" },
-  { title: "Technology", icon: "tech" },
-  { title: "Infrastructure", icon: "value" },
-  { title: "Patient safety", icon: "care" },
-  { title: "Continuity", icon: "journey" },
-] as const;
-
-const REGIONS = [
-  "North America",
-  "Europe",
-  "Australia",
-  "Africa",
-  "Middle East",
-  "Asia",
-] as const;
-
-const HOME_JOURNEY = [
-  { rail: "Understand", step: JOURNEY[0] },
-  { rail: "Explore", step: JOURNEY[1] },
-  { rail: "Compare", step: JOURNEY[2] },
-  { rail: "Review", step: JOURNEY[4] },
-  { rail: "Decide", step: JOURNEY[5] },
-  { rail: "Plan", step: JOURNEY[6] },
-  {
-    rail: "Return home",
-    step: {
-      n: "07",
-      title: "Keep life after treatment in view",
-      body: "Discharge information, medications, imaging, travel fitness and communication with healthcare professionals at home belong in the plan from the start.",
-    },
-  },
+// Step numbers shown on the homepage rail (the rail skips step 04 by design).
+const JOURNEY_NUMBERS = [
+  JOURNEY[0].n,
+  JOURNEY[1].n,
+  JOURNEY[2].n,
+  JOURNEY[4].n,
+  JOURNEY[5].n,
+  JOURNEY[6].n,
+  "07",
 ] as const;
 
 function LineIcon({
   name,
 }: {
-  name: (typeof CAPABILITIES)[number]["icon"] | "tech";
+  name: (typeof CAPABILITY_ICONS)[number] | "tech";
 }) {
   const common = {
     viewBox: "0 0 24 24",
@@ -195,28 +144,27 @@ function LineIcon({
   );
 }
 
-export default function Home() {
+export default async function Home() {
+  const { t } = await getPages();
+  const h = t.home;
   const liveStories = publishedStories();
   const hasStories = liveStories.length > 0;
 
   return (
     <main id="main">
-      <section className="ed-home-hero" aria-label="Doctor's Credit homepage">
+      <section className="ed-home-hero" aria-label={h.heroAria}>
         <div className="ed-hero-bleed">
           <div className="ed-hero-copy">
-            <p className="ed-label">World-class care. A brighter tomorrow.</p>
+            <p className="ed-label">{h.heroLabel}</p>
             <h1>
-              India is a global destination for <em>life-changing care.</em>
+              {h.heroBefore}
+              <em>{h.heroEm}</em>
+              {h.heroAfter}
             </h1>
-            <p className="ed-lede">
-              Patients anywhere in the world explore India for advanced medical
-              expertise, modern hospitals, compassionate care and outstanding
-              value. We help you decide whether that journey is the right choice
-              for the care you are considering.
-            </p>
+            <p className="ed-lede">{h.heroLede}</p>
             <div className="hero-actions">
               <Link className="btn-solid" href="/enroll">
-                Talk to a care coordinator
+                {h.talk}
                 <span aria-hidden="true">→</span>
               </Link>
               <button className="hero-watch" type="button">
@@ -227,8 +175,8 @@ export default function Home() {
                   </svg>
                 </span>
                 <span className="hero-watch-copy">
-                  <strong>Watch our story</strong>
-                  <small>2 minutes</small>
+                  <strong>{h.watchTitle}</strong>
+                  <small>{h.watchSub}</small>
                 </span>
               </button>
             </div>
@@ -239,15 +187,16 @@ export default function Home() {
               src="/images/editorial/hero-gateway-couple.jpg"
               width={2000}
               height={1333}
-              alt="Editorial photograph of a relaxed international couple at a historic waterfront in India. Generated imagery, not a photograph of DCredit patients."
+              alt={h.heroAlt}
               fetchPriority="high"
             />
             <p className="ed-handwrite" aria-hidden="true">
-              “New Treatment
-              <br />
-              New Hope
-              <br />
-              A Brighter Tomorrow”
+              {h.handwrite.map((line, i) => (
+                <Fragment key={line}>
+                  {i > 0 ? <br /> : null}
+                  {line}
+                </Fragment>
+              ))}
               <span />
             </p>
             <FeedbackSlider variant="float" />
@@ -255,12 +204,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="ed-band" aria-label="Capabilities found across India healthcare">
+      <section className="ed-band" aria-label={h.capabilitiesAria}>
         <div className="shell">
           <ul>
-            {CAPABILITIES.map((item) => (
+            {h.capabilities.map((item, i) => (
               <li key={item.line}>
-                <LineIcon name={item.icon} />
+                <LineIcon name={CAPABILITY_ICONS[i]} />
                 <strong>
                   {item.title} {item.line}
                 </strong>
@@ -274,19 +223,17 @@ export default function Home() {
       <section className="ed-home-stories" id="stories">
         <div className="shell ed-home-split">
           <Reveal>
-            <p className="ed-label">Real people. Real journeys.</p>
+            <p className="ed-label">{h.stories.label}</p>
             <h2 className="ed-display">
-              Lives changed.
+              {h.stories.lines[0]}
               <br />
-              Futures regained.
+              {h.stories.lines[1]}
             </h2>
             <p className="section-lede">
-              {hasStories
-                ? "Patient stories, shared with permission."
-                : STORY_CONSENT_COPY}
+              {hasStories ? h.stories.liveLede : STORY_CONSENT_COPY}
             </p>
             <Link className="btn-ghost story-cta" href="/stories">
-              Read more patient stories
+              {h.stories.cta}
               <span aria-hidden="true">→</span>
             </Link>
           </Reveal>
@@ -303,29 +250,21 @@ export default function Home() {
       <section>
         <div className="shell">
           <Reveal>
-            <p className="ed-label">Quality</p>
-            <h2 className="ed-display">Quality deserves to be investigated.</h2>
-            <p className="section-lede">
-              India is a large and diverse healthcare market. Capabilities vary
-              by hospital, department and physician. That is why provider-level
-              information matters.
-            </p>
+            <p className="ed-label">{h.quality.label}</p>
+            <h2 className="ed-display">{h.quality.title}</h2>
+            <p className="section-lede">{h.quality.lede}</p>
           </Reveal>
           <ul className="quality-ribbon is-compact">
-            {QUALITY_LENSES.map((item) => (
-              <li key={item.title}>
-                <LineIcon name={item.icon} />
-                <strong>{item.title}</strong>
+            {h.quality.lenses.map((title, i) => (
+              <li key={QUALITY_ICONS[i] + title}>
+                <LineIcon name={QUALITY_ICONS[i]} />
+                <strong>{title}</strong>
               </li>
             ))}
           </ul>
-          <p>
-            DCredit does not assume that every hospital or physician offers the
-            same level of care. Accreditation is useful information, but it is
-            not a guarantee of outcome.
-          </p>
+          <p>{h.quality.note}</p>
           <p className="section-link">
-            <Link href="/hospitals">How we evaluate providers →</Link>
+            <Link href="/hospitals">{h.quality.link}</Link>
           </p>
         </div>
       </section>
@@ -338,29 +277,18 @@ export default function Home() {
               src="/images/editorial/innovation-imaging.jpg"
               width={1600}
               height={1067}
-              alt="Diagnostic imaging slices illustrating medical technology. Not associated with a named hospital or patient."
+              alt={h.achievements.imgAlt}
               loading="lazy"
             />
-            <figcaption>
-              Selected tertiary centres offer advanced diagnostics. Capability
-              is institution-specific.
-            </figcaption>
+            <figcaption>{h.achievements.caption}</figcaption>
           </figure>
           <Reveal>
-            <p className="ed-label">India&apos;s Medical Achievements</p>
-            <h2 className="ed-display">A healthcare story that goes beyond affordability.</h2>
-            <p className="section-lede">
-              India&apos;s medical story includes decades of specialist medicine,
-              complex surgery, transplantation, cancer care, pharmaceuticals,
-              vaccines, medical devices and digital health.
-            </p>
-            <p>
-              India has developed substantial capabilities in complex and
-              specialized care. The right hospital, physician and procedure
-              must still be evaluated individually.
-            </p>
+            <p className="ed-label">{h.achievements.label}</p>
+            <h2 className="ed-display">{h.achievements.title}</h2>
+            <p className="section-lede">{h.achievements.lede}</p>
+            <p>{h.achievements.body}</p>
             <Link className="btn-solid" href="/india-medical-achievements">
-              Explore India&apos;s Medical Achievements
+              {h.achievements.cta}
               <span aria-hidden="true">→</span>
             </Link>
           </Reveal>
@@ -370,18 +298,15 @@ export default function Home() {
       <section>
         <div className="shell">
           <Reveal>
-            <p className="ed-label">Treatments</p>
-            <h2 className="ed-display">Where India&apos;s capabilities may be worth exploring.</h2>
-            <p className="section-lede">
-              Different treatments call for different questions. Explore the
-              procedures and specialties people commonly investigate in India.
-            </p>
+            <p className="ed-label">{h.treatments.label}</p>
+            <h2 className="ed-display">{h.treatments.title}</h2>
+            <p className="section-lede">{h.treatments.lede}</p>
           </Reveal>
           <div className="treat-mosaic">
-            {featured.map((t) => {
-              const visual = TREAT_VISUAL[t.slug];
+            {featured.map((tr) => {
+              const visual = TREAT_VISUAL[tr.slug];
               return (
-                <Link className="treat-visual" href={`/treatments/${t.slug}`} key={t.slug}>
+                <Link className="treat-visual" href={`/treatments/${tr.slug}`} key={tr.slug}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={visual.src}
@@ -389,11 +314,11 @@ export default function Home() {
                     style={{ objectPosition: visual.position }}
                   />
                   <div className="treat-visual-body">
-                    <small>{t.category}</small>
-                    <h3>{t.name}</h3>
-                    <p className="muted">{t.why}</p>
-                    <span className={suitabilityClass(t.suitability)}>
-                      {SUITABILITY_LABEL[t.suitability]}
+                    <small>{tr.category}</small>
+                    <h3>{tr.name}</h3>
+                    <p className="muted">{tr.why}</p>
+                    <span className={suitabilityClass(tr.suitability)}>
+                      {SUITABILITY_LABEL[tr.suitability]}
                     </span>
                   </div>
                 </Link>
@@ -401,22 +326,18 @@ export default function Home() {
             })}
           </div>
           <p className="section-link">
-            <Link href="/treatments">All treatments →</Link>
+            <Link href="/treatments">{h.treatments.all}</Link>
           </p>
         </div>
       </section>
 
       <section className="band-soft">
         <div className="shell">
-          <p className="ed-label">International patients</p>
-          <h2>Care knows no single border.</h2>
-          <p className="section-lede">
-            People considering treatment in India come from many healthcare
-            systems and many parts of the world. These regions describe who
-            DCredit is written for. They are not patient counts.
-          </p>
+          <p className="ed-label">{h.regions.label}</p>
+          <h2>{h.regions.title}</h2>
+          <p className="section-lede">{h.regions.lede}</p>
           <ul className="region-grid is-compact">
-            {REGIONS.map((region) => (
+            {h.regions.items.map((region) => (
               <li key={region}>{region}</li>
             ))}
           </ul>
@@ -426,24 +347,21 @@ export default function Home() {
       <section id="how">
         <div className="shell">
           <Reveal>
-            <p className="ed-label">The journey</p>
-            <h2 className="ed-display">A structured decision. Not a sales pitch.</h2>
-            <p className="section-lede">
-              You have not already chosen India by starting this conversation.
-              Your first step is a conversation with a DCredit care coordinator.
-            </p>
+            <p className="ed-label">{h.journey.label}</p>
+            <h2 className="ed-display">{h.journey.title}</h2>
+            <p className="section-lede">{h.journey.lede}</p>
           </Reveal>
           <ol className="journey-rail">
-            {HOME_JOURNEY.map((item) => (
-              <li key={item.rail}>
-                <span>{item.step.n}</span>
+            {h.journey.rail.map((item, i) => (
+              <li key={JOURNEY_NUMBERS[i] + item.rail}>
+                <span>{JOURNEY_NUMBERS[i]}</span>
                 <strong>{item.rail}</strong>
-                <p>{item.step.body}</p>
+                <p>{item.body}</p>
               </li>
             ))}
           </ol>
           <Link className="btn-ghost" href="/how-it-works">
-            Full 7-step journey
+            {h.journey.full}
           </Link>
         </div>
       </section>
@@ -451,30 +369,19 @@ export default function Home() {
       <section className="band-soft" id="calculator">
         <div className="shell">
           <Reveal>
-            <p className="ed-label">Total value</p>
-            <h2 className="ed-display">It is not only about the price.</h2>
-            <p className="section-lede">
-              Cost may be part of the reason someone looks abroad. It should not
-              be the only reason. Cost is one part of total value.
-            </p>
+            <p className="ed-label">{h.value.label}</p>
+            <h2 className="ed-display">{h.value.title}</h2>
+            <p className="section-lede">{h.value.lede}</p>
           </Reveal>
           <ul className="value-formula">
-            {VALUE_LENSES.map((item) => (
+            {h.value.lenses.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
           <div className="split cost-split">
             <div>
-              <p className="section-lede">
-                A treatment price is only one part of a medical journey. The
-                fuller picture includes healthcare costs at home, treatment
-                cost in India, travel, accommodation, companion costs, recovery
-                time, follow-up and continuity of care.
-              </p>
-              <p>
-                Sometimes India may offer strong value. Sometimes it may not.
-                The calculator is an estimate only. Savings are not guaranteed.
-              </p>
+              <p className="section-lede">{h.value.p1}</p>
+              <p>{h.value.p2}</p>
             </div>
             <CostCalculator />
           </div>
@@ -484,27 +391,23 @@ export default function Home() {
       <section className="band-navy return-band">
         <div className="shell return-split">
           <div>
-            <p className="ed-label">Return-home planning</p>
+            <p className="ed-label">{h.returnBand.label}</p>
             <h2 className="ed-display">
-              Treatment may happen in India.
+              {h.returnBand.lines[0]}
               <br />
-              Your life continues at home.
+              {h.returnBand.lines[1]}
             </h2>
           </div>
-          <p>
-            Planning does not end when treatment ends. Travel, recovery,
-            follow-up and communication with healthcare professionals at home
-            all matter. DCredit does not itself provide clinical follow-up.
-          </p>
+          <p>{h.returnBand.body}</p>
         </div>
       </section>
 
       <section className="band-soft" id="faq">
         <div className="shell split">
           <div>
-            <p className="ed-label">Questions</p>
-            <h2>Asked plainly.</h2>
-            <Link href="/faq">All questions →</Link>
+            <p className="ed-label">{h.faq.label}</p>
+            <h2>{h.faq.title}</h2>
+            <Link href="/faq">{h.faq.all}</Link>
           </div>
           <div className="faq faq-editorial">
             {FAQS.slice(0, 6).map(([q, a]) => (
@@ -519,18 +422,15 @@ export default function Home() {
 
       <section>
         <div className="shell final-cta">
-          <p className="ed-label">Your first step is a conversation</p>
-          <h2 className="ed-display">Could India be worth considering for you?</h2>
-          <p className="section-lede">
-            Start with a conversation. Understand the possibilities. Decide for
-            yourself.
-          </p>
+          <p className="ed-label">{h.finalCta.label}</p>
+          <h2 className="ed-display">{h.finalCta.title}</h2>
+          <p className="section-lede">{h.finalCta.lede}</p>
           <div className="hero-actions">
             <Link className="btn-solid" href="/enroll">
-              Talk to a care coordinator
+              {h.talk}
             </Link>
             <Link className="btn-ghost" href="/india-medical-achievements">
-              Explore India&apos;s Medical Achievements
+              {h.finalCta.achievements}
             </Link>
           </div>
         </div>

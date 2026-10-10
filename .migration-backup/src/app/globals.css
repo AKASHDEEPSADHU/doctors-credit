@@ -411,6 +411,34 @@ section {
   text-align: center;
 }
 
+/* Top utility strip: emergency notice + language picker (desktop only; phones use the header). */
+.topbar {
+  position: relative;
+  z-index: 60; /* above the sticky header (50) so the open list is never clipped */
+  background: #f7f1f1;
+}
+
+.topbar-lang {
+  display: none;
+}
+
+@media (min-width: 981px) {
+  .topbar-lang {
+    display: block;
+    position: absolute;
+    right: 5vw;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  /* Keep the centred notice clear of the picker, and visually centred. */
+  .topbar .emergency-bar {
+    padding-inline: calc(5vw + 6.5rem);
+  }
+  .nav .nav-lang {
+    display: none;
+  }
+}
+
 .eyebrow {
   margin: 0 0 1rem;
   font-size: 0.72rem;
@@ -1169,35 +1197,6 @@ h2 {
 .closing {
   font-size: 1.35rem;
   max-width: 28ch;
-}
-
-.wa-fab {
-  position: fixed;
-  right: 1.2rem;
-  bottom: 1.2rem;
-  z-index: 40;
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.55rem 0.8rem 0.55rem 0.55rem;
-  background: var(--paper);
-  color: var(--navy);
-  border: 1px solid var(--line);
-}
-
-.wa-fab:hover {
-  border-color: var(--navy);
-}
-
-.wa-fab-icon {
-  width: 1.2rem;
-  height: 1.2rem;
-}
-
-.wa-fab-label {
-  font-size: 0.68rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
 }
 
 .cookie {
@@ -2759,4 +2758,39 @@ h2 {
   .account-join {
     width: 100%;
   }
+}
+
+/*
+ * Hindi (Devanagari) typography. Wide tracking and uppercase styling used for
+ * Latin labels pull conjuncts and matras apart, and tight negative tracking on
+ * headings crushes them, so reset both when the page language is Hindi.
+ */
+html[lang="hi"] body,
+html[lang="hi"] button,
+html[lang="hi"] input,
+html[lang="hi"] select,
+html[lang="hi"] textarea,
+html[lang="hi"] h1,
+html[lang="hi"] h2,
+html[lang="hi"] h3,
+html[lang="hi"] h4,
+html[lang="hi"] .nav-overlay-inner a {
+  font-family:
+    var(--font-devanagari), var(--font-inter), "Noto Sans Devanagari",
+    "Nirmala UI", "Kohinoor Devanagari", sans-serif;
+}
+
+html[lang="hi"] {
+  font-size: 112.5%;
+}
+
+html[lang="hi"] * {
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+html[lang="hi"] h1,
+html[lang="hi"] h2,
+html[lang="hi"] h3 {
+  line-height: 1.3;
 }
