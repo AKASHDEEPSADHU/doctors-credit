@@ -1,28 +1,57 @@
 /**
  * WhatsApp is live from the first paint. Set NEXT_PUBLIC_WHATSAPP_E164
  * to your number in E.164 without "+" (India example: 9198XXXXXXXX).
+ *
+ * Outside production (local dev, previews) the button falls back to the
+ * placeholder number below so the feature is visible while reviewing.
+ * In production the placeholder is NEVER used: with no real number
+ * configured the button stays hidden instead of linking to a stranger.
  */
 function digits(value: string) {
   return value.replace(/\D/g, "");
 }
 
-const configured = digits(process.env.NEXT_PUBLIC_WHATSAPP_E164 || "");
-const PLACEHOLDER_NUMBERS = new Set(["910000000000", "91xxxxxxxxxx"]);
+/** Visible in non-production builds only. Replace via NEXT_PUBLIC_WHATSAPP_E164. */
+export const WHATSAPP_PREVIEW_PLACEHOLDER = "1234567890";
 
-export const WHATSAPP_E164 =
-  configured.length >= 11 && !PLACEHOLDER_NUMBERS.has(configured) ? configured : "";
+const PLACEHOLDER_NUMBERS = new Set([
+  "910000000000",
+  "91xxxxxxxxxx",
+  WHATSAPP_PREVIEW_PLACEHOLDER,
+]);
 
-export function whatsappEnabled() {
-  return WHATSAPP_E164.length >= 11;
+/**
+ * Pure so it can be tested. `raw` is NEXT_PUBLIC_WHATSAPP_E164, `nodeEnv` is NODE_ENV.
+ * A configured, non-placeholder number always wins. Otherwise the placeholder is
+ * returned outside production, and an empty string (button hidden) in production.
+ */
+export function resolveWhatsappNumber(raw: string | undefined, nodeEnv: string | undefined) {
+  const configured = digits(raw || "");
+  if (configured.length >= 11 && !PLACEHOLDER_NUMBERS.has(configured)) return configured;
+  return nodeEnv !== "production" ? WHATSAPP_PREVIEW_PLACEHOLDER : "";
 }
 
-export function whatsappHref(prefill?: string) {
-  if (!whatsappEnabled()) return "";
-  const text = encodeURIComponent(
-    prefill ||
-      "Hello. I would like to talk with a DCredit care coordinator about planned care and whether exploring treatment in India may make sense for me. I will not send medical records or other sensitive clinical documents through WhatsApp."
-  );
-  return `https://wa.me/${WHATSAPP_E164}?text=${text}`;
+export const WHATSAPP_E164 = resolveWhatsappNumber(
+  process.env.NEXT_PUBLIC_WHATSAPP_E164,
+  process.env.NODE_ENV
+);
+
+export function whatsappEnabled() {
+  return WHATSAPP_E164.length > 0;
+}
+
+export const WHATSAPP_DEFAULT_GREETING =
+  "Hi, I would like to learn more about your services. I understand I should not send medical records or other sensitive documents through WhatsApp.";
+
+/**
+ * https://wa.me/<number>?text=<encoded message>
+ * Opens the native app on phones and WhatsApp Web / Desktop on computers.
+ * Pass the greeting for the visitor's selected language.
+ */
+export function whatsappHref(prefill?: string, number: string = WHATSAPP_E164) {
+  if (!number) return "";
+  const text = encodeURIComponent(prefill || WHATSAPP_DEFAULT_GREETING);
+  return `https://wa.me/${number}?text=${text}`;
 }
 
 export const SITE = {

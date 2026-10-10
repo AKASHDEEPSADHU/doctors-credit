@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
-import { Caveat, Fraunces, Inter } from "next/font/google";
+import { Caveat, Fraunces, Inter, Noto_Sans_Devanagari } from "next/font/google";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import WhatsAppFab from "@/components/WhatsAppFab";
 import CookieBanner from "@/components/CookieBanner";
+import { LanguageProvider } from "@/components/LanguageProvider";
+import LanguageSelector from "@/components/LanguageSelector";
+import { languageMeta } from "@/lib/i18n/config";
+import { getCommon } from "@/lib/i18n/server";
 import { SITE } from "@/lib/contact";
 import { getSession } from "@/lib/session";
 import "./globals.css";
@@ -18,6 +22,16 @@ const display = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
+});
+
+// Inter and Fraunces have no Devanagari glyphs; this keeps Hindi consistent
+// across devices. Only downloaded when Hindi text is on the page.
+const devanagari = Noto_Sans_Devanagari({
+  variable: "--font-devanagari",
+  subsets: ["devanagari"],
+  weight: ["400", "500", "600"],
+  display: "swap",
+  preload: false,
 });
 
 const script = Caveat({
@@ -39,18 +53,26 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await getSession();
+  const { lang, t } = await getCommon();
   return (
-    <html lang="en">
-      <body id="top" className={`${sans.variable} ${display.variable} ${script.variable}`}>
-        <p className="emergency-bar">
-          DCredit does not handle medical emergencies. Use your local emergency
-          number. In the United States, call 911.
-        </p>
-        <Nav signedIn={!!session} />
-        {children}
-        <Footer />
-        <WhatsAppFab />
-        <CookieBanner />
+    <html lang={languageMeta(lang).htmlLang}>
+      <body
+        id="top"
+        className={`${sans.variable} ${display.variable} ${script.variable} ${devanagari.variable}`}
+      >
+        <LanguageProvider initialLang={lang}>
+          <div className="topbar">
+            <p className="emergency-bar">{t.emergencyBar}</p>
+            <div className="topbar-lang">
+              <LanguageSelector compact />
+            </div>
+          </div>
+          <Nav signedIn={!!session} />
+          {children}
+          <Footer />
+          <WhatsAppFab />
+          <CookieBanner />
+        </LanguageProvider>
       </body>
     </html>
   );

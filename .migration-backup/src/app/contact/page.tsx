@@ -2,10 +2,12 @@ import Link from "next/link";
 import { SITE, whatsappEnabled, whatsappHref } from "@/lib/contact";
 import ContactForm from "@/components/ContactForm";
 import { turnstileSiteKey } from "@/lib/turnstile";
+import { getCommon } from "@/lib/i18n/server";
 
 export const metadata = { title: "Contact | Doctor's Credit" };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const { t } = await getCommon();
   return (
     <main id="main" className="legal">
       <p className="eyebrow">Contact</p>
@@ -36,7 +38,7 @@ export default function ContactPage() {
       {whatsappEnabled() ? (
         <>
           <p>
-            <a className="btn-ghost" href={whatsappHref()}>
+            <a className="btn-ghost" href={whatsappHref(t.whatsapp.greeting)}>
               WhatsApp DCredit
             </a>
           </p>

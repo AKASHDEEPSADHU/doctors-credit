@@ -4,6 +4,20 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Doctor's Credit brand palette (from the site's navy / teal / paper theme). */
+@theme {
+  --color-brand-navy: #062d56;
+  --color-brand-navy-mid: #0d5aa7;
+  --color-brand-teal: #12a392;
+  --color-brand-ink: #102033;
+  --color-brand-muted: #5c6b7a;
+  --color-brand-line: rgba(6, 45, 86, 0.12);
+  --color-brand-paper: #fffdf9;
+  --color-brand-paper-2: #f4f1ea;
+  --color-whatsapp: #0f7b4f;
+  --color-whatsapp-dark: #0c6a43;
+}
+
 @theme inline {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));

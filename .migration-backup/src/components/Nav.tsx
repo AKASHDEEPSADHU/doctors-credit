@@ -3,18 +3,20 @@
 import { useEffect, useId, useState } from "react";
 import Link from "next/link";
 import BrandLockup from "@/components/BrandLockup";
-
-const links = [
-  ["/how-it-works", "How it works"],
-  ["/treatments", "Treatments"],
-  ["/hospitals", "Hospitals"],
-  ["/cost-calculator", "Cost calculator"],
-  ["/research", "Research"],
-  ["/stories", "Patient stories"],
-  ["/about", "About"],
-];
+import LanguageSelector from "@/components/LanguageSelector";
+import { useLanguage } from "@/components/LanguageProvider";
 
 export default function Nav({ signedIn }: { signedIn: boolean }) {
+  const { t } = useLanguage();
+  const links = [
+    ["/how-it-works", t.nav.howItWorks],
+    ["/treatments", t.nav.treatments],
+    ["/hospitals", t.nav.hospitals],
+    ["/cost-calculator", t.nav.costCalculator],
+    ["/research", t.nav.research],
+    ["/stories", t.nav.stories],
+    ["/about", t.nav.about],
+  ];
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const panelId = useId();
@@ -41,22 +43,27 @@ export default function Nav({ signedIn }: { signedIn: boolean }) {
   return (
     <header className={["nav", scrolled ? "is-scrolled" : "", open ? "is-open" : ""].filter(Boolean).join(" ")}>
       <a className="skip" href="#main">
-        Skip to content
+        {t.skip}
       </a>
       <BrandLockup href="/" variant="nav" />
-      <nav className="nav-desktop" aria-label="Primary">
+      <nav className="nav-desktop" aria-label={t.nav.primary}>
         {links.map(([href, label]) => (
           <Link key={href} href={href}>
             {label}
           </Link>
         ))}
         <Link className="nav-cta" href="/enroll">
-          Talk to a care coordinator
+          {t.nav.cta}
         </Link>
         <Link className="nav-account" href={signedIn ? "/account" : "/signin?next=%2Faccount"}>
-          {signedIn ? "My Account" : "Sign in"}
+          {signedIn ? t.nav.myAccount : t.nav.signIn}
         </Link>
       </nav>
+      {/* Phones/tablets: next to the menu button. On desktop the picker lives in
+          the top strip (see .topbar-lang) because this row has no spare width. */}
+      <div className="nav-lang ml-auto">
+        <LanguageSelector />
+      </div>
       <button
         className="nav-toggle"
         type="button"
@@ -64,11 +71,11 @@ export default function Nav({ signedIn }: { signedIn: boolean }) {
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
       >
-        <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
+        <span className="sr-only">{open ? t.nav.closeMenu : t.nav.openMenu}</span>
         <span className={open ? "nav-toggle-bars is-open" : "nav-toggle-bars"} />
       </button>
       {open ? (
-        <div id={panelId} className="nav-overlay" role="dialog" aria-modal="true" aria-label="Menu">
+        <div id={panelId} className="nav-overlay" role="dialog" aria-modal="true" aria-label={t.nav.menu}>
           <div className="nav-overlay-inner">
             {links.map(([href, label]) => (
               <Link key={href} href={href} onClick={() => setOpen(false)}>
@@ -76,10 +83,10 @@ export default function Nav({ signedIn }: { signedIn: boolean }) {
               </Link>
             ))}
             <Link className="btn-solid" href="/enroll" onClick={() => setOpen(false)}>
-              Talk to a care coordinator
+              {t.nav.cta}
             </Link>
             <Link href={signedIn ? "/account" : "/signin?next=%2Faccount"} onClick={() => setOpen(false)}>
-              {signedIn ? "My Account" : "Sign in"}
+              {signedIn ? t.nav.myAccount : t.nav.signIn}
             </Link>
           </div>
         </div>
